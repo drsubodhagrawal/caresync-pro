@@ -570,6 +570,95 @@ tr.state-archived:hover td{opacity:.85}
 .ls-pop-badge{margin-left:auto;background:#1a73e8;color:#fff;font-size:9px;
   font-weight:800;padding:2px 7px;border-radius:10px;font-family:monospace;}
 
+/* ═══ PHYSICIAN DASHBOARD ═══ */
+.md-dash-sidebar-item{display:flex;align-items:center;gap:8px;padding:10px 14px;font-size:12.5px;
+  font-weight:700;color:#4f46e5;cursor:pointer;border-left:3px solid transparent;
+  background:linear-gradient(135deg,#eef2ff,#e0e7ff);transition:all .15s;position:relative;}
+.md-dash-sidebar-item:hover{background:linear-gradient(135deg,#e0e7ff,#c7d2fe);border-left-color:#6366f1;}
+.md-dash-sidebar-item.on{background:linear-gradient(135deg,#e0e7ff,#c7d2fe);border-left-color:#4f46e5;color:#3730a3;}
+#pg-md-dashboard{display:none;padding:0;background:#f8fafc;}
+#pg-md-dashboard.on{display:flex;flex-direction:column;height:100%;animation:fi .17s ease;}
+.mdd-scroll{flex:1;overflow-y:auto;padding:16px 18px 30px;}
+.mdd-hdr{padding:14px 18px;background:#fff;border-bottom:1.5px solid #e2e8f0;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.mdd-title{font-size:17px;font-weight:800;color:#0b1e3d;letter-spacing:-.3px;}
+.mdd-sub{font-size:11.5px;color:#64748b;margin-top:2px;}
+.mdd-actions{margin-left:auto;display:flex;gap:6px;}
+/* AI Briefing */
+.mdd-brief{padding:12px 16px;background:linear-gradient(135deg,#f5f3ff,#eef2ff);border:1.5px solid #c4b5fd;border-radius:10px;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+.mdd-brief-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#4f46e5);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0;}
+.mdd-brief-text{font-size:12.5px;color:#3730a3;font-weight:600;line-height:1.5;}
+/* KPI Tiles */
+.mdd-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px;}
+.mdd-kpi{background:#fff;border-radius:10px;padding:14px;border:1px solid #e2e8f0;cursor:pointer;transition:all .15s;text-align:center;}
+.mdd-kpi:hover{border-color:#93c5fd;box-shadow:0 2px 8px rgba(59,130,246,.12);transform:translateY(-1px);}
+.mdd-kpi-val{font-size:22px;font-weight:800;color:#0b1e3d;font-family:'IBM Plex Mono',monospace;}
+.mdd-kpi-lbl{font-size:10.5px;color:#64748b;margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;}
+.mdd-kpi-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px;}
+/* Two-column layout */
+.mdd-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.mdd-card{background:#fff;border-radius:10px;border:1px solid #e2e8f0;overflow:hidden;}
+.mdd-card-hdr{padding:12px 14px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px;}
+.mdd-card-title{font-size:13px;font-weight:700;color:#0b1e3d;}
+.mdd-card-badge{margin-left:auto;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;background:#dbeafe;color:#1d4ed8;}
+.mdd-card-body{padding:0;max-height:320px;overflow-y:auto;}
+/* Schedule rows */
+.mdd-sched-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid #f1f5f9;font-size:12px;cursor:pointer;transition:background .1s;}
+.mdd-sched-row:hover{background:#f8fafc;}
+.mdd-sched-time{width:52px;font-weight:700;color:#1e40af;font-family:'IBM Plex Mono',monospace;font-size:11px;flex-shrink:0;}
+.mdd-sched-name{font-weight:600;color:#0b1e3d;flex:1;}
+.mdd-sched-type{font-size:10px;padding:2px 7px;border-radius:6px;font-weight:600;white-space:nowrap;}
+.mdd-sched-status{font-size:10px;padding:2px 7px;border-radius:6px;font-weight:700;white-space:nowrap;}
+.mdd-sched-room{font-size:10px;color:#64748b;font-weight:600;width:45px;text-align:center;}
+/* Sign queue rows */
+.mdd-sign-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid #f1f5f9;font-size:12px;}
+.mdd-sign-cb{width:16px;height:16px;accent-color:#4f46e5;cursor:pointer;}
+.mdd-sign-name{font-weight:600;color:#0b1e3d;flex:1;}
+.mdd-sign-type{font-size:10px;padding:2px 7px;border-radius:6px;font-weight:600;white-space:nowrap;}
+.mdd-sign-flag{font-size:10px;padding:2px 7px;border-radius:6px;font-weight:700;background:#fef3c7;color:#92400e;white-space:nowrap;}
+.mdd-sign-actions{display:flex;gap:4px;}
+.mdd-sign-btn{font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid #d1d5db;background:#fff;color:#374151;cursor:pointer;font-weight:600;transition:all .12s;}
+.mdd-sign-btn:hover{background:#f3f4f6;}
+.mdd-sign-btn.pri{background:#4f46e5;color:#fff;border-color:#4f46e5;}
+.mdd-sign-btn.pri:hover{background:#4338ca;}
+/* Three-column lower */
+.mdd-cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;}
+/* Inbox items */
+.mdd-inbox-row{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border-bottom:1px solid #f1f5f9;font-size:12px;cursor:pointer;transition:background .1s;}
+.mdd-inbox-row:hover{background:#f8fafc;}
+.mdd-inbox-ic{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.mdd-inbox-from{font-weight:600;color:#0b1e3d;font-size:11.5px;}
+.mdd-inbox-msg{font-size:11px;color:#64748b;margin-top:2px;line-height:1.4;}
+.mdd-inbox-time{font-size:10px;color:#94a3b8;margin-left:auto;white-space:nowrap;flex-shrink:0;}
+/* Care gap rows */
+.mdd-gap-row{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid #f1f5f9;font-size:12px;}
+.mdd-gap-measure{font-weight:600;color:#0b1e3d;flex:1;font-size:11.5px;}
+.mdd-gap-bar-bg{width:80px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;flex-shrink:0;}
+.mdd-gap-bar{height:100%;border-radius:3px;}
+.mdd-gap-pct{font-size:10px;font-weight:700;width:32px;text-align:right;flex-shrink:0;font-family:'IBM Plex Mono',monospace;}
+.mdd-gap-ct{font-size:10px;color:#64748b;width:40px;text-align:right;flex-shrink:0;}
+/* Tasks */
+.mdd-task-row{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid #f1f5f9;font-size:11.5px;}
+.mdd-task-pri{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.mdd-task-text{flex:1;color:#374151;}
+.mdd-task-due{font-size:10px;color:#94a3b8;font-weight:600;}
+/* AI Co-Pilot */
+.mdd-copilot{background:linear-gradient(135deg,#f5f3ff,#eef2ff);border:1.5px solid #c4b5fd;border-radius:10px;padding:14px;margin-bottom:16px;}
+.mdd-copilot-title{font-size:12px;font-weight:800;color:#5b21b6;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.mdd-copilot-item{padding:7px 10px;background:rgba(255,255,255,.7);border-radius:8px;margin-bottom:5px;font-size:11.5px;color:#3730a3;cursor:pointer;transition:all .12s;border:1px solid transparent;}
+.mdd-copilot-item:hover{background:#fff;border-color:#a78bfa;transform:translateX(3px);}
+.mdd-copilot-section{margin-bottom:12px;}
+.mdd-copilot-section-title{font-size:10px;font-weight:700;color:#7c3aed;text-transform:uppercase;letter-spacing:.3px;margin-bottom:5px;}
+/* Batch sign bar */
+.mdd-batch-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:#eef2ff;border-bottom:1px solid #c7d2fe;}
+.mdd-batch-bar label{font-size:11px;font-weight:600;color:#4338ca;display:flex;align-items:center;gap:5px;cursor:pointer;}
+.mdd-batch-bar .mdd-sign-btn{margin-left:auto;}
+/* Date toggle */
+.mdd-date-toggle{display:flex;gap:0;border:1px solid #d1d5db;border-radius:6px;overflow:hidden;margin-left:auto;}
+.mdd-date-toggle button{font-size:10px;padding:4px 10px;border:none;background:#fff;color:#374151;cursor:pointer;font-weight:600;transition:all .12s;}
+.mdd-date-toggle button.on{background:#4f46e5;color:#fff;}
+.mdd-date-toggle button:hover:not(.on){background:#f3f4f6;}
+@media(max-width:1100px){.mdd-kpis{grid-template-columns:repeat(3,1fr);}.mdd-cols{grid-template-columns:1fr;}.mdd-cols3{grid-template-columns:1fr;}}
+
 /* Population page */
 #pg-population{display:none;padding:0;background:#f8fafc;}
 #pg-population.on{display:flex;flex-direction:column;height:100%;animation:fi .17s ease;}
@@ -763,10 +852,6 @@ tr.state-archived:hover td{opacity:.85}
           <button class="role-btn role-hha" onclick="signInAs('hha')">
             <div class="role-ic">🏠</div>
             <div class="role-info"><div class="role-name">HHA Admin</div><div class="role-sub">Home health operations</div></div>
-          </button>
-          <button class="role-btn" onclick="signInAs('patient')" style="border:2px solid #7c3aed;background:linear-gradient(135deg,#ede9fe,#f5f3ff)">
-            <div class="role-ic">🧑‍💼</div>
-            <div class="role-info"><div class="role-name" style="color:#7c3aed">Patient Portal</div><div class="role-sub" style="color:#7c3aed">Self-register · request appt</div></div>
           </button>
         </div>
 
@@ -1005,6 +1090,13 @@ tr.state-archived:hover td{opacity:.85}
     <div class="ls-item" onclick="go('audit-log')"><span class="ls-ic">📋</span>Audit Log</div>
     <div class="ls-item" onclick="go('subscriptions')"><span class="ls-ic">💳</span>Subscriptions &amp; Plans</div>
   </div>
+  <div class="ls-sec" id="ls-sec-md-dashboard" style="display:none">
+    <div class="md-dash-sidebar-item" id="ls-md-dashboard" onclick="goMdDashboard()">
+      <span class="ls-ic">📊</span>
+      <span>Dashboard</span>
+      <span style="margin-left:auto;font-size:9px;padding:2px 7px;border-radius:8px;background:rgba(99,102,241,.2);color:#4f46e5;font-weight:700">MD</span>
+    </div>
+  </div>
   <div class="ls-sec" id="ls-sec-population">
     <div class="ls-item-pop" id="ls-pop-item" onclick="goPopulation()">
       <span class="ls-ic">👥</span>
@@ -1012,98 +1104,72 @@ tr.state-archived:hover td{opacity:.85}
       <span class="ls-pop-badge" id="ls-pop-badge">50</span>
     </div>
   </div>
-
-  <!-- ═══ NEW PATIENT PORTAL ═══ -->
-  <div class="ls-sec" id="ls-sec-selfregister">
-    <div class="ls-expand" onclick="toggleSub('selfregister-sub')" style="background:linear-gradient(135deg,#065f46,#059669);color:#fff;border-left:3px solid #34d399;padding:9px 14px;display:flex;align-items:center;justify-content:space-between">
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:14px">🌐</span>
-        <span style="font-size:12px;font-weight:700;color:#fff">New Patient Portal</span>
-        <span style="font-size:9px;padding:1px 6px;border-radius:8px;background:rgba(52,211,153,.3);color:#a7f3d0;font-weight:700">NEW</span>
-      </div>
-      <span style="color:#34d399;font-size:11px">▾</span>
-    </div>
-    <div class="ls-sub open" id="selfregister-sub">
-      <div class="ls-item" onclick="go('patient-portal-landing')" style="padding-left:22px"><span class="ls-ic">🏠</span>Patient Landing Page</div>
-      <div class="ls-item" onclick="go('patient-self-register')" style="padding-left:22px"><span class="ls-ic">📝</span>Self-Registration</div>
-      <div class="ls-item" onclick="go('staff-review-queue')" style="padding-left:22px"><span class="ls-ic">🔍</span>Staff Review Queue<span style="margin-left:auto;font-size:9px;padding:1px 5px;border-radius:8px;background:#fef3c7;color:#92400e;font-weight:700">3</span></div>
-      <div class="ls-item" onclick="go('emr-import')" style="padding-left:22px"><span class="ls-ic">⬆️</span>EMR Import</div>
-    </div>
+  <div class="ls-sec">
+    <div class="ls-sec-lbl">Patient</div>
+    <div class="ls-item done" onclick="go('about-me')"><span class="ls-ic">👤</span>About Me</div>
+    <div class="ls-item" onclick="go('comm-log')"><span class="ls-ic">📞</span>Communication Log</div>
   </div>
-
-  <!-- ═══ EMR — BACKBONE ═══ -->
-  <div class="ls-sec" id="ls-sec-emr">
-    <div class="ls-expand" onclick="toggleSub('emr-sub')" style="background:linear-gradient(135deg,#1e1b4b,#3730a3);color:#fff;border-left:3px solid #818cf8;padding:9px 14px;display:flex;align-items:center;justify-content:space-between">
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:14px">🏥</span>
-        <span style="font-size:12px;font-weight:700;color:#fff">EMR</span>
-        <span style="font-size:9px;padding:1px 6px;border-radius:8px;background:rgba(129,140,248,.3);color:#c7d2fe;font-weight:700">ONC</span>
-      </div>
-      <span style="color:#818cf8;font-size:11px">▾</span>
-    </div>
-    <div class="ls-sub open" id="emr-sub">
-      <div class="ls-item" onclick="go('emr-chart')" style="padding-left:22px"><span class="ls-ic">📋</span>Patient Chart</div>
-      <div class="ls-item" onclick="go('emr-soap')" style="padding-left:22px"><span class="ls-ic">🤖</span>AI SOAP Notes<span style="margin-left:auto;font-size:9px;padding:1px 5px;border-radius:8px;background:rgba(129,140,248,.3);color:#c7d2fe;font-weight:700">AI</span></div>
-      <div class="ls-item" onclick="go('emr-orders')" style="padding-left:22px"><span class="ls-ic">📄</span>Orders & Rx</div>
-      <div class="ls-item" onclick="go('emr-fhir')" style="padding-left:22px"><span class="ls-ic">🔗</span>FHIR R4 Export<span style="margin-left:auto;font-size:9px;padding:1px 5px;border-radius:8px;background:rgba(129,140,248,.3);color:#c7d2fe;font-weight:700">HL7</span></div>
-      <div class="ls-item" onclick="go('about-me')" style="padding-left:22px"><span class="ls-ic">👤</span>Demographics</div>
-      <div class="ls-item" onclick="go('insurance')" style="padding-left:22px"><span class="ls-ic">🏥</span>Insurance</div>
-      <div class="ls-item" onclick="go('comm-log')" style="padding-left:22px"><span class="ls-ic">📞</span>Comm Log</div>
-    </div>
+  <div class="ls-sec">
+    <div class="ls-sec-lbl">Workflow — HHA RPM</div>
+    <div class="ls-item done" onclick="go('intake')"><span class="ls-ic">📋</span>1. Intake Form</div>
+    <div class="ls-item done" onclick="go('care-plan')"><span class="ls-ic">🩺</span>2. Care Plan</div>
+    <div class="ls-item warn" onclick="go('physician-order')"><span class="ls-ic">✍️</span>3. Physician Order</div>
+    <div class="ls-item on" onclick="go('preauth')"><span class="ls-ic">🔐</span>4. Pre-Auth Form</div>
+    <div class="ls-item" onclick="go('auth-history')"><span class="ls-ic">📁</span>Auth History<span style="margin-left:auto;font-size:9px;font-weight:700;padding:1px 4px;border-radius:4px;background:#fee2e2;color:#991b1b">!</span></div>
+    <div class="ls-item" onclick="go('consent')"><span class="ls-ic">✅</span>5. Patient Consent</div>
+    <div class="ls-item locked" onclick="go('device')"><span class="ls-ic">📡</span>6. Device & Education</div>
+    <div class="ls-item locked" onclick="go('monitoring')"><span class="ls-ic">💓</span>7. Daily Monitoring</div>
+    <div class="ls-item locked" onclick="go('monthly-report')"><span class="ls-ic">📊</span>8. Monthly Report</div>
   </div>
-
-  <!-- ═══ HHA RPM MEGA SECTION ═══ -->
-  <div class="ls-sec" id="ls-sec-hha-rpm">
-    <div class="ls-expand" onclick="toggleSub('hha-rpm-sub')" style="background:linear-gradient(135deg,#7c2d12,#ea580c);color:#fff;border-left:3px solid #fb923c;padding:9px 14px;display:flex;align-items:center;justify-content:space-between">
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:14px">🏠</span>
-        <span style="font-size:12px;font-weight:700;color:#fff">HHA RPM</span>
-        <span style="font-size:9px;padding:1px 6px;border-radius:8px;background:rgba(251,146,60,.3);color:#fed7aa;font-weight:700">S9110</span>
-      </div>
-      <span style="color:#fb923c;font-size:11px">▾</span>
-    </div>
-    <div class="ls-sub open" id="hha-rpm-sub">
-      <!-- Patient -->
-      <div style="padding:5px 14px 2px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af">Patient</div>
-      <div class="ls-item done" onclick="go('intake')" style="padding-left:22px"><span class="ls-ic">📋</span>1. Intake / Assessment</div>
-      <div class="ls-item done" onclick="go('care-plan')" style="padding-left:22px"><span class="ls-ic">🩺</span>2. Care Plan</div>
-      <div class="ls-item warn" onclick="go('physician-order')" style="padding-left:22px"><span class="ls-ic">✍️</span>3. Physician Order</div>
-      <div class="ls-item" onclick="go('preauth')" style="padding-left:22px"><span class="ls-ic">🔐</span>4. Pre-Auth</div>
-      <div class="ls-item" onclick="go('auth-history')" style="padding-left:22px"><span class="ls-ic">📁</span>Auth History<span style="margin-left:auto;font-size:9px;font-weight:700;padding:1px 4px;border-radius:4px;background:#fee2e2;color:#991b1b">!</span></div>
-      <div class="ls-item" onclick="go('consent')" style="padding-left:22px"><span class="ls-ic">✅</span>5. Consent</div>
-      <div class="ls-item locked" onclick="go('device')" style="padding-left:22px"><span class="ls-ic">📡</span>6. Device & Education</div>
-      <div class="ls-item locked" onclick="go('monitoring')" style="padding-left:22px"><span class="ls-ic">💓</span>7. Daily Monitoring</div>
-      <div class="ls-item locked" onclick="go('monthly-report')" style="padding-left:22px"><span class="ls-ic">📊</span>8. Monthly Report</div>
-      <!-- Clinical -->
-      <div style="padding:6px 14px 2px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;border-top:1px solid #f3f4f6;margin-top:4px">Clinical</div>
-      <div class="ls-item" onclick="go('alert-questions')" style="padding-left:22px"><span class="ls-ic">🚨</span>Alert Questions</div>
-      <div class="ls-item" onclick="go('nurse-notes')" style="padding-left:22px"><span class="ls-ic">📝</span>Nurse Notes</div>
-      <div class="ls-item" onclick="go('missed-reading')" style="padding-left:22px"><span class="ls-ic">⚠️</span>Missed Reading</div>
-      <!-- Documents -->
-      <div style="padding:6px 14px 2px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;border-top:1px solid #f3f4f6;margin-top:4px">Documents</div>
+  <div class="ls-sec">
+    <div class="ls-sec-lbl">Clinical</div>
+    <div class="ls-item" onclick="go('alert-questions')"><span class="ls-ic">🚨</span>Alert Questions</div>
+    <div class="ls-item" onclick="go('nurse-notes')"><span class="ls-ic">📝</span>Nurse Notes</div>
+    <div class="ls-item" onclick="go('missed-reading')"><span class="ls-ic">⚠️</span>Missed Reading</div>
+  </div>
+  <div class="ls-sec">
+    <div class="ls-expand" onclick="toggleSub('docs-sub')">📁 Documents <span>▾</span></div>
+    <div class="ls-sub" id="docs-sub">
       <div class="ls-item" onclick="go('preauth')" style="padding-left:22px"><span class="ls-ic">🔐</span>Pre-Auth Form</div>
       <div class="ls-item" onclick="go('physician-order')" style="padding-left:22px"><span class="ls-ic">✍️</span>Physician Order</div>
       <div class="ls-item" onclick="go('care-plan')" style="padding-left:22px"><span class="ls-ic">🩺</span>Care Plan</div>
-      <!-- Billing -->
-      <div style="padding:6px 14px 2px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;border-top:1px solid #f3f4f6;margin-top:4px">Billing & Reports</div>
-      <div class="ls-item" onclick="go('hha-billing')" style="padding-left:22px"><span class="ls-ic">💵</span>HHA Billing<span style="margin-left:auto;font-size:9px;padding:1px 5px;border-radius:8px;background:#fef3c7;color:#92400e;font-weight:700">UB-04</span></div>
-      <div class="ls-item" onclick="go('edi-submission')" style="padding-left:22px"><span class="ls-ic">⚡</span>EDI Submission</div>
-      <div class="ls-item" onclick="go('billing')" style="padding-left:22px"><span class="ls-ic">📊</span>Billing Summary</div>
-      <!-- Platform Phases -->
-      <div style="padding:6px 14px 2px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;border-top:1px solid #f3f4f6;margin-top:4px">Platform Phases</div>
-      <div class="ls-item" onclick="go('umodifier')" style="padding-left:22px"><span class="ls-ic">📡</span>U-Modifier</div>
-      <div class="ls-item" onclick="go('hws-api')" style="padding-left:22px"><span class="ls-ic">🔌</span>HWS API</div>
-      <div class="ls-item" onclick="go('rider32')" style="padding-left:22px"><span class="ls-ic">🔀</span>Rider 32 Router</div>
-      <div class="ls-item" onclick="go('mco-pa')" style="padding-left:22px"><span class="ls-ic">🏥</span>MCO Prior Auth</div>
-      <div class="ls-item" onclick="go('mof-integration')" style="padding-left:22px"><span class="ls-ic">⏱</span>MOF Integration</div>
-      <div class="ls-item" onclick="go('revenue-calc')" style="padding-left:22px"><span class="ls-ic">💵</span>Revenue Calc</div>
-      <div class="ls-item" onclick="go('integration-apis')" style="padding-left:22px"><span class="ls-ic">🔗</span>Integration APIs</div>
-      <div class="ls-item" onclick="go('whitelabel')" style="padding-left:22px"><span class="ls-ic">🏷</span>White-Label</div>
-      <div class="ls-item" onclick="go('build-plan')" style="padding-left:22px"><span class="ls-ic">📋</span>Build Plan</div>
+    </div>
+    <div class="ls-expand" onclick="toggleSub('med-sub')">🏥 Medical Records <span>▾</span></div>
+    <div class="ls-sub" id="med-sub">
+      <div class="ls-item" onclick="go('intake')" style="padding-left:22px"><span class="ls-ic">📋</span>Intake / EMR</div>
+      <div class="ls-item" onclick="go('insurance')" style="padding-left:22px"><span class="ls-ic">🏥</span>Insurance</div>
     </div>
   </div>
-
-  <!-- ═══ CCM ═══ -->
+  <div class="ls-sec">
+    <div class="ls-expand" onclick="toggleSub('rpt-sub')">📈 Reports <span>▾</span></div>
+    <div class="ls-sub" id="rpt-sub">
+      <div class="ls-item" onclick="go('monthly-report')" style="padding-left:22px"><span class="ls-ic">📊</span>Monthly Report</div>
+      <div class="ls-item" onclick="go('edi-submission')" style="padding-left:22px"><span class="ls-ic">⚡</span>EDI Submission</div>
+      <div class="ls-item" onclick="go('billing')" style="padding-left:22px"><span class="ls-ic">💵</span>Billing Summary</div>
+    </div>
+  </div>
+  <div class="ls-sec">
+    <div class="ls-sec-lbl">Phase 1 — U-Modifier</div>
+    <div class="ls-item" onclick="go('umodifier')"><span class="ls-ic">📡</span>U-Modifier Dashboard</div>
+    <div class="ls-item" onclick="go('hws-api')"><span class="ls-ic">🔌</span>HWS API Integration</div>
+  </div>
+  <div class="ls-sec">
+    <div class="ls-sec-lbl">Phase 2 — Rider 32</div>
+    <div class="ls-item" onclick="go('rider32')"><span class="ls-ic">🔀</span>Rider 32 MCO Router</div>
+    <div class="ls-item" onclick="go('mco-pa')"><span class="ls-ic">🏥</span>MCO Prior Auth Engine</div>
+  </div>
+  <div class="ls-sec">
+    <div class="ls-sec-lbl">Phase 3 — MD Billing</div>
+    <div class="ls-item" onclick="go('mof-integration')"><span class="ls-ic">⏱</span>MOF Time Integration</div>
+    <div class="ls-item" onclick="go('revenue-calc')"><span class="ls-ic">💵</span>Revenue Calculator</div>
+  </div>
+  <div class="ls-sec">
+    <div class="ls-sec-lbl">Phase 4 — Platform</div>
+    <div class="ls-item" onclick="go('integration-apis')"><span class="ls-ic">🔗</span>4 Integration APIs</div>
+    <div class="ls-item" onclick="go('whitelabel')"><span class="ls-ic">🏷</span>White-Label Platform</div>
+    <div class="ls-item" onclick="go('build-plan')"><span class="ls-ic">📋</span>4-Phase Build Plan</div>
+  </div>
+  <!-- ═══ CCM SECTION ═══ -->
   <div class="ls-sec" id="ls-sec-ccm">
     <div class="ls-expand" onclick="toggleSub('ccm-sub')" style="background:linear-gradient(135deg,#14532d,#166534);color:#fff;border-left:3px solid #4ade80;padding:9px 14px;display:flex;align-items:center;justify-content:space-between">
       <div style="display:flex;align-items:center;gap:8px">
@@ -1115,13 +1181,13 @@ tr.state-archived:hover td{opacity:.85}
     </div>
     <div class="ls-sub" id="ccm-sub">
       <div class="ls-item" onclick="go('ccm-dashboard')" style="padding-left:22px"><span class="ls-ic">📊</span>CCM Dashboard</div>
+      <div class="ls-item" onclick="go('ccm-calendar')" style="padding-left:22px"><span class="ls-ic">📅</span>CCM Calendar</div>
       <div class="ls-item" onclick="go('ccm-calls')" style="padding-left:22px"><span class="ls-ic">📞</span>CCM Calls</div>
       <div class="ls-item" onclick="go('ccm-time')" style="padding-left:22px"><span class="ls-ic">⏱</span>Time Logger</div>
       <div class="ls-item" onclick="go('ccm-billing')" style="padding-left:22px"><span class="ls-ic">💰</span>CCM Billing<span style="margin-left:auto;font-size:9px;padding:1px 5px;border-radius:8px;background:#dcfce7;color:#166534;font-weight:700">CMS</span></div>
     </div>
   </div>
-
-  <!-- ═══ MD RPM ═══ -->
+  <!-- ═══ MD RPM SECTION ═══ -->
   <div class="ls-sec" id="ls-sec-mdrpm">
     <div class="ls-expand" onclick="toggleSub('mdrpm-sub')" style="background:linear-gradient(135deg,#1e3a5f,#1a6ef5);color:#fff;border-left:3px solid #60a5fa;padding:9px 14px;display:flex;align-items:center;justify-content:space-between">
       <div style="display:flex;align-items:center;gap:8px">
@@ -1137,35 +1203,210 @@ tr.state-archived:hover td{opacity:.85}
       <div class="ls-item" onclick="go('rpm-alerts')" style="padding-left:22px"><span class="ls-ic">🚨</span>Alert Manager</div>
       <div class="ls-item" onclick="go('rpm-time')" style="padding-left:22px"><span class="ls-ic">⏱</span>Time Logger</div>
       <div class="ls-item" onclick="go('rpm-billing')" style="padding-left:22px"><span class="ls-ic">💰</span>RPM Billing<span style="margin-left:auto;font-size:9px;padding:1px 5px;border-radius:8px;background:#dbeafe;color:#1d4ed8;font-weight:700">CMS</span></div>
-      <div class="ls-item" onclick="go('md-billing')" style="padding-left:22px"><span class="ls-ic">👨‍⚕️</span>MD Billing<span style="margin-left:auto;font-size:9px;padding:1px 5px;border-radius:8px;background:#dcfce7;color:#166534;font-weight:700">1500</span></div>
     </div>
   </div>
-
-  <!-- ═══ RTM ═══ -->
+  <!-- ═══ RTM SECTION ═══ -->
   <div class="ls-sec" id="ls-sec-rtm">
-    <div class="ls-expand" onclick="toggleRTM()" id="rtm-expand-row" style="background:linear-gradient(135deg,#4c1d95,#6d28d9);color:#fff;border-left:3px solid #a78bfa;padding:9px 14px;display:flex;align-items:center;justify-content:space-between">
+    <div class="ls-expand" onclick="toggleRTM()" id="rtm-expand-row" style="background:linear-gradient(135deg,#4c1d95,#6d28d9);color:#fff;border-left:3px solid #a78bfa;padding:9px 14px">
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:14px">🎯</span>
-        <span style="font-size:12px;font-weight:700;color:#fff">RTM</span>
+        <span style="font-size:12px;font-weight:700;color:#fff;letter-spacing:.1px">RTM</span>
         <span style="font-size:9px;padding:1px 6px;border-radius:8px;background:rgba(167,139,250,.35);color:#ddd6fe;font-weight:700">989xx</span>
       </div>
       <span id="rtm-chevron" style="color:#a78bfa;font-size:11px;transition:transform .2s">▾</span>
     </div>
     <div class="ls-sub" id="rtm-sub">
-      <div class="ls-item" id="ls-rtm-dashboard" onclick="go('rtm-dashboard')" style="padding-left:22px"><span class="ls-ic">📊</span>Dashboard</div>
-      <div class="ls-item" id="ls-rtm-calendar" onclick="go('rtm-calendar')" style="padding-left:22px"><span class="ls-ic">📅</span>RTM Calendar</div>
-      <div class="ls-item" id="ls-rtm-calls" onclick="go('rtm-calls')" style="padding-left:22px"><span class="ls-ic">📞</span>RTM Calls</div>
-      <div class="ls-item" id="ls-rtm-time" onclick="go('rtm-time')" style="padding-left:22px"><span class="ls-ic">⏱</span>Time Logger</div>
-      <div class="ls-item" id="ls-rtm-billing" onclick="go('rtm-billing')" style="padding-left:22px"><span class="ls-ic">💰</span>RTM Billing<span style="margin-left:auto;font-size:9px;padding:1px 5px;border-radius:8px;background:#dcfce7;color:#166534;font-weight:700">CMS</span></div>
-      <div class="ls-item" id="ls-rtm-telereport" onclick="go('rtm-telereport')" style="padding-left:22px"><span class="ls-ic">📄</span>Telereport<span style="margin-left:auto;font-size:9px;padding:1px 5px;border-radius:8px;background:rgba(167,139,250,.25);color:#ddd6fe;font-weight:700">SIG</span></div>
-      <div class="ls-item" id="ls-rtm-monthly" onclick="go('rtm-monthly')" style="padding-left:22px"><span class="ls-ic">📋</span>Monthly Report</div>
-      <div class="ls-item" id="ls-rtm-patient-reports" onclick="go('rtm-patient-reports')" style="padding-left:22px"><span class="ls-ic">👤</span>30-Day Reports</div>
+      <div class="ls-item" id="ls-rtm-dashboard" onclick="go('rtm-dashboard')" style="padding-left:22px">
+        <span class="ls-ic">📊</span>Dashboard
+      </div>
+      <div class="ls-item" id="ls-rtm-calendar" onclick="go('rtm-calendar')" style="padding-left:22px">
+        <span class="ls-ic">📅</span>RTM Calendar
+      </div>
+      <div class="ls-item" id="ls-rtm-calls" onclick="go('rtm-calls')" style="padding-left:22px">
+        <span class="ls-ic">📞</span>RTM Calls
+      </div>
+      <div class="ls-item" id="ls-rtm-time" onclick="go('rtm-time')" style="padding-left:22px">
+        <span class="ls-ic">⏱</span>Time Logger
+      </div>
+      <div class="ls-item" id="ls-rtm-billing" onclick="go('rtm-billing')" style="padding-left:22px">
+        <span class="ls-ic">💰</span>RTM Billing
+        <span style="margin-left:auto;font-size:9px;padding:1px 5px;border-radius:8px;background:#dcfce7;color:#166534;font-weight:700">CMS</span>
+      </div>
+      <div class="ls-item" id="ls-rtm-telereport" onclick="go('rtm-telereport')" style="padding-left:22px">
+        <span class="ls-ic">📄</span>Telereport
+        <span style="margin-left:auto;font-size:9px;padding:1px 5px;border-radius:8px;background:rgba(167,139,250,.25);color:#ddd6fe;font-weight:700">SIG</span>
+      </div>
+      <div class="ls-item" id="ls-rtm-monthly" onclick="go('rtm-monthly')" style="padding-left:22px">
+        <span class="ls-ic">📋</span>Monthly Report
+        <span style="margin-left:auto;font-size:9px;padding:1px 5px;border-radius:8px;background:rgba(167,139,250,.25);color:#ddd6fe;font-weight:700">NEW</span>
+      </div>
+      <div class="ls-item" id="ls-rtm-patient-reports" onclick="go('rtm-patient-reports')" style="padding-left:22px">
+        <span class="ls-ic">👤</span>30-Day Patient Reports
+      </div>
+    </div>
+  </div>
+  <div class="ls-sec" style="background:linear-gradient(135deg,#0f2044,#1a3260)">
+    <div class="ls-sec-lbl" style="color:#93c5fd;font-size:10px;font-weight:800;letter-spacing:.8px">💵 BILLING DASHBOARDS</div>
+    <div class="ls-item" onclick="go('hha-billing')" style="color:#fff;border-left-color:#f59e0b">
+      <span class="ls-ic">🏠</span>
+      <span style="flex:1;color:#fff">HHA Billing</span>
+      <span style="font-size:9px;padding:2px 6px;border-radius:8px;background:rgba(245,158,11,.3);color:#fcd34d;font-weight:700">UB-04</span>
+    </div>
+    <div class="ls-item" onclick="go('md-billing')" style="color:#fff">
+      <span class="ls-ic">👨‍⚕️</span>
+      <span style="flex:1;color:#fff">Physician Billing</span>
+      <span style="font-size:9px;padding:2px 6px;border-radius:8px;background:rgba(34,197,94,.25);color:#86efac;font-weight:700">CMS-1500</span>
     </div>
   </div>
 </div>
 
 <!-- MAIN CONTENT -->
 <div class="mcontent" id="mcontent">
+
+<!-- ═══════════════════════════════════════════
+     PHYSICIAN DASHBOARD — Provider Command Center
+═══════════════════════════════════════════ -->
+<div id="pg-md-dashboard" class="pg">
+  <div class="mdd-hdr">
+    <div>
+      <div class="mdd-title">📊 Dashboard</div>
+      <div class="mdd-sub" id="mdd-sub">Physician Command Center · Dr. Duc Le, MD · Athens Heart Group · <span id="mdd-date-display"></span></div>
+    </div>
+    <div class="mdd-actions">
+      <button class="btn btn-sm" onclick="mddRefresh()">🔄 Refresh</button>
+      <button class="btn btn-sm" style="background:#f5f3ff;color:#5b21b6;border-color:#c4b5fd" onclick="mddToggleCopilot()">🤖 AI Co-Pilot</button>
+      <button class="btn btn-sm btn-pri" onclick="mddStartEncounter()">+ New Encounter</button>
+    </div>
+  </div>
+  <div class="mdd-scroll">
+    <!-- AI Morning Briefing -->
+    <div class="mdd-brief">
+      <div class="mdd-brief-icon">🤖</div>
+      <div class="mdd-brief-text" id="mdd-brief-text">
+        Good morning, Dr. Le — <strong>3 priorities for the next hour:</strong> Sign 4 pending Rx renewals (2 flagged for lab review) · Mrs. Villarral's BP trending ↑158/94 avg — consider med adjustment at 10:30 visit · Lab result: Mr. Brennan HbA1c 9.4 (prev 7.8) — needs follow-up call
+      </div>
+    </div>
+
+    <!-- KPI Tiles -->
+    <div class="mdd-kpis">
+      <div class="mdd-kpi" onclick="mddScrollTo('sign')">
+        <div class="mdd-kpi-val" style="color:#dc2626">7</div>
+        <div class="mdd-kpi-lbl"><span class="mdd-kpi-dot" style="background:#dc2626"></span>Awaiting Sign</div>
+      </div>
+      <div class="mdd-kpi" onclick="mddScrollTo('inbox')">
+        <div class="mdd-kpi-val" style="color:#1d4ed8">12</div>
+        <div class="mdd-kpi-lbl"><span class="mdd-kpi-dot" style="background:#1d4ed8"></span>Inbox</div>
+      </div>
+      <div class="mdd-kpi" onclick="mddScrollTo('schedule')">
+        <div class="mdd-kpi-val" style="color:#15803d">14</div>
+        <div class="mdd-kpi-lbl"><span class="mdd-kpi-dot" style="background:#15803d"></span>Today's Visits</div>
+      </div>
+      <div class="mdd-kpi" onclick="mddScrollTo('inbox')">
+        <div class="mdd-kpi-val" style="color:#ea580c">3</div>
+        <div class="mdd-kpi-lbl"><span class="mdd-kpi-dot" style="background:#ea580c"></span>Critical Labs</div>
+      </div>
+      <div class="mdd-kpi" onclick="mddScrollTo('gaps')">
+        <div class="mdd-kpi-val" style="color:#7c3aed">18</div>
+        <div class="mdd-kpi-lbl"><span class="mdd-kpi-dot" style="background:#7c3aed"></span>Open Care Gaps</div>
+      </div>
+      <div class="mdd-kpi" onclick="mddScrollTo('tasks')">
+        <div class="mdd-kpi-val" style="color:#0d9488">5</div>
+        <div class="mdd-kpi-lbl"><span class="mdd-kpi-dot" style="background:#0d9488"></span>Pending Tasks</div>
+      </div>
+    </div>
+
+    <!-- Two-column: Schedule + Sign Queue -->
+    <div class="mdd-cols" id="mdd-area-schedule">
+      <!-- Schedule -->
+      <div class="mdd-card" id="mdd-area-schedule-card">
+        <div class="mdd-card-hdr">
+          <span style="font-size:15px">📅</span>
+          <div class="mdd-card-title">Today's Schedule</div>
+          <div class="mdd-card-badge" id="mdd-sched-count">14 patients</div>
+          <div class="mdd-date-toggle">
+            <button class="on" onclick="mddSchedToggle(this,'today')">Today</button>
+            <button onclick="mddSchedToggle(this,'tomorrow')">Tomorrow</button>
+            <button onclick="mddSchedToggle(this,'week')">Next 7d</button>
+          </div>
+        </div>
+        <div class="mdd-card-body" id="mdd-sched-body"></div>
+      </div>
+      <!-- Sign Queue -->
+      <div class="mdd-card" id="mdd-area-sign">
+        <div class="mdd-card-hdr">
+          <span style="font-size:15px">✍️</span>
+          <div class="mdd-card-title">Sign Queue</div>
+          <div class="mdd-card-badge" style="background:#fee2e2;color:#991b1b" id="mdd-sign-count">7 pending</div>
+        </div>
+        <div class="mdd-batch-bar">
+          <label><input type="checkbox" id="mdd-sign-all" onchange="mddSignSelectAll(this)" class="mdd-sign-cb"> Select All</label>
+          <button class="mdd-sign-btn" onclick="mddAiSafeSign()" style="background:#f5f3ff;color:#5b21b6;border-color:#c4b5fd;font-size:10px">🤖 AI: Select Safe Routine</button>
+          <button class="mdd-sign-btn pri" onclick="mddBatchSign()" id="mdd-batch-sign-btn" style="display:none">✍️ Batch Sign (0)</button>
+        </div>
+        <div class="mdd-card-body" id="mdd-sign-body"></div>
+      </div>
+    </div>
+
+    <!-- Three-column: Inbox + Care Gaps + Tasks -->
+    <div class="mdd-cols3" id="mdd-area-inbox">
+      <!-- Inbox -->
+      <div class="mdd-card">
+        <div class="mdd-card-hdr">
+          <span style="font-size:15px">📥</span>
+          <div class="mdd-card-title">Inbox</div>
+          <div class="mdd-card-badge">12 messages</div>
+        </div>
+        <div class="mdd-card-body" id="mdd-inbox-body"></div>
+      </div>
+      <!-- Care Gaps -->
+      <div class="mdd-card" id="mdd-area-gaps">
+        <div class="mdd-card-hdr">
+          <span style="font-size:15px">🎯</span>
+          <div class="mdd-card-title">Care Gaps — HEDIS 2026</div>
+          <div class="mdd-card-badge" style="background:#ede9fe;color:#5b21b6">18 open</div>
+        </div>
+        <div class="mdd-card-body" id="mdd-gaps-body"></div>
+      </div>
+      <!-- Tasks + Quality -->
+      <div class="mdd-card" id="mdd-area-tasks">
+        <div class="mdd-card-hdr">
+          <span style="font-size:15px">📋</span>
+          <div class="mdd-card-title">Tasks & Quality</div>
+          <div class="mdd-card-badge" style="background:#ccfbf1;color:#0f766e">5 open</div>
+        </div>
+        <div class="mdd-card-body" id="mdd-tasks-body"></div>
+      </div>
+    </div>
+
+    <!-- AI Co-Pilot panel (collapsible) -->
+    <div class="mdd-copilot" id="mdd-copilot" style="display:none">
+      <div class="mdd-copilot-title">🤖 AI Co-Pilot — Hey MOF</div>
+      <div class="mdd-copilot-section">
+        <div class="mdd-copilot-section-title">⚡ Quick Actions</div>
+        <div class="mdd-copilot-item" onclick="mddCopilotAction('Sign all routine Rx renewals')">✍️ Sign all routine Rx renewals</div>
+        <div class="mdd-copilot-item" onclick="mddCopilotAction('Show patients with critical labs')">🔬 Show patients with critical labs</div>
+        <div class="mdd-copilot-item" onclick="mddCopilotAction('Draft reply about Liu BP')">📝 Draft reply to nurse about Liu's BP</div>
+        <div class="mdd-copilot-item" onclick="mddCopilotAction('Show Mr. Brennan last EKG')">❤️ Show Mr. Brennan's last EKG</div>
+      </div>
+      <div class="mdd-copilot-section">
+        <div class="mdd-copilot-section-title">💡 What I Noticed</div>
+        <div class="mdd-copilot-item" style="border-left:3px solid #f59e0b;padding-left:12px">⚠️ Mrs. Garcia's metformin refill denied — prior auth required by UHC</div>
+        <div class="mdd-copilot-item" style="border-left:3px solid #dc2626;padding-left:12px">🚨 Mr. Patel's INR 4.8 — above therapeutic range — warfarin hold recommended</div>
+        <div class="mdd-copilot-item" style="border-left:3px solid #15803d;padding-left:12px">✅ 3 RPM patients hit 16+ monitoring days — ready for 99457 billing</div>
+      </div>
+      <div class="mdd-copilot-section">
+        <div class="mdd-copilot-section-title">🎤 Voice Commands</div>
+        <div style="font-size:11px;color:#6d28d9;line-height:1.7;padding:0 10px">
+          "Hey MOF, sign all routine renewals"<br>
+          "Hey MOF, show me Mrs. Villarral's chart"<br>
+          "Hey MOF, what care gaps does my 2pm have?"<br>
+          "Hey MOF, draft a referral letter for cardiology"
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end mdd-scroll -->
+</div>
 
 <!-- ═══════════════════════════════════════════
      PATIENT POPULATION PAGE
@@ -6323,6 +6564,9 @@ document.addEventListener('DOMContentLoaded', function(){
 if(document.readyState !== 'loading') { setTimeout(function(){ renderRtmRpt(1); }, 100); }
 </script>
 
+</div><!-- end mcontent -->
+</div><!-- end main-layout -->
+
 <!-- ═══════════════════════
      LIVE CALL BAR
 ═══════════════════════ -->
@@ -7129,13 +7373,10 @@ function go(id){
     var popItem=document.getElementById('ls-pop-item');
     if(popItem)popItem.classList.remove('on');
   }
-  // open parent sub-menus for HHA RPM items (now all inside hha-rpm-sub)
-  var hhaRpmSub = document.getElementById('hha-rpm-sub');
-  var hhaPages = ['intake','care-plan','physician-order','preauth','auth-history','consent','device','monitoring','monthly-report','alert-questions','nurse-notes','missed-reading','hha-billing','edi-submission','billing','umodifier','hws-api','rider32','mco-pa','mof-integration','revenue-calc','integration-apis','whitelabel','build-plan'];
-  if(hhaRpmSub && hhaPages.includes(id)){ hhaRpmSub.classList.add('open'); }
-  // open emr-sub for emr pages and linked pages
-  var emrSub = document.getElementById('emr-sub');
-  if(emrSub && ['emr-chart','emr-soap','emr-orders','emr-fhir','about-me','insurance','comm-log'].includes(id)){ emrSub.classList.add('open'); }
+  // open parent sub-menus
+  if(['preauth','physician-order','care-plan'].includes(id)){document.getElementById('docs-sub').classList.add('open');}
+  if(['intake','insurance'].includes(id)){document.getElementById('med-sub').classList.add('open');}
+  if(['monthly-report','edi-submission','billing'].includes(id)){document.getElementById('rpt-sub').classList.add('open');}
   // RTM sub-menu: open when any RTM page is selected
   var rtmPages=['rtm-dashboard','rtm-calendar','rtm-calls','rtm-time','rtm-billing','rtm-telereport','rtm-monthly','rtm-patient-reports'];
   if(rtmPages.includes(id)){
@@ -7181,8 +7422,7 @@ function applyFilters(){
 }
 
 function toggleSub(id){
-  var el = document.getElementById(id);
-  if(el) el.classList.toggle('open');
+  document.getElementById(id).classList.toggle('open');
 }
 
 // ═══ VOIP CALL ═══
@@ -7349,13 +7589,11 @@ function showBillingFallback(type){
 // SIGN-IN v2 — Multi-screen + 8 roles + 2FA + Recovery
 // ═══════════════════════════════════════════
 
-var EMR_PAGES = ['emr-chart','emr-soap','emr-orders','emr-fhir'];
-var PORTAL_PAGES = ['patient-portal-landing','patient-self-register','staff-review-queue','emr-import'];
-
 var ROLES = {
   super:{name:'Dr. Subodh Agrawal', initials:'SA', title:'Super Admin',
     email:'subodh@careplatform.ai', avatar:'#ec4899',
-    allowed:'*', multiTenant:true},
+    allowed:'*',
+    multiTenant:true},
   admin:{name:'Sarah Chen', initials:'SC', title:'Owner / Admin',
     email:'sarah@caresyncpro.com', avatar:'#f59e0b',
     allowed:'*'},
@@ -7364,47 +7602,32 @@ var ROLES = {
     allowed:['about-me','comm-log','intake','preauth','physician-order','care-plan','consent','admission','device','monitoring','escalation','alert-questions','nurse-notes','missed-reading','insurance','billing','monthly-report','auth-history','edi-submission','umodifier','hws-api','rider32','mco-pa','mof-integration','revenue-calc','integration-apis','whitelabel','build-plan','hha-billing','md-billing',
       'rtm-dashboard','rtm-calendar','rtm-calls','rtm-time','rtm-billing','rtm-telereport','rtm-monthly','rtm-patient-reports',
       'ccm-dashboard','ccm-calendar','ccm-calls','ccm-time','ccm-billing',
-      'rpm-dashboard','rpm-calendar','rpm-alerts','rpm-time','rpm-billing',
-      'emr-chart','emr-soap','emr-orders','emr-fhir',
-      'patient-portal-landing','patient-self-register','staff-review-queue','emr-import']},
+      'rpm-dashboard','rpm-calendar','rpm-alerts','rpm-time','rpm-billing']},
   rn:{name:'Maria Lopez', initials:'ML', title:'Registered Nurse',
     email:'maria.lopez@caresyncpro.com', avatar:'#16a34a',
-    allowed:['about-me','comm-log','intake','admission','device','monitoring','escalation','alert-questions','nurse-notes','missed-reading','consent','insurance',
+    allowed:['about-me','comm-log','intake','admission','device','monitoring','escalation','alert-questions','nurse-notes','missed-reading','consent',
       'rtm-dashboard','rtm-calendar','rtm-calls','rtm-time','rtm-telereport','rtm-monthly','rtm-patient-reports',
       'ccm-dashboard','ccm-calendar','ccm-calls','ccm-time',
-      'rpm-dashboard','rpm-calendar','rpm-alerts','rpm-time',
-      'emr-chart','emr-soap','emr-orders','emr-fhir',
-      'patient-portal-landing','patient-self-register','staff-review-queue','emr-import']},
+      'rpm-dashboard','rpm-calendar','rpm-alerts','rpm-time']},
   lvn:{name:'Carlos Garcia', initials:'CG', title:'LVN / Medical Assistant',
     email:'carlos.garcia@caresyncpro.com', avatar:'#ec4899',
-    allowed:['about-me','comm-log','intake','admission','device','monitoring','nurse-notes','insurance',
-      'emr-chart','emr-soap',
-      'patient-portal-landing','patient-self-register','staff-review-queue','emr-import']},
+    allowed:['about-me','comm-log','intake','admission','device','monitoring','nurse-notes']},
   bill:{name:'Linda Park', initials:'LP', title:'Billing Specialist',
     email:'linda.park@caresyncpro.com', avatar:'#f59e0b',
     allowed:['about-me','insurance','billing','monthly-report','auth-history','edi-submission','hha-billing','md-billing',
       'rtm-billing','rtm-dashboard','rtm-telereport','rtm-monthly',
       'ccm-billing','ccm-dashboard',
-      'rpm-billing','rpm-dashboard',
-      'patient-portal-landing','staff-review-queue','emr-import']},
+      'rpm-billing','rpm-dashboard']},
   md:{name:'Dr. Duc Le', initials:'DL', title:'Physician / MD',
     email:'duc.le@caresyncpro.com', avatar:'#6366f1',
-    allowed:['about-me','comm-log','physician-order','care-plan','consent','admission','monitoring','escalation','nurse-notes','monthly-report','md-billing','insurance',
+    allowed:['md-dashboard','about-me','comm-log','physician-order','care-plan','consent','admission','monitoring','escalation','nurse-notes','monthly-report','md-billing',
       'rtm-dashboard','rtm-calendar','rtm-calls','rtm-billing','rtm-telereport','rtm-monthly','rtm-patient-reports',
       'ccm-dashboard','ccm-calendar','ccm-calls','ccm-billing',
-      'rpm-dashboard','rpm-calendar','rpm-alerts','rpm-billing',
-      'emr-chart','emr-soap','emr-orders','emr-fhir',
-      'patient-portal-landing','staff-review-queue']},
+      'rpm-dashboard','rpm-calendar','rpm-alerts','rpm-billing']},
   hha:{name:'Robert Tanaka', initials:'RT', title:'HHA Operations Admin',
     email:'robert@abchomehealth.com', avatar:'#ea580c',
-    allowed:['about-me','comm-log','intake','preauth','physician-order','care-plan','consent','admission','device','monitoring','missed-reading','insurance','billing','monthly-report','auth-history','edi-submission','umodifier','hws-api','rider32','mco-pa','hha-billing','alert-questions','nurse-notes',
-      'rtm-dashboard','rtm-telereport','rtm-billing','rtm-monthly',
-      'emr-chart','emr-soap','emr-orders',
-      'patient-portal-landing','patient-self-register','staff-review-queue','emr-import']},
-  patient:{name:'Maria Elena Gonzalez', initials:'MG', title:'Patient',
-    email:'m.gonzalez@email.com', avatar:'#7c3aed',
-    allowed:['patient-portal-landing','patient-self-register'],
-    isPatient:true}
+    allowed:['about-me','comm-log','intake','preauth','physician-order','care-plan','consent','admission','device','monitoring','missed-reading','insurance','billing','monthly-report','auth-history','edi-submission','umodifier','hws-api','rider32','mco-pa','hha-billing',
+      'rtm-dashboard','rtm-telereport','rtm-billing','rtm-monthly']}
 };
 
 var currentRole = null;
@@ -7495,40 +7718,11 @@ function signInAs(roleKey){
 
   applyRoleFilter(roleKey);
   hideSignIn();
-
-  // Patient role — hide clinical sidebar elements, show patient-facing UI
-  var lsidebar = document.querySelector('.lsidebar');
-  var patbar = document.querySelector('.patbar');
-  var patInfoBar = document.querySelector('.pat-info-bar');
-  if(role.isPatient){
-    if(lsidebar){
-      // Hide everything in sidebar except New Patient Portal section
-      lsidebar.querySelectorAll('.ls-sec').forEach(function(sec){
-        if(sec.id !== 'ls-sec-selfregister') sec.style.display='none';
-      });
-    }
-    if(patbar) patbar.style.display='none';
-    if(patInfoBar) patInfoBar.style.display='none';
-    toast('Welcome, '+role.name+' — Patient Portal');
-  } else {
-    // Restore all sidebar sections for staff roles
-    if(lsidebar){
-      lsidebar.querySelectorAll('.ls-sec').forEach(function(sec){
-        sec.style.display='';
-      });
-    }
-    if(patbar) patbar.style.display='';
-    if(patInfoBar) patInfoBar.style.display='';
-    toast('Signed in as '+role.name+' ('+role.title+')');
-  }
+  toast('Signed in as '+role.name+' ('+role.title+')');
 
   setTimeout(function(){
-    if(role.isPatient){
-      if(typeof go === 'function') go('patient-portal-landing');
-    } else {
-      var first = role.allowed === '*' ? 'about-me' : role.allowed[0];
-      if(first && typeof go === 'function') go(first);
-    }
+    var first = role.allowed === '*' ? 'about-me' : role.allowed[0];
+    if(first && typeof go === 'function') go(first);
   }, 200);
 }
 
@@ -7692,7 +7886,8 @@ function applyRoleFilter(roleKey){
   });
 
   // Hide entire ls-sec sections where ALL ls-items are hidden
-  var specialSecs = ['ls-sec-rtm','ls-sec-ccm','ls-sec-mdrpm','ls-sec-selfregister','ls-sec-emr','ls-sec-hha-rpm'];
+  // Skip special expand sections — handle those separately
+  var specialSecs = ['ls-sec-rtm','ls-sec-ccm','ls-sec-mdrpm'];
   document.querySelectorAll('.ls-sec').forEach(function(sec){
     if(specialSecs.indexOf(sec.id) !== -1) return;
     var items = sec.querySelectorAll('.ls-item');
@@ -7702,44 +7897,6 @@ function applyRoleFilter(roleKey){
       sec.classList.add('role-hidden');
     }
   });
-
-  // New Patient Portal section
-  var selfregSec = document.getElementById('ls-sec-selfregister');
-  if(selfregSec){
-    var srPages = ['patient-portal-landing','patient-self-register','staff-review-queue','emr-import'];
-    var anySr = srPages.some(function(p){ return allowed.indexOf(p) !== -1; });
-    if(!anySr){ selfregSec.classList.add('role-hidden'); }
-    else {
-      selfregSec.querySelectorAll('.ls-item').forEach(function(item){
-        var oc = item.getAttribute('onclick') || '';
-        var m = oc.match(/go\('([^']+)'\)/);
-        if(m && allowed.indexOf(m[1]) === -1) item.classList.add('role-hidden');
-      });
-    }
-  }
-
-  // EMR section
-  var emrSec = document.getElementById('ls-sec-emr');
-  if(emrSec){
-    var emrPages = ['emr-chart','emr-soap','emr-orders','emr-fhir','about-me','insurance','comm-log'];
-    var anyEmr = emrPages.some(function(p){ return allowed.indexOf(p) !== -1; });
-    if(!anyEmr){ emrSec.classList.add('role-hidden'); }
-  }
-
-  // HHA RPM mega section
-  var hhaRpmSec = document.getElementById('ls-sec-hha-rpm');
-  if(hhaRpmSec){
-    var hhaPages = ['intake','care-plan','physician-order','preauth','auth-history','consent','device','monitoring','monthly-report','alert-questions','nurse-notes','missed-reading','hha-billing','edi-submission','billing','umodifier','hws-api','rider32','mco-pa','mof-integration','revenue-calc','integration-apis','whitelabel','build-plan'];
-    var anyHha = hhaPages.some(function(p){ return allowed === '*' || allowed.indexOf(p) !== -1; });
-    if(!anyHha){ hhaRpmSec.classList.add('role-hidden'); }
-    else {
-      hhaRpmSec.querySelectorAll('.ls-item').forEach(function(item){
-        var oc = item.getAttribute('onclick') || '';
-        var m = oc.match(/go\('([^']+)'\)/);
-        if(m && allowed !== '*' && allowed.indexOf(m[1]) === -1) item.classList.add('role-hidden');
-      });
-    }
-  }
 
   // RTM section
   var rtmPages = ['rtm-dashboard','rtm-calendar','rtm-calls','rtm-time','rtm-billing','rtm-telereport','rtm-monthly','rtm-patient-reports'];
@@ -8507,9 +8664,8 @@ function toast(msg){
 }
 
 // ═══ INIT ═══
-// Open HHA RPM submenu by default
-var _hhaInit = document.getElementById('hha-rpm-sub');
-if(_hhaInit) _hhaInit.classList.add('open');
+// Open docs submenu by default
+document.getElementById('docs-sub').classList.add('open');
 
 // ═══ MONTHLY REPORT DATA ═══
 var DAILY_DATA=(function(){
@@ -8855,6 +9011,271 @@ go = function(id){
 buildUmodTable();
 
 // ═══════════════════════════════════════════
+// ══════════════════════════════════════════
+// PHYSICIAN DASHBOARD — Provider Command Center
+// ══════════════════════════════════════════
+
+// Show/hide dashboard sidebar based on role
+function mddUpdateSidebarVisibility(roleKey){
+  var sec = document.getElementById('ls-sec-md-dashboard');
+  if(!sec) return;
+  // Show for md role, and also for super/admin who see everything
+  if(roleKey === 'md' || roleKey === 'super' || roleKey === 'admin'){
+    sec.style.display = '';
+  } else {
+    sec.style.display = 'none';
+  }
+}
+
+// Navigate to physician dashboard
+function goMdDashboard(){
+  document.querySelectorAll('.ls-item, .ls-item-pop').forEach(function(i){i.classList.remove('on');});
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+  var pg = document.getElementById('pg-md-dashboard');
+  if(pg) pg.classList.add('on');
+  var navItem = document.getElementById('ls-md-dashboard');
+  if(navItem) navItem.classList.add('on');
+  mddInit();
+}
+
+// Hook into signInAs to show/hide dashboard sidebar + auto-navigate for MD
+var _origSignInAs_mdd = signInAs;
+signInAs = function(roleKey){
+  _origSignInAs_mdd(roleKey);
+  mddUpdateSidebarVisibility(roleKey);
+  // For MD role, navigate to dashboard first
+  if(roleKey === 'md'){
+    setTimeout(function(){ goMdDashboard(); }, 250);
+  }
+};
+
+// Hook into go() to deselect dashboard sidebar item
+var _origGo_mdd = go;
+go = function(id){
+  _origGo_mdd(id);
+  if(id !== 'md-dashboard'){
+    var navItem = document.getElementById('ls-md-dashboard');
+    if(navItem) navItem.classList.remove('on');
+  }
+};
+
+// Demo data
+var MDD_SCHEDULE = [
+  {time:'8:00 AM',name:'Robert Chen',type:'Follow-up',typeColor:'#dbeafe',typeText:'#1d4ed8',status:'Checked In',statusColor:'#dcfce7',statusText:'#15803d',room:'Rm 3',gaps:1},
+  {time:'8:30 AM',name:'Patricia Williams',type:'RPM Review',typeColor:'#ede9fe',typeText:'#5b21b6',status:'In Room',statusColor:'#dbeafe',statusText:'#1d4ed8',room:'Rm 1',gaps:0},
+  {time:'9:00 AM',name:'James Brennan',type:'Lab Review',typeColor:'#ffedd5',typeText:'#c2410c',status:'Checked In',statusColor:'#dcfce7',statusText:'#15803d',room:'Rm 2',gaps:2,aiFlag:'HbA1c 9.4 — up from 7.8'},
+  {time:'9:30 AM',name:'Maria Garcia',type:'CCM Monthly',typeColor:'#dcfce7',typeText:'#15803d',status:'Scheduled',statusColor:'#f3f4f6',statusText:'#6b7280',room:'—',gaps:0},
+  {time:'10:00 AM',name:'Thomas Liu',type:'BP Check',typeColor:'#fee2e2',typeText:'#991b1b',status:'Scheduled',statusColor:'#f3f4f6',statusText:'#6b7280',room:'—',gaps:1,aiFlag:'BP trending ↑ — 3 consecutive readings >150'},
+  {time:'10:30 AM',name:'Crystal Villarral',type:'RPM F2F',typeColor:'#ede9fe',typeText:'#5b21b6',status:'Scheduled',statusColor:'#f3f4f6',statusText:'#6b7280',room:'—',gaps:1,aiFlag:'BP avg 158/94 — med adjustment?'},
+  {time:'11:00 AM',name:'Dorothy Martinez',type:'AWV',typeColor:'#fef3c7',typeText:'#92400e',status:'Scheduled',statusColor:'#f3f4f6',statusText:'#6b7280',room:'—',gaps:3},
+  {time:'11:30 AM',name:'William Harris',type:'Follow-up',typeColor:'#dbeafe',typeText:'#1d4ed8',status:'Scheduled',statusColor:'#f3f4f6',statusText:'#6b7280',room:'—',gaps:0},
+  {time:'1:00 PM',name:'Linda Jackson',type:'New Patient',typeColor:'#fce7f3',typeText:'#9d174d',status:'Scheduled',statusColor:'#f3f4f6',statusText:'#6b7280',room:'—',gaps:0},
+  {time:'1:30 PM',name:'George Anderson',type:'TCM F2F',typeColor:'#ccfbf1',typeText:'#0f766e',status:'Scheduled',statusColor:'#f3f4f6',statusText:'#6b7280',room:'—',gaps:1},
+  {time:'2:00 PM',name:'Susan Patel',type:'CCM Monthly',typeColor:'#dcfce7',typeText:'#15803d',status:'Scheduled',statusColor:'#f3f4f6',statusText:'#6b7280',room:'—',gaps:2},
+  {time:'2:30 PM',name:'Richard Kim',type:'Follow-up',typeColor:'#dbeafe',typeText:'#1d4ed8',status:'Scheduled',statusColor:'#f3f4f6',statusText:'#6b7280',room:'—',gaps:0},
+  {time:'3:00 PM',name:'Margaret Thompson',type:'BHI Review',typeColor:'#ede9fe',typeText:'#5b21b6',status:'Scheduled',statusColor:'#f3f4f6',statusText:'#6b7280',room:'—',gaps:1},
+  {time:'3:30 PM',name:'David Cooper',type:'Lab Review',typeColor:'#ffedd5',typeText:'#c2410c',status:'Scheduled',statusColor:'#f3f4f6',statusText:'#6b7280',room:'—',gaps:0}
+];
+
+var MDD_SIGN_QUEUE = [
+  {id:'s1',name:'Maria Garcia',type:'Rx Renewal',typeColor:'#dbeafe',typeText:'#1d4ed8',detail:'Metformin 1000mg BID',safe:true},
+  {id:'s2',name:'William Harris',type:'Rx Renewal',typeColor:'#dbeafe',typeText:'#1d4ed8',detail:'Lisinopril 20mg daily',safe:true},
+  {id:'s3',name:'James Brennan',type:'Rx Renewal',typeColor:'#dbeafe',typeText:'#1d4ed8',detail:'Glipizide 10mg BID',safe:false,flag:'⚠️ HbA1c 9.4 — last labs 14 months ago — review before refill'},
+  {id:'s4',name:'Dorothy Martinez',type:'Lab Order',typeColor:'#ffedd5',typeText:'#c2410c',detail:'CBC, CMP, HbA1c, Lipid Panel',safe:true},
+  {id:'s5',name:'Crystal Villarral',type:'RPM Order',typeColor:'#ede9fe',typeText:'#5b21b6',detail:'S9110 — Home telemonitoring 90 days',safe:true},
+  {id:'s6',name:'Thomas Liu',type:'Rx Change',typeColor:'#fee2e2',typeText:'#991b1b',detail:'Amlodipine 5mg → 10mg daily',safe:false,flag:'⚠️ BP trending ↑ — verify kidney function before dose increase'},
+  {id:'s7',name:'George Anderson',type:'TCM Note',typeColor:'#ccfbf1',typeText:'#0f766e',detail:'99496 — 14-day F2F encounter note',safe:true}
+];
+
+var MDD_INBOX = [
+  {from:'RN Maria Lopez',msg:'Crystal Villarral BP 162/96 this morning — 3rd consecutive elevated reading. Requesting MD review.', time:'8 min ago',ic:'👩‍⚕️',bg:'#fee2e2',cat:'Staff'},
+  {from:'Lab — Quest Diagnostics',msg:'CRITICAL: James Brennan HbA1c result 9.4% (prev 7.8). Fasting glucose 218 mg/dL.', time:'22 min ago',ic:'🔬',bg:'#ffedd5',cat:'Lab'},
+  {from:'CVS Pharmacy',msg:'Rx renewal request: Maria Garcia — Metformin 1000mg #90 — last filled 87 days ago.', time:'45 min ago',ic:'💊',bg:'#dbeafe',cat:'Pharmacy'},
+  {from:'Patient — Thomas Liu',msg:'Dr. Le, my BP has been high lately. The home monitor shows 155/92 avg. Should I come in sooner?', time:'1 hr ago',ic:'👤',bg:'#f3f4f6',cat:'Patient'},
+  {from:'Lab — LabCorp',msg:'Susan Patel lipid panel: LDL 168 mg/dL (↑ from 142). HDL 38. Total cholesterol 244.', time:'1.5 hr ago',ic:'🔬',bg:'#ffedd5',cat:'Lab'},
+  {from:'UHC Prior Auth',msg:'DENIED: Maria Garcia metformin refill — step therapy required. Appeal deadline: Jun 3, 2026.', time:'2 hr ago',ic:'🏥',bg:'#fee2e2',cat:'Insurance'},
+  {from:'RN Carlos Garcia',msg:'George Anderson TCM call completed — 22 min discussion. Medication reconciliation done. Ready for F2F.', time:'2.5 hr ago',ic:'👩‍⚕️',bg:'#dcfce7',cat:'Staff'},
+  {from:'Dr. Sarah Martinez',msg:'Can you co-sign the Dorothy Martinez AWV note? I completed the HRA and care plan.', time:'3 hr ago',ic:'👨‍⚕️',bg:'#eef2ff',cat:'Colleague'},
+  {from:'Patient — Richard Kim',msg:'Feeling much better since starting the new BP med. Headaches are gone. Thank you!', time:'4 hr ago',ic:'👤',bg:'#f3f4f6',cat:'Patient'},
+  {from:'Lab — Quest Diagnostics',msg:'Richard Kim CMP: eGFR 82, Cr 1.1, K 4.2 — all within normal limits.', time:'5 hr ago',ic:'🔬',bg:'#dcfce7',cat:'Lab'},
+  {from:'Walgreens',msg:'Rx renewal request: William Harris — Lisinopril 20mg #90 — last filled 85 days ago.', time:'6 hr ago',ic:'💊',bg:'#dbeafe',cat:'Pharmacy'},
+  {from:'Care Manager Judah Coody',msg:'3 RPM patients hit 16+ monitoring days this month: Villarral, Liu, Patel. Ready for 99457 billing.', time:'Yesterday',ic:'📋',bg:'#ccfbf1',cat:'Staff'}
+];
+
+var MDD_CARE_GAPS = [
+  {measure:'BPD-E — BP Control in Diabetes',pct:72,ct:'8/28',color:'#ea580c',isNew:true},
+  {measure:'HBD — HbA1c Control (<8%)',pct:68,ct:'12/38',color:'#dc2626'},
+  {measure:'COL — Colorectal Screening',pct:81,ct:'6/32',color:'#f59e0b'},
+  {measure:'BCS — Breast Cancer Screening',pct:85,ct:'3/20',color:'#0d9488'},
+  {measure:'CDC — Comprehensive Diabetes',pct:74,ct:'10/38',color:'#ea580c'},
+  {measure:'CBP — Controlling High BP',pct:78,ct:'9/42',color:'#f59e0b'},
+  {measure:'TSC-E — Tobacco Screening',pct:62,ct:'14/37',color:'#dc2626',isNew:true},
+  {measure:'AAF-E — Asthma Follow-up',pct:90,ct:'1/10',color:'#15803d',isNew:true},
+  {measure:'SPC — Statin Use in CVD',pct:88,ct:'2/16',color:'#15803d'},
+  {measure:'PBH — Prenatal Blood Panel',pct:95,ct:'1/20',color:'#15803d'}
+];
+
+var MDD_TASKS = [
+  {text:'Co-sign Dorothy Martinez AWV note',pri:'#dc2626',due:'Today'},
+  {text:'Review UHC appeal — Garcia metformin denial',pri:'#dc2626',due:'Jun 3'},
+  {text:'Complete CCM documentation — Susan Patel',pri:'#f59e0b',due:'May 28'},
+  {text:'Finalize TCM note — George Anderson (99496)',pri:'#f59e0b',due:'May 25'},
+  {text:'Annual wellness visit — schedule outreach batch',pri:'#1d4ed8',due:'Jun 15'}
+];
+
+function mddInit(){
+  // Date display
+  var dateEl = document.getElementById('mdd-date-display');
+  if(dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+
+  mddBuildSchedule();
+  mddBuildSignQueue();
+  mddBuildInbox();
+  mddBuildCareGaps();
+  mddBuildTasks();
+}
+
+function mddBuildSchedule(){
+  var el = document.getElementById('mdd-sched-body');
+  if(!el) return;
+  el.innerHTML = MDD_SCHEDULE.map(function(s){
+    var aiHtml = s.aiFlag ? '<div style="font-size:10px;color:#5b21b6;background:#f5f3ff;padding:2px 6px;border-radius:4px;margin-top:2px;border-left:2px solid #7c3aed">🤖 '+s.aiFlag+'</div>' : '';
+    var gapBadge = s.gaps > 0 ? '<span style="font-size:9px;padding:1px 5px;border-radius:6px;background:#ede9fe;color:#5b21b6;font-weight:700;margin-left:4px">'+s.gaps+' gap'+(s.gaps>1?'s':'')+'</span>' : '';
+    return '<div class="mdd-sched-row" onclick="toast(\'Opening chart: '+s.name+'\')">' +
+      '<div class="mdd-sched-time">'+s.time+'</div>' +
+      '<div class="mdd-sched-name">'+s.name+gapBadge+'</div>' +
+      '<span class="mdd-sched-type" style="background:'+s.typeColor+';color:'+s.typeText+'">'+s.type+'</span>' +
+      '<span class="mdd-sched-status" style="background:'+s.statusColor+';color:'+s.statusText+'">'+s.status+'</span>' +
+      '<div class="mdd-sched-room">'+s.room+'</div>' +
+      '</div>' + (aiHtml ? '<div style="padding:0 14px 6px 76px">'+aiHtml+'</div>' : '');
+  }).join('');
+}
+
+function mddBuildSignQueue(){
+  var el = document.getElementById('mdd-sign-body');
+  if(!el) return;
+  el.innerHTML = MDD_SIGN_QUEUE.map(function(s){
+    var flagHtml = s.flag ? '<div class="mdd-sign-flag">'+s.flag+'</div>' : '';
+    return '<div class="mdd-sign-row">' +
+      '<input type="checkbox" class="mdd-sign-cb" data-id="'+s.id+'" '+(s.safe?'':'data-unsafe="1"')+' onchange="mddUpdateBatchCount()">' +
+      '<div class="mdd-sign-name">'+s.name+'<div style="font-size:10px;color:#64748b;font-weight:400;margin-top:1px">'+s.detail+'</div></div>' +
+      '<span class="mdd-sign-type" style="background:'+s.typeColor+';color:'+s.typeText+'">'+s.type+'</span>' +
+      flagHtml +
+      '<div class="mdd-sign-actions">' +
+        '<button class="mdd-sign-btn" onclick="toast(\'Opening: '+s.name+'\')">Review</button>' +
+        '<button class="mdd-sign-btn pri" onclick="mddSignOne(\''+s.id+'\',\''+s.name+'\')">Sign</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function mddBuildInbox(){
+  var el = document.getElementById('mdd-inbox-body');
+  if(!el) return;
+  el.innerHTML = MDD_INBOX.map(function(m){
+    return '<div class="mdd-inbox-row" onclick="toast(\'Opening message from '+m.from+'\')">' +
+      '<div class="mdd-inbox-ic" style="background:'+m.bg+'">'+m.ic+'</div>' +
+      '<div style="flex:1;min-width:0"><div class="mdd-inbox-from">'+m.from+' <span style="font-size:9px;padding:1px 5px;border-radius:4px;background:#f1f5f9;color:#64748b;font-weight:600;margin-left:4px">'+m.cat+'</span></div><div class="mdd-inbox-msg">'+m.msg+'</div></div>' +
+      '<div class="mdd-inbox-time">'+m.time+'</div>' +
+    '</div>';
+  }).join('');
+}
+
+function mddBuildCareGaps(){
+  var el = document.getElementById('mdd-gaps-body');
+  if(!el) return;
+  el.innerHTML = MDD_CARE_GAPS.map(function(g){
+    var newBadge = g.isNew ? '<span style="font-size:8px;padding:1px 4px;border-radius:3px;background:#fef3c7;color:#92400e;font-weight:700;margin-left:4px">NEW 2026</span>' : '';
+    return '<div class="mdd-gap-row">' +
+      '<div class="mdd-gap-measure">'+g.measure+newBadge+'</div>' +
+      '<div class="mdd-gap-bar-bg"><div class="mdd-gap-bar" style="width:'+g.pct+'%;background:'+g.color+'"></div></div>' +
+      '<div class="mdd-gap-pct" style="color:'+g.color+'">'+g.pct+'%</div>' +
+      '<div class="mdd-gap-ct">'+g.ct+'</div>' +
+    '</div>';
+  }).join('');
+}
+
+function mddBuildTasks(){
+  var el = document.getElementById('mdd-tasks-body');
+  if(!el) return;
+  el.innerHTML = MDD_TASKS.map(function(t){
+    return '<div class="mdd-task-row">' +
+      '<div class="mdd-task-pri" style="background:'+t.pri+'"></div>' +
+      '<div class="mdd-task-text">'+t.text+'</div>' +
+      '<div class="mdd-task-due">'+t.due+'</div>' +
+    '</div>';
+  }).join('');
+  // Add quality score at bottom
+  el.innerHTML += '<div style="padding:12px 14px;border-top:1.5px solid #e2e8f0">' +
+    '<div style="font-size:11px;font-weight:700;color:#0b1e3d;margin-bottom:8px">📊 Quality Scorecard — MIPS 2026</div>' +
+    '<div style="display:flex;gap:10px">' +
+      '<div style="flex:1;text-align:center;padding:8px;background:#dcfce7;border-radius:8px"><div style="font-size:16px;font-weight:800;color:#15803d">92</div><div style="font-size:9px;color:#15803d;font-weight:600">Quality</div></div>' +
+      '<div style="flex:1;text-align:center;padding:8px;background:#dbeafe;border-radius:8px"><div style="font-size:16px;font-weight:800;color:#1d4ed8">88</div><div style="font-size:9px;color:#1d4ed8;font-weight:600">PI</div></div>' +
+      '<div style="flex:1;text-align:center;padding:8px;background:#ede9fe;border-radius:8px"><div style="font-size:16px;font-weight:800;color:#5b21b6">95</div><div style="font-size:9px;color:#5b21b6;font-weight:600">IA</div></div>' +
+      '<div style="flex:1;text-align:center;padding:8px;background:#fef3c7;border-radius:8px"><div style="font-size:16px;font-weight:800;color:#92400e">85</div><div style="font-size:9px;color:#92400e;font-weight:600">Cost</div></div>' +
+    '</div>' +
+    '<div style="text-align:center;margin-top:6px;font-size:10px;color:#64748b;font-weight:600">Composite: <strong style="color:#15803d;font-size:12px">90.0</strong> / 100 — Exceptional</div>' +
+  '</div>';
+}
+
+// Interactions
+function mddRefresh(){ toast('🔄 Dashboard refreshed — data as of ' + new Date().toLocaleTimeString()); }
+function mddStartEncounter(){ toast('📝 New Encounter — select patient from today\'s schedule'); }
+function mddToggleCopilot(){
+  var cp = document.getElementById('mdd-copilot');
+  if(cp) cp.style.display = cp.style.display === 'none' ? '' : 'none';
+}
+function mddCopilotAction(action){ toast('🤖 AI Co-Pilot: ' + action); }
+function mddScrollTo(area){
+  var el = document.getElementById('mdd-area-' + area);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function mddSchedToggle(btn, period){
+  btn.parentElement.querySelectorAll('button').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  var countEl = document.getElementById('mdd-sched-count');
+  if(period==='today'){ if(countEl) countEl.textContent='14 patients'; mddBuildSchedule(); }
+  else if(period==='tomorrow'){ if(countEl) countEl.textContent='11 patients'; toast('📅 Showing tomorrow\'s schedule'); }
+  else { if(countEl) countEl.textContent='68 patients'; toast('📅 Showing next 7 days'); }
+}
+function mddSignSelectAll(cb){
+  document.querySelectorAll('#mdd-sign-body .mdd-sign-cb').forEach(function(c){c.checked=cb.checked;});
+  mddUpdateBatchCount();
+}
+function mddAiSafeSign(){
+  document.querySelectorAll('#mdd-sign-body .mdd-sign-cb').forEach(function(c){
+    if(c.dataset.unsafe) c.checked = false;
+    else c.checked = true;
+  });
+  mddUpdateBatchCount();
+  toast('🤖 AI selected 5 safe routine items — 2 flagged items excluded for manual review');
+}
+function mddUpdateBatchCount(){
+  var checked = document.querySelectorAll('#mdd-sign-body .mdd-sign-cb:checked').length;
+  var btn = document.getElementById('mdd-batch-sign-btn');
+  if(btn){
+    btn.style.display = checked > 0 ? '' : 'none';
+    btn.textContent = '✍️ Batch Sign (' + checked + ')';
+  }
+}
+function mddBatchSign(){
+  var checked = document.querySelectorAll('#mdd-sign-body .mdd-sign-cb:checked').length;
+  toast('✍️ Batch signed '+checked+' items — audit trail recorded');
+  document.querySelectorAll('#mdd-sign-body .mdd-sign-cb:checked').forEach(function(c){
+    c.closest('.mdd-sign-row').style.opacity='0.4';
+    c.closest('.mdd-sign-row').style.textDecoration='line-through';
+  });
+}
+function mddSignOne(id, name){
+  toast('✍️ Signed: ' + name);
+  var row = document.querySelector('[data-id="'+id+'"]');
+  if(row && row.closest('.mdd-sign-row')){
+    row.closest('.mdd-sign-row').style.opacity='0.4';
+    row.closest('.mdd-sign-row').style.textDecoration='line-through';
+  }
+}
+
+
 // PATIENT POPULATION SYSTEM
 // Role-scoped, fully filterable, 50 demo patients
 // ═══════════════════════════════════════════
@@ -9220,12 +9641,6 @@ Object.keys(ROLES).forEach(function(rk){
     if(ROLES[rk].allowed.indexOf('population') === -1){
       ROLES[rk].allowed.unshift('population');
     }
-    // Ensure EMR pages are accessible to all staff (not patient)
-    if(!ROLES[rk].isPatient){
-      ['emr-chart','emr-soap','emr-orders','emr-fhir'].forEach(function(ep){
-        if(ROLES[rk].allowed.indexOf(ep)===-1) ROLES[rk].allowed.push(ep);
-      });
-    }
   }
 });
 
@@ -9238,1570 +9653,6 @@ function popSMSPatient(pid){
   var p=POP_PATIENTS.find(function(x){return x.id===pid;});
   if(p) toast('📱 SMS sent to '+p.name);
 }
-
-// ═══════════════════════════════════════════
-//  PATIENT SELF-REGISTRATION MODULE
-// ═══════════════════════════════════════════
-
-// Demo pending registrations
-var PENDING_REGISTRATIONS = [
-  {id:'PR001',name:'Maria Elena Gonzalez',dob:'1975-08-14',phone:'(713) 445-2281',email:'m.gonzalez@email.com',appt:'2025-06-10',reason:'New patient — Diabetes management',status:'pending',submitted:'2025-05-18 09:14 AM',insurance:'Blue Cross Blue Shield',steps:{demo:true,insurance:true,medical:true,consent:true,appt:true}},
-  {id:'PR002',name:'James T. Washington',dob:'1961-03-29',phone:'(832) 667-0034',email:'jwashington61@gmail.com',appt:'2025-06-12',reason:'Hypertension follow-up',status:'pending',submitted:'2025-05-18 11:32 AM',insurance:'Medicare',steps:{demo:true,insurance:true,medical:true,consent:false,appt:false}},
-  {id:'PR003',name:'Linda Pham',dob:'1989-11-05',phone:'(281) 553-9902',email:'lindapham89@yahoo.com',appt:'2025-06-15',reason:'Annual physical + lab review',status:'pending',submitted:'2025-05-19 08:05 AM',insurance:'Aetna HMO',steps:{demo:true,insurance:false,medical:false,consent:false,appt:false}}
-];
-
-// Current self-reg wizard state
-var srStep = 1;
-var srData = {};
-
-function srNext(step){
-  // Collect data from current step
-  if(step===1){
-    srData.firstName=document.getElementById('sr-fname').value||'Maria Elena';
-    srData.lastName=document.getElementById('sr-lname').value||'Gonzalez';
-    srData.dob=document.getElementById('sr-dob').value||'1975-08-14';
-    srData.gender=document.getElementById('sr-gender').value||'Female';
-    srData.phone=document.getElementById('sr-phone').value||'(713) 445-2281';
-    srData.email=document.getElementById('sr-email').value||'m.gonzalez@email.com';
-    srData.address=document.getElementById('sr-address').value||'1204 Westheimer Rd';
-    srData.city=document.getElementById('sr-city').value||'Houston';
-    srData.state=document.getElementById('sr-state').value||'TX';
-    srData.zip=document.getElementById('sr-zip').value||'77006';
-    srStep = 2; srRender(); return;
-  }
-  if(step===2){
-    srData.insurance=document.getElementById('sr-ins-name').value||'Blue Cross Blue Shield';
-    srData.memberId=document.getElementById('sr-member-id').value||'BCB-7712-9034';
-    srData.groupNum=document.getElementById('sr-group').value||'GRP-00234';
-    srStep = 'elig'; srRender(); return;
-  }
-  if(step==='elig'){
-    srStep = 3; srRender(); return;
-  }
-  if(step===3){
-    srData.chiefComplaint=document.getElementById('sr-complaint').value||'Diabetes management and blood pressure monitoring';
-    srData.allergies=document.getElementById('sr-allergies').value||'Penicillin, Sulfa drugs';
-    srData.currentMeds=document.getElementById('sr-meds').value||'Metformin 500mg, Lisinopril 10mg';
-    srStep = 4; srRender(); return;
-  }
-  if(step===4){
-    srStep = 5; srRender(); return;
-  }
-}
-
-function srBack(step){
-  if(step===2){ srStep=1; srRender(); return; }
-  if(step==='elig'){ srStep=2; srRender(); return; }
-  if(step===3){ srStep='elig'; srRender(); return; }
-  if(step===4){ srStep=3; srRender(); return; }
-  if(step===5){ srStep=4; srRender(); return; }
-}
-
-function srRender(){
-  // Explicit ordered step definitions — avoids JS numeric key re-ordering bug
-  var STEPS = [
-    {key:1,   panelId:'sr-step-1',   dotId:'sr-dot-1',  dotLabel:'1'},
-    {key:2,   panelId:'sr-step-2',   dotId:'sr-dot-2',  dotLabel:'2'},
-    {key:'elig', panelId:'sr-step-elig', dotId:'sr-dot-25', dotLabel:'✓?'},
-    {key:3,   panelId:'sr-step-3',   dotId:'sr-dot-3',  dotLabel:'3'},
-    {key:4,   panelId:'sr-step-4',   dotId:'sr-dot-4',  dotLabel:'4'},
-    {key:5,   panelId:'sr-step-5',   dotId:'sr-dot-5',  dotLabel:'5'}
-  ];
-
-  // Find current step index
-  var currentIdx = -1;
-  STEPS.forEach(function(s,i){ if(s.key===srStep || String(s.key)===String(srStep)) currentIdx=i; });
-
-  STEPS.forEach(function(s,i){
-    // Show/hide panels
-    var el = document.getElementById(s.panelId);
-    if(el) el.style.display = (i===currentIdx) ? 'block' : 'none';
-
-    // Update dots
-    var dot = document.getElementById(s.dotId);
-    if(!dot) return;
-    if(i < currentIdx){
-      dot.className='sr-dot sr-dot-done'; dot.textContent='✓';
-    } else if(i === currentIdx){
-      dot.className='sr-dot sr-dot-active'; dot.textContent=s.dotLabel;
-    } else {
-      dot.className='sr-dot'; dot.textContent=s.dotLabel;
-    }
-  });
-}
-
-function srSubmit(){
-  // Move to confirmation step
-  srStep=5;
-  srRender();
-  // Add to pending queue
-  var newReg = {
-    id:'PR00'+(PENDING_REGISTRATIONS.length+1),
-    name:(srData.firstName||'New')+' '+(srData.lastName||'Patient'),
-    dob:srData.dob||'—',
-    phone:srData.phone||'—',
-    email:srData.email||'—',
-    appt:srData.apptDate||'TBD',
-    reason:srData.chiefComplaint||'—',
-    status:'pending',
-    submitted:new Date().toLocaleString(),
-    insurance:srData.insurance||'—',
-    steps:{demo:true,insurance:true,medical:true,consent:true,appt:true}
-  };
-  PENDING_REGISTRATIONS.push(newReg);
-  toast('✅ Registration submitted! Ref# '+newReg.id+' · Staff will review within 24 hrs');
-}
-
-function srReviewPatient(id){
-  var p = PENDING_REGISTRATIONS.find(function(x){return x.id===id;});
-  if(!p) return;
-  // Show review detail modal
-  document.getElementById('review-modal-name').textContent = p.name;
-  document.getElementById('review-modal-id').textContent = p.id;
-  document.getElementById('review-modal-dob').textContent = p.dob;
-  document.getElementById('review-modal-phone').textContent = p.phone;
-  document.getElementById('review-modal-email').textContent = p.email;
-  document.getElementById('review-modal-ins').textContent = p.insurance;
-  document.getElementById('review-modal-appt').textContent = p.appt;
-  document.getElementById('review-modal-reason').textContent = p.reason;
-  document.getElementById('review-modal-submitted').textContent = p.submitted;
-  document.getElementById('sr-review-modal').style.display='flex';
-  window._reviewingId = id;
-}
-
-function srApproveImport(){
-  var id = window._reviewingId;
-  var p = PENDING_REGISTRATIONS.find(function(x){return x.id===id;});
-  if(p){ p.status='approved'; }
-  document.getElementById('sr-review-modal').style.display='none';
-  toast('✅ Patient approved & queued for EMR import — MRN will be assigned');
-  srRenderQueue();
-}
-
-function srRejectRegistration(){
-  var id = window._reviewingId;
-  var p = PENDING_REGISTRATIONS.find(function(x){return x.id===id;});
-  if(p){ p.status='rejected'; }
-  document.getElementById('sr-review-modal').style.display='none';
-  toast('❌ Registration rejected — patient will be notified');
-  srRenderQueue();
-}
-
-function srRenderQueue(){
-  var tbody = document.getElementById('sr-queue-tbody');
-  if(!tbody) return;
-  tbody.innerHTML = PENDING_REGISTRATIONS.map(function(p){
-    var statusColor = p.status==='approved'?'bx-g':p.status==='rejected'?'bx-r':'bx-a';
-    var statusLabel = p.status==='approved'?'✅ Approved':p.status==='rejected'?'❌ Rejected':'⏳ Pending Review';
-    var stepsCount = Object.values(p.steps).filter(Boolean).length;
-    var stepsTotal = Object.keys(p.steps).length;
-    return '<tr>'+
-      '<td><strong>'+p.name+'</strong><br><span style="font-size:10px;color:var(--gray4)">'+p.id+'</span></td>'+
-      '<td>'+p.dob+'</td>'+
-      '<td>'+p.phone+'</td>'+
-      '<td>'+p.insurance+'</td>'+
-      '<td>'+p.appt+'</td>'+
-      '<td><div style="display:flex;align-items:center;gap:4px"><div style="width:60px;height:5px;background:var(--gray2);border-radius:3px;overflow:hidden"><div style="width:'+Math.round(stepsCount/stepsTotal*100)+'%;height:100%;background:var(--green);border-radius:3px"></div></div><span style="font-size:10px;color:var(--gray5)">'+stepsCount+'/'+stepsTotal+'</span></div></td>'+
-      '<td><span class="bx '+statusColor+'">'+statusLabel+'</span></td>'+
-      '<td><span style="font-size:10px;color:var(--gray5)">'+p.submitted+'</span></td>'+
-      '<td>'+
-        (p.status==='pending'?'<button class="btn btn-xs btn-pri" onclick="srReviewPatient(\''+p.id+'\')">🔍 Review</button>':
-        (p.status==='approved'?'<button class="btn btn-xs btn-teal" onclick="go(\'emr-import\')">⬆️ Import to EMR</button>':
-        '<span style="font-size:10px;color:var(--gray4)">No actions</span>'))+
-      '</td>'+
-    '</tr>';
-  }).join('');
-  document.getElementById('sr-queue-count').textContent = PENDING_REGISTRATIONS.filter(function(p){return p.status==='pending';}).length+' Pending';
-}
-
-function srEmrImportRender(){
-  var approved = PENDING_REGISTRATIONS.filter(function(p){return p.status==='approved';});
-  var tbody = document.getElementById('emr-import-tbody');
-  if(!tbody) return;
-  if(approved.length===0){
-    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--gray4);padding:30px;font-size:13px">No approved registrations yet — review pending patients in the Staff Review Queue</td></tr>';
-    return;
-  }
-  tbody.innerHTML = approved.map(function(p){
-    return '<tr>'+
-      '<td><input type="checkbox" checked style="accent-color:var(--blue)"></td>'+
-      '<td><strong>'+p.name+'</strong></td>'+
-      '<td>'+p.dob+'</td>'+
-      '<td>'+p.insurance+'</td>'+
-      '<td><span class="bx bx-g">Approved</span></td>'+
-      '<td><button class="btn btn-xs btn-teal" onclick="srDoImport(\''+p.id+'\')">⬆️ Import Now</button></td>'+
-    '</tr>';
-  }).join('');
-}
-
-function srDoImport(id){
-  var p = PENDING_REGISTRATIONS.find(function(x){return x.id===id;});
-  if(p){
-    p.status='imported';
-    var mrn='Clinic-'+(10900+Math.floor(Math.random()*99));
-    toast('✅ '+p.name+' imported to EMR — MRN: '+mrn+' assigned · Chart created');
-    srEmrImportRender();
-  }
-}
-
-// ── ELIGIBILITY COST ESTIMATOR ──
-var SR_ESTIMATES = {
-  pcp:{
-    insPays:'Remainder', ptPays:'$30', insNote:'Pays remainder of allowed amount', ptNote:'Copay due at check-in',
-    detail:'<strong>Primary Care Visit (PCP):</strong><br>• Your copay: <strong style="color:#b45309">$30 due at check-in</strong><br>• Insurance pays the remainder of the allowed amount<br>• Deductible: Does <strong>not</strong> apply to PCP copay visits — you pay $30 regardless<br>• Note: If labs or procedures are ordered during visit, those are billed separately and deductible applies'
-  },
-  specialist:{
-    insPays:'Remainder', ptPays:'$60', insNote:'Pays remainder of allowed amount', ptNote:'Specialist copay at check-in',
-    detail:'<strong>Specialist Visit:</strong><br>• Your copay: <strong style="color:#b45309">$60 due at check-in</strong><br>• Insurance pays the remainder of the allowed amount after your copay<br>• Deductible: Does <strong>not</strong> apply to specialist copay — you pay $60 regardless<br>• Referral: Check if your plan requires a PCP referral before specialist visits'
-  },
-  preventive:{
-    insPays:'100%', ptPays:'$0', insNote:'Fully covered — no cost to you', ptNote:'No charge at check-in',
-    detail:'<strong>Preventive / Annual Wellness Visit:</strong><br>• Your cost: <strong style="color:#15803d">$0 — fully covered by insurance</strong><br>• Includes: Annual physical, screenings (blood pressure, cholesterol, diabetes), immunizations, and well-woman exams<br>• ⚠️ If the visit goes beyond preventive and treats a condition, additional charges may apply'
-  },
-  urgent:{
-    insPays:'Remainder', ptPays:'$75', insNote:'Pays remainder after copay', ptNote:'Urgent care copay at visit',
-    detail:'<strong>Urgent Care Visit:</strong><br>• Your copay: <strong style="color:#b45309">$75 due at visit</strong><br>• Same copay applies in-network or out-of-network for urgent care<br>• Insurance pays remainder of the allowed amount<br>• ⚠️ If treated in ER instead of urgent care, ER copay of $350 applies'
-  }
-};
-function srShowEstimate(type){
-  var est = SR_ESTIMATES[type];
-  if(!est) return;
-  document.getElementById('est-ins-pays').textContent = est.insPays;
-  document.getElementById('est-pt-pays').textContent = est.ptPays;
-  document.getElementById('est-ins-note').textContent = est.insNote;
-  document.getElementById('est-pt-note').textContent = est.ptNote;
-  document.getElementById('est-detail-box').innerHTML = est.detail;
-  // Update button styles
-  ['pcp','specialist','preventive','urgent'].forEach(function(t){
-    var btnId = t==='specialist'?'est-btn-spec':t==='preventive'?'est-btn-prev':t==='urgent'?'est-btn-urg':'est-btn-pcp';
-    var btn = document.getElementById(btnId);
-    if(btn){
-      btn.style.background = t===type?'#1a6ef5':'#fff';
-      btn.style.color = t===type?'#fff':'#374151';
-    }
-  });
-}
-
-// ══════════════════════════════
-//  AI SOAP NOTE ENGINE
-// ══════════════════════════════
-var SOAP_DEMO = {
-  s: "Patient is a 42-year-old Hispanic female presenting for follow-up management of Type 2 Diabetes Mellitus and renovascular hypertension. She reports blood glucose readings at home ranging 160–210 mg/dL over the past 2 weeks. She notes increased fatigue, occasional headaches in the morning, and mild polyuria. Denies chest pain, shortness of breath, or lower extremity edema. Adherent to Metformin 500mg BID and Lisinopril 10mg QD. Last HbA1c was 8.4% (3 months ago). She has been monitoring BP at home — averaging 145–152/90–95 mmHg. No new medications, no recent hospitalizations since March 2026 ER visit for BP crisis.",
-
-  o: "Vitals: BP 148/92 mmHg (elevated), HR 78 bpm (regular), Temp 98.4°F, SpO2 98% on room air, Weight 187 lbs (BMI 30.2, obese Class I), RR 16.\n\nGeneral: Alert and oriented ×3, no acute distress. Well-nourished.\nCardiovascular: RRR, no murmurs/rubs/gallops. No JVD. Peripheral pulses 2+ bilaterally.\nRespiratory: CTA bilaterally, no wheezes or rales.\nExtremities: No pitting edema. Pedal pulses intact.\nNeurological: No focal deficits.\nSkin: Intact, no diabetic foot ulcers or lesions noted.\n\nPoint-of-Care Labs (today): Glucose 187 mg/dL (fasting), Urine dip — trace protein.\nPending: HbA1c, CMP, Lipid Panel — ordered today via Quest Diagnostics.",
-
-  a: "1. Type 2 Diabetes Mellitus (E08.00 / E11.65) — Suboptimally controlled. HbA1c 8.4% at last check; home glucose 160–210 mg/dL. Target HbA1c <7.0%. Current regimen insufficient — consider uptitration or addition of GLP-1 agonist.\n\n2. Renovascular Hypertension (I15.1) — BP 148/92 today, averaging 145-152/90-95 at home. On Lisinopril 10mg QD. BP above target of <130/80 for diabetic patients per AHA/ACC 2023 guidelines. Consider uptitration or addition of CCB.\n\n3. Hyperlipidemia (secondary to DM) — On Atorvastatin 20mg. Lipid panel pending. LDL target <70 mg/dL per ASCVD risk profile.\n\n4. Obesity (BMI 30.2) — contributing to insulin resistance. Lifestyle counseling reinforced.\n\nMDM: Moderate complexity — 2 chronic conditions with progression, prescription drug management, review of external labs.",
-
-  p: "1. DIABETES MANAGEMENT:\n   • Continue Metformin 500mg PO BID\n   • Add Empagliflozin (Jardiance) 10mg PO QD — cardioprotective, improves glycemic control and BP\n   • Repeat HbA1c in 3 months (target <7.0%)\n   • Referral: Endocrinology if HbA1c >8.5% at next visit\n   • Patient education: carb counting, glucose log review\n\n2. HYPERTENSION:\n   • Uptitrate Lisinopril to 20mg QD\n   • Add Amlodipine 5mg QD if BP not at goal in 4 weeks\n   • Home BP monitoring — log AM and PM readings\n   • Return to clinic in 4 weeks for BP recheck\n\n3. LABS ORDERED (Quest Diagnostics):\n   • HbA1c, CMP, Lipid Panel, Urine Microalbumin/Creatinine\n\n4. RPM:\n   • Continue daily BP and glucose monitoring via CareSync RPM program\n   • RN follow-up call in 72 hours (Maria Lopez)\n\n5. FOLLOW-UP: 4 weeks — or sooner PRN\n\nSigned electronically: Duc Le, MD · NPI 1083829568 · 05/19/2026"
-};
-
-var soapAIMessages = [
-  'Reading patient chart and vitals…',
-  'Analyzing ICD-10 conditions: E08.00, I15.1, E11.65…',
-  'Generating subjective from chief complaint and HPI…',
-  'Mapping objective exam findings and lab values…',
-  'Drafting clinical assessment with MDM scoring…',
-  'Building treatment plan per ADA/ACC 2026 guidelines…',
-  'Finalizing SOAP note — almost done…'
-];
-
-function soapRunAI(){
-  var bar = document.getElementById('soap-ai-bar');
-  var status = document.getElementById('soap-ai-status');
-  if(bar) { bar.style.display='flex'; }
-
-  var step = 0;
-  var fields = ['soap-s','soap-o','soap-a','soap-p'];
-  var contents = [SOAP_DEMO.s, SOAP_DEMO.o, SOAP_DEMO.a, SOAP_DEMO.p];
-
-  function runStep(){
-    if(step < soapAIMessages.length){
-      if(status) status.textContent = soapAIMessages[step];
-      // Fill fields progressively
-      if(step === 2 && document.getElementById('soap-s')) document.getElementById('soap-s').value = SOAP_DEMO.s;
-      if(step === 3 && document.getElementById('soap-o')) document.getElementById('soap-o').value = SOAP_DEMO.o;
-      if(step === 4 && document.getElementById('soap-a')) document.getElementById('soap-a').value = SOAP_DEMO.a;
-      if(step === 6 && document.getElementById('soap-p')) document.getElementById('soap-p').value = SOAP_DEMO.p;
-      step++;
-      setTimeout(runStep, 600);
-    } else {
-      if(bar) bar.style.display='none';
-      toast('✅ AI SOAP note generated — review and edit before signing');
-    }
-  }
-  runStep();
-}
-
-function soapClear(){
-  ['soap-s','soap-o','soap-a','soap-p'].forEach(function(id){
-    var el=document.getElementById(id);
-    if(el) el.value='';
-  });
-  var sig=document.getElementById('soap-sig-box');
-  if(sig){ sig.style.color='var(--red)'; sig.textContent='⚠️ Note cleared — signature removed'; }
-  toast('🗑 Note cleared — re-generate or type new content');
-}
-
-function soapSign(){
-  var s=document.getElementById('soap-s');
-  if(!s||!s.value.trim()){ toast('⚠️ Cannot sign — note is empty. AI Generate or type content first.'); return; }
-  var sig=document.getElementById('soap-sig-box');
-  var ts = new Date().toLocaleTimeString();
-  if(sig){
-    sig.style.color='var(--green)';
-    sig.textContent='✅ Electronically signed — Duc Le, MD · NPI 1083829568 · Lifecare Health Services · 05/19/2026 '+ts;
-  }
-  var badge=document.getElementById('soap-signed-badge');
-  if(badge){ badge.style.display='inline-block'; }
-  toast('✅ SOAP note signed by Duc Le, MD · Note locked · SHA-256 tamper-evident seal applied');
-}
-
-function soapFHIRPush(){
-  var s=document.getElementById('soap-s');
-  if(!s||!s.value.trim()){ toast('⚠️ Note must have content before FHIR push'); return; }
-  soapAddToRepo('SOAP Note — '+new Date().toLocaleDateString(), 'FHIR R4 — CareSync HIE', 'FHIR');
-  toast('🔗 SOAP note pushed to FHIR R4 as DocumentReference · Synced to CareSync HIE · Encounter bundle updated');
-}
-
-function soapFax(){
-  var s=document.getElementById('soap-s');
-  if(!s||!s.value.trim()){ toast('⚠️ Note must have content before faxing'); return; }
-  var dest = prompt('Fax destination (name or number):', 'Dr. Sofia Reyes, MD — (713) 555-0147');
-  if(!dest) return;
-  soapAddToRepo('SOAP Note — '+new Date().toLocaleDateString(), dest, 'Fax');
-  toast('📠 Faxing SOAP note to '+dest+' · Confirmation # FAX-'+Math.floor(Math.random()*90000+10000)+' · Delivery receipt will be logged');
-}
-
-function soapSendRepo(){
-  var s=document.getElementById('soap-s');
-  if(!s||!s.value.trim()){ toast('⚠️ Note must have content before sending'); return; }
-  var dest = prompt('Send to repository / recipient:', 'CareSync Document Repository — Secure Vault');
-  if(!dest) return;
-  soapAddToRepo('SOAP Note — '+new Date().toLocaleDateString(), dest, 'Secure Message');
-  toast('📂 SOAP note sent to '+dest+' · Encrypted · HIPAA-compliant · Delivery tracked');
-}
-
-function soapAddToRepo(doc, dest, method){
-  var tbody = document.getElementById('soap-repo-tbody');
-  if(!tbody) return;
-  var now = new Date().toLocaleDateString()+' '+new Date().toLocaleTimeString();
-  var methodBadge = method==='FHIR'?'<span class="bx bx-b">FHIR</span>':
-                    method==='Fax'?'<span class="bx" style="background:#ddd6fe;color:#7c3aed">📠 Fax</span>':
-                    '<span class="bx bx-g">Secure Msg</span>';
-  var row = document.createElement('tr');
-  row.innerHTML = '<td>'+doc+'</td><td>'+now+'</td><td>'+dest+'</td><td>'+methodBadge+'</td><td><span class="bx bx-g">✅ Delivered</span></td><td><button class="btn btn-xs btn-teal">View</button></td>';
-  tbody.insertBefore(row, tbody.firstChild);
-}
-
-function srDoImportAll(){
-  var approved = PENDING_REGISTRATIONS.filter(function(p){return p.status==='approved';});
-  if(approved.length===0){ toast('No approved patients to import'); return; }
-  approved.forEach(function(p){
-    var mrn='Clinic-'+(10900+Math.floor(Math.random()*99));
-    p.status='imported';
-    p.mrn=mrn;
-  });
-  toast('✅ '+approved.length+' patient(s) imported to EMR · MRNs assigned');
-  srEmrImportRender();
-}
-
-// Init queue on page load
-document.addEventListener('DOMContentLoaded', function(){
-  srRenderQueue();
-});
-
-// Hook into go() to re-render queue/import on navigation
-var _origGo = go;
-go = function(page){
-  _origGo(page);
-  if(page==='staff-review-queue'){ setTimeout(srRenderQueue,50); }
-  if(page==='emr-import'){ setTimeout(srEmrImportRender,50); }
-  if(page==='patient-self-register'){ srStep=1; setTimeout(function(){ srRender(); },50); }
-  if(page==='emr-soap'){ /* SOAP note is ready on load */ }
-};
 </script>
-<!-- ═══════════════════════════════════════════════════════
-     EMR — PATIENT CHART (ONC-certified summary)
-═══════════════════════════════════════════════════════ -->
-<div class="pg" id="pg-emr-chart">
-  <div class="pg-hdr">
-    <div><div class="pg-title">📋 EMR — Patient Chart</div><div class="pg-sub">ONC-Certified · USCDI v3 · Crystal K Villarral · MRN: Clinic-10827</div></div>
-    <div class="pg-actions">
-      <button class="btn btn-sm btn-pri" onclick="go('emr-soap')">🤖 AI SOAP Note</button>
-      <button class="btn btn-sm btn-teal" onclick="go('emr-fhir')">🔗 FHIR Export</button>
-      <button class="btn btn-sm btn-amber" onclick="toast('💾 Chart saved')">💾 Save</button>
-      <button class="btn btn-sm" onclick="window.print()">🖨 Print</button>
-    </div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
-    <div style="background:var(--blue-lt);border:1px solid #bfdbfe;border-radius:10px;padding:14px">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--blue);margin-bottom:6px">🎯 Problem List</div>
-      <div style="font-size:12px;color:var(--gray7);line-height:1.9">
-        <span class="bx bx-r" style="font-size:10px;margin-right:4px">E08.00</span>DM type 2 w/o complication<br>
-        <span class="bx bx-b" style="font-size:10px;margin-right:4px">I15.1</span>Renovascular hypertension<br>
-        <span class="bx bx-g" style="font-size:10px;margin-right:4px">E11.65</span>T2DM w/ hyperglycemia<br>
-        <span class="bx" style="font-size:10px;margin-right:4px;background:#ddd6fe;color:#7c3aed">Z87.891</span>Hx of nicotine dependence
-      </div>
-    </div>
-    <div style="background:var(--amber-lt);border:1px solid #fcd34d;border-radius:10px;padding:14px">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--amber);margin-bottom:6px">⚠️ Allergies</div>
-      <div style="font-size:12px;color:var(--gray7);line-height:1.9">
-        <strong style="color:var(--red)">Penicillin</strong> — Hives (Severe)<br>
-        <strong style="color:var(--amber)">Sulfa drugs</strong> — Rash (Moderate)<br>
-        <span style="color:var(--gray5);font-size:11px">NKDA otherwise · Verified 05/19/2026</span>
-      </div>
-    </div>
-    <div style="background:var(--green-lt);border:1px solid #bbf7d0;border-radius:10px;padding:14px">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--green);margin-bottom:6px">💊 Active Medications</div>
-      <div style="font-size:11.5px;color:var(--gray7);line-height:1.9">
-        Metformin 500mg BID<br>Lisinopril 10mg QD<br>Atorvastatin 20mg QHS<br>
-        <span style="color:var(--gray5);font-size:10px">Rx verified · ePrescribe active</span>
-      </div>
-    </div>
-  </div>
-  <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px">
-    <div>
-      <div class="card" style="margin-bottom:12px">
-        <div class="card-title-bar blue">📊 Vitals — Last Recorded (05/19/2026)</div>
-        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
-          <div style="text-align:center;padding:10px;background:var(--red-lt);border-radius:8px">
-            <div style="font-size:9px;color:var(--red);font-weight:700;text-transform:uppercase">BP</div>
-            <div style="font-size:20px;font-weight:800;color:var(--red);font-family:var(--mono)">148/92</div>
-            <div style="font-size:9.5px;color:var(--gray5)">mmHg · High</div>
-          </div>
-          <div style="text-align:center;padding:10px;background:var(--amber-lt);border-radius:8px">
-            <div style="font-size:9px;color:var(--amber);font-weight:700;text-transform:uppercase">Glucose</div>
-            <div style="font-size:20px;font-weight:800;color:var(--amber);font-family:var(--mono)">187</div>
-            <div style="font-size:9.5px;color:var(--gray5)">mg/dL · Elevated</div>
-          </div>
-          <div style="text-align:center;padding:10px;background:var(--blue-lt);border-radius:8px">
-            <div style="font-size:9px;color:var(--blue);font-weight:700;text-transform:uppercase">HR</div>
-            <div style="font-size:20px;font-weight:800;color:var(--blue);font-family:var(--mono)">78</div>
-            <div style="font-size:9.5px;color:var(--gray5)">bpm · Normal</div>
-          </div>
-          <div style="text-align:center;padding:10px;background:var(--green-lt);border-radius:8px">
-            <div style="font-size:9px;color:var(--green);font-weight:700;text-transform:uppercase">SpO2</div>
-            <div style="font-size:20px;font-weight:800;color:var(--green);font-family:var(--mono)">98%</div>
-            <div style="font-size:9.5px;color:var(--gray5)">Room air · OK</div>
-          </div>
-          <div style="text-align:center;padding:10px;background:var(--gray1);border-radius:8px">
-            <div style="font-size:9px;color:var(--gray5);font-weight:700;text-transform:uppercase">Weight</div>
-            <div style="font-size:20px;font-weight:800;color:var(--gray7);font-family:var(--mono)">187</div>
-            <div style="font-size:9.5px;color:var(--gray5)">lbs · BMI 30.2</div>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title-bar blue">📝 Recent Encounters</div>
-        <table class="tbl">
-          <thead><tr><th>Date</th><th>Type</th><th>Provider</th><th>Diagnosis</th><th>Note</th></tr></thead>
-          <tbody>
-            <tr><td>05/19/2026</td><td><span class="bx bx-b">Office Visit</span></td><td>Duc Le, MD</td><td>E08.00, I15.1</td><td><button class="btn btn-xs btn-pri" onclick="go('emr-soap')">🤖 View SOAP</button></td></tr>
-            <tr><td>04/10/2026</td><td><span class="bx bx-g">RPM Check</span></td><td>Maria Lopez, RN</td><td>E11.65</td><td><button class="btn btn-xs" onclick="go('monitoring')">View</button></td></tr>
-            <tr><td>03/27/2026</td><td><span class="bx bx-a">ER Visit</span></td><td>Memorial Hermann</td><td>I15.1</td><td><button class="btn btn-xs">View</button></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div>
-      <div class="card" style="margin-bottom:12px">
-        <div class="card-title-bar teal">🔗 FHIR R4 Resources</div>
-        <div style="font-size:12px;line-height:2">
-          <div style="display:flex;justify-content:space-between"><span>Patient</span><span class="bx bx-g">✓ Synced</span></div>
-          <div style="display:flex;justify-content:space-between"><span>Condition</span><span class="bx bx-g">✓ 4 active</span></div>
-          <div style="display:flex;justify-content:space-between"><span>MedicationRequest</span><span class="bx bx-g">✓ 3 active</span></div>
-          <div style="display:flex;justify-content:space-between"><span>AllergyIntolerance</span><span class="bx bx-g">✓ 2 on file</span></div>
-          <div style="display:flex;justify-content:space-between"><span>Observation</span><span class="bx bx-b">↻ 12 today</span></div>
-          <div style="display:flex;justify-content:space-between"><span>DocumentReference</span><span class="bx bx-a">3 pending</span></div>
-        </div>
-        <button class="btn btn-sm btn-teal" style="width:100%;margin-top:8px" onclick="go('emr-fhir')">🔗 Open FHIR Center →</button>
-      </div>
-      <div class="card">
-        <div class="card-title-bar amber">⚡ Quick Actions</div>
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <button class="btn btn-sm btn-pri" onclick="go('emr-soap')">🤖 New AI SOAP Note</button>
-          <button class="btn btn-sm btn-teal" onclick="go('emr-orders')">📄 New Order / Rx</button>
-          <button class="btn btn-sm" onclick="go('comm-log')">📞 Log Communication</button>
-          <button class="btn btn-sm" onclick="go('monitoring')">💓 View Monitoring</button>
-          <button class="btn btn-sm btn-amber" onclick="go('preauth')">🔐 Pre-Auth Status</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════
-     EMR — AI-POWERED SOAP NOTE (ONC backbone)
-═══════════════════════════════════════════════════════ -->
-<div class="pg" id="pg-emr-soap">
-  <div class="pg-hdr">
-    <div><div class="pg-title">🤖 AI-Assisted SOAP Note</div><div class="pg-sub">ONC-Certified · NLP · Crystal K Villarral · MRN Clinic-10827 · 05/19/2026 · Duc Le, MD · NPI 1083829568</div></div>
-    <div class="pg-actions">
-      <button class="btn btn-sm" onclick="soapRunAI()" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;font-weight:700">✨ AI Re-Generate</button>
-      <button class="btn btn-sm btn-amber" onclick="soapSign()">✍️ E-Sign</button>
-      <button class="btn btn-sm btn-teal" onclick="soapFHIRPush()">🔗 FHIR</button>
-      <button class="btn btn-sm" style="background:#0d9488;color:#fff;border:none" onclick="soapFax()">📠 Fax</button>
-      <button class="btn btn-sm btn-pri" onclick="soapSendRepo()">📂 Send to Repo</button>
-    </div>
-  </div>
-
-  <!-- AI spinner bar -->
-  <div id="soap-ai-bar" style="display:none;background:linear-gradient(135deg,#ede9fe,#dbeafe);border:1.5px solid #a78bfa;border-radius:10px;padding:10px 16px;margin-bottom:12px;align-items:center;gap:10px">
-    <div style="width:20px;height:20px;border:3px solid #7c3aed;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0"></div>
-    <div style="font-size:12px;color:#4c1d95;font-weight:600" id="soap-ai-status">Analyzing patient data from EMR…</div>
-  </div>
-
-  <!-- Signed / Sent status bar -->
-  <div id="soap-status-bar" style="display:none;background:var(--green-lt);border:1.5px solid #86efac;border-radius:10px;padding:10px 16px;margin-bottom:12px;font-size:12px;color:var(--green);font-weight:600" id="soap-status-bar"></div>
-
-  <!-- TOP INFO ROW -->
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
-    <div style="background:#fff;border:1px solid var(--gray2);border-radius:10px;padding:12px">
-      <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--gray4);margin-bottom:6px">👤 Patient</div>
-      <div style="font-size:13px;font-weight:700;color:var(--navy)">Crystal K Villarral</div>
-      <div style="font-size:11px;color:var(--gray5)">DOB: 02/21/1983 · F · 42 yrs</div>
-      <div style="font-size:11px;color:var(--gray5);font-family:var(--mono)">MRN: Clinic-10827</div>
-    </div>
-    <div style="background:#fff;border:1px solid var(--gray2);border-radius:10px;padding:12px">
-      <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--gray4);margin-bottom:6px">👨‍⚕️ Provider</div>
-      <div style="font-size:13px;font-weight:700;color:var(--navy)">Duc Le, MD</div>
-      <div style="font-size:11px;color:var(--gray5)">NPI: 1083829568</div>
-      <div style="font-size:11px;color:var(--gray5)">Lifecare Health Services</div>
-    </div>
-    <div style="background:#fff;border:1px solid var(--gray2);border-radius:10px;padding:12px">
-      <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--gray4);margin-bottom:6px">📅 Visit</div>
-      <div style="font-size:13px;font-weight:700;color:var(--navy)">05/19/2026</div>
-      <div style="font-size:11px;color:var(--gray5)">Office Visit — Follow-up</div>
-      <div style="font-size:11px;color:var(--gray5)">CPT: <strong style="color:var(--green)">99214</strong> · Moderate MDM</div>
-    </div>
-    <div style="background:#fff;border:1px solid var(--gray2);border-radius:10px;padding:12px">
-      <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--gray4);margin-bottom:6px">🏷 ICD-10</div>
-      <div style="font-size:11px;line-height:1.9">
-        <span class="bx bx-r" style="font-size:10px">E08.00</span> DM w/o complication<br>
-        <span class="bx bx-b" style="font-size:10px">I15.1</span> Renovascular HTN<br>
-        <span class="bx bx-g" style="font-size:10px">E11.65</span> T2DM hyperglycemia
-      </div>
-    </div>
-  </div>
-
-  <!-- VITALS STRIP -->
-  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-    <div style="background:var(--red-lt);border:1px solid #fecaca;border-radius:8px;padding:8px 14px;text-align:center;flex:1;min-width:80px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--red)">BP</div><div style="font-size:18px;font-weight:800;color:var(--red);font-family:var(--mono)">148/92</div><div style="font-size:9px;color:var(--red)">mmHg ↑</div></div>
-    <div style="background:var(--amber-lt);border:1px solid #fcd34d;border-radius:8px;padding:8px 14px;text-align:center;flex:1;min-width:80px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--amber)">Glucose</div><div style="font-size:18px;font-weight:800;color:var(--amber);font-family:var(--mono)">187</div><div style="font-size:9px;color:var(--amber)">mg/dL ↑</div></div>
-    <div style="background:var(--blue-lt);border:1px solid #bfdbfe;border-radius:8px;padding:8px 14px;text-align:center;flex:1;min-width:80px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--blue)">HR</div><div style="font-size:18px;font-weight:800;color:var(--blue);font-family:var(--mono)">78</div><div style="font-size:9px;color:var(--blue)">bpm</div></div>
-    <div style="background:var(--green-lt);border:1px solid #bbf7d0;border-radius:8px;padding:8px 14px;text-align:center;flex:1;min-width:80px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--green)">SpO2</div><div style="font-size:18px;font-weight:800;color:var(--green);font-family:var(--mono)">98%</div><div style="font-size:9px;color:var(--green)">RA</div></div>
-    <div style="background:var(--gray1);border:1px solid var(--gray2);border-radius:8px;padding:8px 14px;text-align:center;flex:1;min-width:80px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gray5)">Temp</div><div style="font-size:18px;font-weight:800;color:var(--gray7);font-family:var(--mono)">98.4</div><div style="font-size:9px;color:var(--gray5)">°F</div></div>
-    <div style="background:var(--gray1);border:1px solid var(--gray2);border-radius:8px;padding:8px 14px;text-align:center;flex:1;min-width:80px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gray5)">Wt</div><div style="font-size:18px;font-weight:800;color:var(--gray7);font-family:var(--mono)">187</div><div style="font-size:9px;color:var(--gray5)">lbs</div></div>
-    <div style="background:var(--amber-lt);border:1px solid #fcd34d;border-radius:8px;padding:8px 14px;text-align:center;flex:1;min-width:80px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--amber)">BMI</div><div style="font-size:18px;font-weight:800;color:var(--amber);font-family:var(--mono)">30.2</div><div style="font-size:9px;color:var(--amber)">Obese I ↑</div></div>
-  </div>
-
-  <!-- SOAP SECTIONS — single column, full width -->
-  <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-      <div style="font-size:14px;font-weight:800;color:var(--navy)">📝 SOAP Note</div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <span id="soap-signed-badge" style="display:inline-block;padding:4px 12px;background:var(--green-lt);border:1.5px solid #86efac;border-radius:12px;font-size:11.5px;font-weight:700;color:var(--green)">✅ Signed — Duc Le, MD · 05/19/2026</span>
-        <button onclick="soapRunAI()" style="padding:6px 14px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer">✨ AI Re-Generate</button>
-        <button onclick="soapClear()" style="padding:6px 10px;background:var(--gray1);color:var(--gray6);border:1px solid var(--gray2);border-radius:7px;font-size:12px;cursor:pointer">🗑 Clear</button>
-      </div>
-    </div>
-
-    <!-- S -->
-    <div style="margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-        <div style="width:28px;height:28px;border-radius:7px;background:#1d4ed8;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0">S</div>
-        <div><div style="font-size:12.5px;font-weight:700;color:var(--navy)">Subjective — Chief Complaint & History of Present Illness</div><div style="font-size:10.5px;color:var(--gray4)">Patient-reported symptoms · HPI · Review of Systems</div></div>
-      </div>
-      <textarea id="soap-s" style="width:100%;padding:12px;border:2px solid #bfdbfe;border-radius:8px;font-size:13px;font-family:var(--font);line-height:1.75;resize:vertical;height:130px;background:#f0f9ff;box-sizing:border-box">Patient is a 42-year-old Hispanic female presenting for follow-up management of Type 2 Diabetes Mellitus and renovascular hypertension. She reports blood glucose readings at home ranging 160–210 mg/dL over the past 2 weeks. She notes increased fatigue, occasional morning headaches, and mild polyuria. Denies chest pain, shortness of breath, or lower extremity edema. Adherent to Metformin 500mg BID and Lisinopril 10mg QD. Last HbA1c was 8.4% (3 months ago). Home BP averaging 145–152/90–95 mmHg. No new medications. No recent hospitalizations since March 2026 ER visit for hypertensive urgency.</textarea>
-    </div>
-
-    <!-- O -->
-    <div style="margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-        <div style="width:28px;height:28px;border-radius:7px;background:#0d9488;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0">O</div>
-        <div><div style="font-size:12.5px;font-weight:700;color:var(--navy)">Objective — Physical Exam & Measurable Findings</div><div style="font-size:10.5px;color:var(--gray4)">Vitals · Physical exam · Lab values · Diagnostic results</div></div>
-      </div>
-      <textarea id="soap-o" style="width:100%;padding:12px;border:2px solid #99f6e4;border-radius:8px;font-size:13px;font-family:var(--font);line-height:1.75;resize:vertical;height:160px;background:#f0fdf4;box-sizing:border-box">VITALS: BP 148/92 mmHg (elevated), HR 78 bpm (regular), Temp 98.4°F, SpO2 98% on room air, Weight 187 lbs (BMI 30.2, Obese Class I), RR 16/min.
-
-GENERAL: Alert and oriented ×3. No acute distress. Well-nourished, well-developed female.
-CARDIOVASCULAR: Regular rate and rhythm, no murmurs, rubs, or gallops. No JVD. Peripheral pulses 2+ bilaterally. No edema.
-RESPIRATORY: Clear to auscultation bilaterally. No wheezes, rhonchi, or rales.
-ABDOMEN: Soft, non-tender, non-distended. No organomegaly.
-EXTREMITIES: No pitting edema. Pedal pulses intact bilaterally. No diabetic foot ulcers or lesions.
-NEUROLOGICAL: Alert. No focal neurological deficits. DTRs 2+ bilaterally.
-SKIN: Intact, warm, and dry. No rash or lesions.
-
-POINT-OF-CARE: Fasting glucose 187 mg/dL (elevated). Urine dipstick — trace protein.
-PENDING LABS: HbA1c, CMP, Lipid Panel, Urine Microalbumin/Creatinine — ordered via Quest Diagnostics.</textarea>
-    </div>
-
-    <!-- A -->
-    <div style="margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-        <div style="width:28px;height:28px;border-radius:7px;background:#b45309;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0">A</div>
-        <div><div style="font-size:12.5px;font-weight:700;color:var(--navy)">Assessment — Clinical Impression & Diagnoses</div><div style="font-size:10.5px;color:var(--gray4)">MDM · ICD-10 mapping · Risk stratification · Clinical reasoning</div></div>
-      </div>
-      <textarea id="soap-a" style="width:100%;padding:12px;border:2px solid #fcd34d;border-radius:8px;font-size:13px;font-family:var(--font);line-height:1.75;resize:vertical;height:170px;background:#fefce8;box-sizing:border-box">1. TYPE 2 DIABETES MELLITUS (E08.00 / E11.65) — Suboptimally controlled. HbA1c 8.4% at last check; home glucose 160–210 mg/dL. Target HbA1c &lt;7.0%. Current metformin regimen insufficient. Consider addition of GLP-1 receptor agonist (empagliflozin) for cardioprotective and glycemic benefit.
-
-2. RENOVASCULAR HYPERTENSION (I15.1) — BP 148/92 today, home average 145–152/90–95. On Lisinopril 10mg QD. Blood pressure above AHA/ACC 2023 target of &lt;130/80 for diabetic patients. Plan to uptitrate and consider CCB addition.
-
-3. HYPERLIPIDEMIA (E78.5) — On Atorvastatin 20mg. Lipid panel pending. LDL target &lt;70 mg/dL per 10-yr ASCVD risk profile (0.7% 10-yr, 39% lifetime).
-
-4. OBESITY (E66.01) — BMI 30.2. Contributing to insulin resistance and cardiovascular risk. Lifestyle counseling reinforced.
-
-MDM COMPLEXITY: MODERATE — Two chronic conditions with progression; prescription drug management; review of external records and lab results.</textarea>
-    </div>
-
-    <!-- P -->
-    <div style="margin-bottom:16px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-        <div style="width:28px;height:28px;border-radius:7px;background:#7c3aed;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0">P</div>
-        <div><div style="font-size:12.5px;font-weight:700;color:var(--navy)">Plan — Treatment, Orders & Follow-Up</div><div style="font-size:10.5px;color:var(--gray4)">Medications · Labs · Referrals · Patient education · RTC</div></div>
-      </div>
-      <textarea id="soap-p" style="width:100%;padding:12px;border:2px solid #ddd6fe;border-radius:8px;font-size:13px;font-family:var(--font);line-height:1.75;resize:vertical;height:200px;background:#fdf4ff;box-sizing:border-box">1. DIABETES MANAGEMENT:
-   • Continue Metformin 500mg PO BID with meals
-   • ADD Empagliflozin (Jardiance) 10mg PO QD — cardioprotective, improves glycemic control and reduces BP
-   • Repeat HbA1c in 3 months — target &lt;7.0%
-   • Referral to Endocrinology if HbA1c remains &gt;8.5% at next visit
-   • Patient education: carbohydrate counting, glucose log review, foot care
-
-2. HYPERTENSION:
-   • UPTITRATE Lisinopril from 10mg to 20mg QD
-   • If BP not at goal (&lt;130/80) in 4 weeks, ADD Amlodipine 5mg QD
-   • Continue daily home BP monitoring — log AM and PM readings
-   • Low-sodium diet counseling (&lt;2g Na/day) reinforced
-
-3. LABS ORDERED (Quest Diagnostics — STAT):
-   • HbA1c · Comprehensive Metabolic Panel (CMP) · Lipid Panel
-   • Urine Microalbumin/Creatinine ratio · Urinalysis with microscopy
-
-4. RPM PROGRAM:
-   • Continue CareSync RPM daily BP and glucose monitoring (S9110)
-   • RN follow-up call within 72 hours — Maria Lopez, RN (Ext 312)
-   • Alert threshold: BP &gt;160/100 or glucose &gt;300 → MD notification same day
-
-5. REFERRALS:
-   • Ophthalmology — annual diabetic eye exam (last: not on file)
-   • Podiatry — annual diabetic foot exam
-   • Nutritionist/Dietitian — medical nutrition therapy (MNT)
-
-6. FOLLOW-UP: Return to clinic in 4 weeks for BP recheck and lab review, or sooner PRN.</textarea>
-    </div>
-
-    <!-- MDM + CPT row -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
-      <div style="background:var(--blue-xlt);border:1px solid #bfdbfe;border-radius:8px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px">📊 MDM Complexity</div>
-        <select id="soap-mdm" style="width:100%;padding:6px;border:1px solid var(--gray2);border-radius:6px;font-size:12px">
-          <option>Straightforward (99202/99212)</option>
-          <option>Low (99203/99213)</option>
-          <option selected>Moderate (99204/99214)</option>
-          <option>High (99205/99215)</option>
-        </select>
-      </div>
-      <div style="background:var(--green-lt);border:1px solid #bbf7d0;border-radius:8px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:4px">💰 CPT Auto-Selected</div>
-        <div id="soap-cpt" style="font-size:20px;font-weight:800;color:var(--green);font-family:var(--mono)">99214</div>
-        <div style="font-size:10px;color:var(--gray5)">Est. patient · Moderate MDM · Follow-up</div>
-      </div>
-      <div style="background:var(--purple-lt);border:1px solid #ddd6fe;border-radius:8px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:4px">🏷 Allergies on File</div>
-        <div style="font-size:11.5px;color:var(--gray7);line-height:1.8"><strong style="color:var(--red)">Penicillin</strong> — Hives<br><strong style="color:var(--amber)">Sulfa</strong> — Rash</div>
-      </div>
-    </div>
-
-    <!-- SIGNATURE + ACTION BAR -->
-    <div style="background:linear-gradient(135deg,#f0fdf4,#eff6ff);border:2px solid #bfdbfe;border-radius:10px;padding:14px">
-      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px">✍️ Electronic Signature & Document Actions</div>
-      <div style="background:#fff;border:1.5px solid #86efac;border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <div style="font-size:20px">✅</div>
-        <div style="flex:1">
-          <div id="soap-sig-box" style="font-size:13px;font-weight:700;color:var(--green)">Electronically signed — Duc Le, MD · NPI 1083829568 · Lifecare Health Services · 05/19/2026 09:42 AM CST</div>
-          <div style="font-size:10.5px;color:var(--gray5);margin-top:2px">Digital signature hash: SHA-256 · 7f3a9c2d · ONC-certified EMR lock · Tamper-evident</div>
-        </div>
-        <button class="btn btn-sm btn-amber" onclick="soapSign()">🔄 Re-Sign</button>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button onclick="soapFax()" style="flex:1;min-width:140px;padding:10px;background:#0d9488;color:#fff;border:none;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">📠 Fax to Specialist / PCP</button>
-        <button onclick="soapSendRepo()" style="flex:1;min-width:140px;padding:10px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">📂 Send to Document Repo</button>
-        <button onclick="soapFHIRPush()" style="flex:1;min-width:140px;padding:10px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">🔗 Push to FHIR R4</button>
-        <button onclick="toast('📄 Superbill generated — CPT 99214 · E08.00 · I15.1 · E11.65 · Modifier 25')" style="flex:1;min-width:140px;padding:10px;background:var(--amber);color:#fff;border:none;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">📄 Generate Superbill</button>
-        <button onclick="window.print()" style="flex:1;min-width:140px;padding:10px;background:var(--gray6);color:#fff;border:none;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">🖨 Print / PDF</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- DOCUMENT REPOSITORY PANEL -->
-  <div class="card" style="margin-top:12px">
-    <div class="card-title-bar blue">📂 Document Repository — Sent Records</div>
-    <table class="tbl" id="soap-repo-table">
-      <thead><tr><th>Document</th><th>Date/Time</th><th>Destination</th><th>Method</th><th>Status</th><th>Action</th></tr></thead>
-      <tbody id="soap-repo-tbody">
-        <tr><td>SOAP Note — 05/19/2026</td><td>05/19/2026 09:42 AM</td><td>FHIR R4 — CareSync HIE</td><td><span class="bx bx-b">FHIR</span></td><td><span class="bx bx-g">✅ Synced</span></td><td><button class="btn btn-xs btn-teal">View</button></td></tr>
-        <tr><td>SOAP Note — 04/10/2026</td><td>04/10/2026 02:15 PM</td><td>Quest Diagnostics Portal</td><td><span class="bx bx-g">Secure Message</span></td><td><span class="bx bx-g">✅ Delivered</span></td><td><button class="btn btn-xs btn-teal">View</button></td></tr>
-        <tr><td>Physician Order — 04/10/2026</td><td>04/10/2026 02:20 PM</td><td>Dr. Sofia Reyes, MD (PCP)</td><td><span class="bx" style="background:#ddd6fe;color:#7c3aed">📠 Fax</span></td><td><span class="bx bx-g">✅ Confirmed</span></td><td><button class="btn btn-xs btn-teal">View</button></td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════
-     EMR — ORDERS & ePRESCRIBE
-═══════════════════════════════════════════════════════ -->
-<div class="pg" id="pg-emr-orders">
-  <div class="pg-hdr">
-    <div><div class="pg-title">📄 Orders & ePrescribe</div><div class="pg-sub">CPOE · Drug interaction check · DEA compliant · Crystal K Villarral</div></div>
-    <div class="pg-actions">
-      <button class="btn btn-sm btn-pri" onclick="toast('✅ Order submitted — Surescripts routing')">⚡ Send Rx</button>
-      <button class="btn btn-sm btn-teal" onclick="go('emr-chart')">← Back to Chart</button>
-    </div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-    <div class="card">
-      <div class="card-title-bar blue">💊 New Prescription (ePrescribe)</div>
-      <div class="frow fr2">
-        <div class="fld"><label>Medication</label><input value="Metformin HCl"></div>
-        <div class="fld"><label>Strength</label><input value="500 mg"></div>
-      </div>
-      <div class="frow fr3">
-        <div class="fld"><label>Route</label><select><option>Oral</option><option>IV</option><option>Topical</option></select></div>
-        <div class="fld"><label>Frequency</label><select><option>Twice daily (BID)</option><option>Once daily (QD)</option><option>Three times daily (TID)</option></select></div>
-        <div class="fld"><label>Duration</label><input value="90 days"></div>
-      </div>
-      <div class="frow fr2">
-        <div class="fld"><label>Qty / Refills</label><input value="180 tabs / 3 refills"></div>
-        <div class="fld"><label>Pharmacy</label><input value="CVS — Westheimer & Shepherd"></div>
-      </div>
-      <div class="fld" style="margin-top:8px"><label>Instructions (SIG)</label><input value="Take 1 tablet by mouth twice daily with meals"></div>
-      <div style="background:var(--green-lt);border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;margin:10px 0;font-size:11.5px;color:var(--green)">✅ Drug interaction check: <strong>No interactions found</strong> with current med list · Allergy check: <strong>Clear</strong></div>
-      <button class="btn btn-pri" onclick="toast('✅ Rx sent via Surescripts — CVS notified')" style="width:100%">⚡ Send to Pharmacy via Surescripts</button>
-    </div>
-    <div class="card">
-      <div class="card-title-bar teal">🧪 Lab / Diagnostic Orders</div>
-      <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:12px;font-size:12px">
-        <label style="cursor:pointer;display:flex;align-items:center;gap:8px"><input type="checkbox" checked style="accent-color:var(--blue)"> HbA1c (Hemoglobin A1C) — Q3 months</label>
-        <label style="cursor:pointer;display:flex;align-items:center;gap:8px"><input type="checkbox" checked style="accent-color:var(--blue)"> Comprehensive Metabolic Panel (CMP)</label>
-        <label style="cursor:pointer;display:flex;align-items:center;gap:8px"><input type="checkbox" checked style="accent-color:var(--blue)"> Lipid Panel (Cholesterol / LDL / HDL / TG)</label>
-        <label style="cursor:pointer;display:flex;align-items:center;gap:8px"><input type="checkbox" style="accent-color:var(--blue)"> Urinalysis with Micro</label>
-        <label style="cursor:pointer;display:flex;align-items:center;gap:8px"><input type="checkbox" style="accent-color:var(--blue)"> Urine Microalbumin/Creatinine ratio</label>
-        <label style="cursor:pointer;display:flex;align-items:center;gap:8px"><input type="checkbox" style="accent-color:var(--blue)"> Thyroid Panel (TSH, Free T4)</label>
-      </div>
-      <div class="fld"><label>Preferred Lab</label><select><option>Quest Diagnostics</option><option>LabCorp</option><option>In-house</option></select></div>
-      <div style="margin-top:8px"><label style="font-size:11.5px;font-weight:600;color:var(--gray6)">Clinical Indication</label><input value="DM management, HTN monitoring, statin therapy follow-up" style="width:100%;margin-top:4px;padding:6px 8px;border:1px solid var(--gray2);border-radius:6px;font-size:12px"></div>
-      <button class="btn btn-teal" onclick="toast('🧪 Lab orders sent to Quest Diagnostics')" style="width:100%;margin-top:10px">Send Lab Orders → Quest</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════
-     EMR — FHIR R4 EXPORT CENTER
-═══════════════════════════════════════════════════════ -->
-<div class="pg" id="pg-emr-fhir">
-  <div class="pg-hdr">
-    <div><div class="pg-title">🔗 FHIR R4 Export Center</div><div class="pg-sub">ONC 21st Century Cures · HL7 FHIR R4 · SMART on FHIR · Crystal K Villarral · MRN: Clinic-10827</div></div>
-    <div class="pg-actions">
-      <button class="btn btn-sm btn-pri" onclick="toast('🔗 FHIR Bundle exported — 847 bytes · Patient/Condition/Medication/Observation')">⬇️ Export Bundle</button>
-      <button class="btn btn-sm btn-teal" onclick="toast('✅ Pushed to CareSync HIE endpoint')">📤 Push to HIE</button>
-      <button class="btn btn-sm" onclick="go('emr-chart')">← Back to Chart</button>
-    </div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-    <div class="card">
-      <div class="card-title-bar teal">📦 FHIR R4 Resource Status</div>
-      <table class="tbl">
-        <thead><tr><th>Resource Type</th><th>Count</th><th>Last Updated</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td>Patient</td><td>1</td><td>05/19/2026</td><td><span class="bx bx-g">✓ Current</span></td></tr>
-          <tr><td>Condition</td><td>4</td><td>05/19/2026</td><td><span class="bx bx-g">✓ Current</span></td></tr>
-          <tr><td>MedicationRequest</td><td>3</td><td>05/10/2026</td><td><span class="bx bx-g">✓ Current</span></td></tr>
-          <tr><td>AllergyIntolerance</td><td>2</td><td>03/27/2026</td><td><span class="bx bx-g">✓ Current</span></td></tr>
-          <tr><td>Observation (Vitals)</td><td>12</td><td>05/19/2026</td><td><span class="bx bx-b">↻ Syncing</span></td></tr>
-          <tr><td>DocumentReference (SOAP)</td><td>3</td><td>05/19/2026</td><td><span class="bx bx-a">⚠ Pending sign</span></td></tr>
-          <tr><td>DiagnosticReport</td><td>5</td><td>04/30/2026</td><td><span class="bx bx-g">✓ Current</span></td></tr>
-          <tr><td>Encounter</td><td>8</td><td>05/19/2026</td><td><span class="bx bx-g">✓ Current</span></td></tr>
-          <tr><td>CarePlan</td><td>1</td><td>04/10/2026</td><td><span class="bx bx-a">⚠ Needs update</span></td></tr>
-          <tr><td>Coverage (Insurance)</td><td>1</td><td>05/19/2026</td><td><span class="bx bx-g">✓ Verified</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div>
-      <div class="card" style="margin-bottom:12px">
-        <div class="card-title-bar blue">🔌 SMART on FHIR Endpoints</div>
-        <div style="font-size:11.5px;line-height:2">
-          <div style="display:flex;gap:8px;align-items:center"><span style="color:var(--gray5);width:100px">Base URL</span><code style="font-family:var(--mono);font-size:10.5px;background:var(--gray1);padding:2px 6px;border-radius:4px">https://fhir.caresync.ai/r4</code></div>
-          <div style="display:flex;gap:8px;align-items:center"><span style="color:var(--gray5);width:100px">Patient</span><code style="font-family:var(--mono);font-size:10.5px;background:var(--gray1);padding:2px 6px;border-radius:4px">/Patient/Clinic-10827</code></div>
-          <div style="display:flex;gap:8px;align-items:center"><span style="color:var(--gray5);width:100px">$everything</span><code style="font-family:var(--mono);font-size:10.5px;background:var(--gray1);padding:2px 6px;border-radius:4px">/Patient/Clinic-10827/$everything</code></div>
-          <div style="display:flex;gap:8px;align-items:center"><span style="color:var(--gray5);width:100px">Auth</span><code style="font-family:var(--mono);font-size:10.5px;background:var(--gray1);padding:2px 6px;border-radius:4px">OAuth 2.0 · SMART launch</code></div>
-        </div>
-        <button class="btn btn-sm btn-teal" style="margin-top:8px;width:100%" onclick="toast('📋 FHIR endpoint copied to clipboard')">📋 Copy Endpoint</button>
-      </div>
-      <div class="card">
-        <div class="card-title-bar amber">⚡ ONC Compliance Checklist</div>
-        <div style="font-size:12px;line-height:2">
-          <div><span style="color:var(--green)">✅</span> USCDI v3 data elements mapped</div>
-          <div><span style="color:var(--green)">✅</span> Patient access API (§170.315(g)(10))</div>
-          <div><span style="color:var(--green)">✅</span> Bulk FHIR export (§170.315(b)(10))</div>
-          <div><span style="color:var(--green)">✅</span> SMART on FHIR launch context</div>
-          <div><span style="color:var(--green)">✅</span> Information blocking prevention</div>
-          <div><span style="color:var(--amber)">⚠️</span> CDS Hooks integration — In progress</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FHIR JSON preview -->
-  <div class="card">
-    <div class="card-title-bar blue" style="cursor:pointer" onclick="document.getElementById('fhir-json-body').style.display=document.getElementById('fhir-json-body').style.display==='none'?'block':'none'">
-      📄 Sample FHIR R4 Patient Resource — click to expand
-    </div>
-    <div id="fhir-json-body" style="display:none;background:#0b1e3d;border-radius:0 0 8px 8px;padding:14px;font-family:var(--mono);font-size:11px;color:#93c5fd;line-height:1.7;overflow-x:auto">
-      {<br>
-      &nbsp;&nbsp;<span style="color:#fbbf24">"resourceType"</span>: <span style="color:#86efac">"Patient"</span>,<br>
-      &nbsp;&nbsp;<span style="color:#fbbf24">"id"</span>: <span style="color:#86efac">"Clinic-10827"</span>,<br>
-      &nbsp;&nbsp;<span style="color:#fbbf24">"meta"</span>: { <span style="color:#fbbf24">"profile"</span>: [<span style="color:#86efac">"http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient"</span>] },<br>
-      &nbsp;&nbsp;<span style="color:#fbbf24">"identifier"</span>: [{ <span style="color:#fbbf24">"system"</span>: <span style="color:#86efac">"urn:caresync:mrn"</span>, <span style="color:#fbbf24">"value"</span>: <span style="color:#86efac">"Clinic-10827"</span> }],<br>
-      &nbsp;&nbsp;<span style="color:#fbbf24">"name"</span>: [{ <span style="color:#fbbf24">"family"</span>: <span style="color:#86efac">"Villarral"</span>, <span style="color:#fbbf24">"given"</span>: [<span style="color:#86efac">"Crystal"</span>, <span style="color:#86efac">"K"</span>] }],<br>
-      &nbsp;&nbsp;<span style="color:#fbbf24">"gender"</span>: <span style="color:#86efac">"female"</span>,<br>
-      &nbsp;&nbsp;<span style="color:#fbbf24">"birthDate"</span>: <span style="color:#86efac">"1983-02-21"</span>,<br>
-      &nbsp;&nbsp;<span style="color:#fbbf24">"telecom"</span>: [{ <span style="color:#fbbf24">"system"</span>: <span style="color:#86efac">"phone"</span>, <span style="color:#fbbf24">"value"</span>: <span style="color:#86efac">"(346) 668-6221"</span> }],<br>
-      &nbsp;&nbsp;<span style="color:#fbbf24">"address"</span>: [{ <span style="color:#fbbf24">"line"</span>: [<span style="color:#86efac">"20210 Julies Cir"</span>], <span style="color:#fbbf24">"city"</span>: <span style="color:#86efac">"New Caney"</span>, <span style="color:#fbbf24">"state"</span>: <span style="color:#86efac">"TX"</span>, <span style="color:#fbbf24">"postalCode"</span>: <span style="color:#86efac">"77357"</span> }],<br>
-      &nbsp;&nbsp;<span style="color:#fbbf24">"extension"</span>: [{ <span style="color:#fbbf24">"url"</span>: <span style="color:#86efac">"http://hl7.org/fhir/us/core/StructureDefinition/us-core-race"</span>, <span style="color:#fbbf24">"valueCode"</span>: <span style="color:#86efac">"2106-3"</span> }]<br>
-      }
-    </div>
-  </div>
-</div>
-
-<!-- spin animation for AI loader -->
-<style>
-@keyframes spin{to{transform:rotate(360deg)}}
-</style>
-
-<!-- ═══════════════════════════════════════════════════════
-     PAGE: PATIENT PORTAL LANDING
-═══════════════════════════════════════════════════════════════ -->
-<div class="pg" id="pg-patient-portal-landing">
-  <div class="pg-hdr">
-    <div><div class="pg-title">🌐 Patient Portal — Landing Page Preview</div><div class="pg-sub">This is what new patients see when visiting the practice website · Light-mode patient-facing view</div></div>
-    <div class="pg-actions">
-      <button class="btn btn-sm btn-pri" onclick="go('patient-self-register')">📝 Open Registration Form</button>
-      <button class="btn btn-sm btn-teal" onclick="go('staff-review-queue')">🔍 Staff Review Queue</button>
-    </div>
-  </div>
-
-  <!-- Workflow diagram -->
-  <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,#eff6ff,#f0fdf4)">
-    <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px">📋 How the New Patient Workflow Works — Step by Step</div>
-    <div style="display:flex;align-items:flex-start;gap:0;overflow-x:auto">
-      <div style="display:flex;flex-direction:column;align-items:center;min-width:110px;padding:10px">
-        <div style="width:44px;height:44px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:6px;box-shadow:0 2px 8px rgba(26,110,245,.3)">🌐</div>
-        <div style="font-size:11px;font-weight:700;color:var(--navy);text-align:center">Step 1</div>
-        <div style="font-size:10px;color:var(--gray5);text-align:center;margin-top:2px">Patient visits website & clicks "New Patient"</div>
-      </div>
-      <div style="display:flex;align-items:center;color:var(--gray3);font-size:20px;margin-top:12px">→</div>
-      <div style="display:flex;flex-direction:column;align-items:center;min-width:110px;padding:10px">
-        <div style="width:44px;height:44px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:6px;box-shadow:0 2px 8px rgba(13,148,136,.3)">📝</div>
-        <div style="font-size:11px;font-weight:700;color:var(--navy);text-align:center">Step 2</div>
-        <div style="font-size:10px;color:var(--gray5);text-align:center;margin-top:2px">Self-register: demographics, insurance, medical history</div>
-      </div>
-      <div style="display:flex;align-items:center;color:var(--gray3);font-size:20px;margin-top:12px">→</div>
-      <div style="display:flex;flex-direction:column;align-items:center;min-width:110px;padding:10px">
-        <div style="width:44px;height:44px;border-radius:50%;background:var(--purple);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:6px;box-shadow:0 2px 8px rgba(124,58,237,.3)">📅</div>
-        <div style="font-size:11px;font-weight:700;color:var(--navy);text-align:center">Step 3</div>
-        <div style="font-size:10px;color:var(--gray5);text-align:center;margin-top:2px">Request appointment date & reason for visit</div>
-      </div>
-      <div style="display:flex;align-items:center;color:var(--gray3);font-size:20px;margin-top:12px">→</div>
-      <div style="display:flex;flex-direction:column;align-items:center;min-width:110px;padding:10px">
-        <div style="width:44px;height:44px;border-radius:50%;background:var(--amber);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:6px;box-shadow:0 2px 8px rgba(180,83,9,.3)">🔍</div>
-        <div style="font-size:11px;font-weight:700;color:var(--navy);text-align:center">Step 4</div>
-        <div style="font-size:10px;color:var(--gray5);text-align:center;margin-top:2px">Staff receives alert & reviews submission in queue</div>
-      </div>
-      <div style="display:flex;align-items:center;color:var(--gray3);font-size:20px;margin-top:12px">→</div>
-      <div style="display:flex;flex-direction:column;align-items:center;min-width:110px;padding:10px">
-        <div style="width:44px;height:44px;border-radius:50%;background:#15803d;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:6px;box-shadow:0 2px 8px rgba(21,128,61,.3)">✅</div>
-        <div style="font-size:11px;font-weight:700;color:var(--navy);text-align:center">Step 5</div>
-        <div style="font-size:10px;color:var(--gray5);text-align:center;margin-top:2px">Staff approves → patient imported to EMR with MRN</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Patient-facing preview -->
-  <div style="background:#fff;border:2px solid var(--gray2);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)">
-    <!-- Mock browser bar -->
-    <div style="background:#f3f4f6;padding:8px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--gray2)">
-      <div style="display:flex;gap:5px"><div style="width:10px;height:10px;border-radius:50%;background:#ef4444"></div><div style="width:10px;height:10px;border-radius:50%;background:#f59e0b"></div><div style="width:10px;height:10px;border-radius:50%;background:#22c55e"></div></div>
-      <div style="flex:1;background:#fff;border:1px solid var(--gray2);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--gray5);font-family:var(--mono)">https://lifecarehealthservices.com/new-patient</div>
-    </div>
-    <!-- Patient landing page content -->
-    <div style="padding:40px 32px;background:linear-gradient(135deg,#f0f9ff 0%,#f0fdf4 100%)">
-      <div style="text-align:center;margin-bottom:32px">
-        <div style="font-size:28px;font-weight:800;color:#0b1e3d;letter-spacing:-.5px">Lifecare Health Services</div>
-        <div style="font-size:14px;color:#6b7280;margin-top:4px">Compassionate care. Convenient access.</div>
-      </div>
-      <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:16px;padding:32px;box-shadow:0 4px 24px rgba(0,0,0,.1);border:1px solid #e5e7eb">
-        <div style="font-size:22px;font-weight:700;color:#0b1e3d;margin-bottom:8px">👋 Welcome, New Patient!</div>
-        <div style="font-size:13px;color:#6b7280;margin-bottom:24px;line-height:1.6">Complete your registration online in under 10 minutes. Bring your confirmation code when you arrive — our staff will have everything ready.</div>
-        <div style="display:flex;flex-direction:column;gap:12px">
-          <button onclick="go('patient-self-register')" style="padding:14px 24px;background:#1a6ef5;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 2px 8px rgba(26,110,245,.4)">📝 Register as a New Patient →</button>
-          <button style="padding:12px 24px;background:#fff;color:#374151;border:1.5px solid #e5e7eb;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer">📞 Call us: (713) 555-0192</button>
-        </div>
-        <div style="margin-top:20px;padding:12px;background:#f0fdf4;border-radius:8px;border:1px solid #bbf7d0">
-          <div style="font-size:11.5px;color:#166534;font-weight:600;margin-bottom:4px">✅ What you'll fill out:</div>
-          <div style="font-size:11px;color:#166534;line-height:1.8">📋 Personal & demographic information &nbsp;·&nbsp; 🏥 Insurance & coverage details &nbsp;·&nbsp; 💊 Medical history & current medications &nbsp;·&nbsp; 📅 Preferred appointment date</div>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:20px;font-size:11px;color:#9ca3af">🔒 Your information is secured with HIPAA-compliant encryption · SSL protected</div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     PAGE: PATIENT SELF-REGISTRATION WIZARD (5 steps)
-═══════════════════════════════════════════════════════════════ -->
-<div class="pg" id="pg-patient-self-register">
-  <div class="pg-hdr">
-    <div><div class="pg-title">📝 New Patient Self-Registration Wizard</div><div class="pg-sub">Demo: Maria Elena Gonzalez · Pre-filled demo data · 5-step intake wizard</div></div>
-    <div class="pg-actions">
-      <button class="btn btn-sm" onclick="go('patient-portal-landing')">← Back to Landing</button>
-      <button class="btn btn-sm btn-teal" onclick="go('staff-review-queue')">🔍 View Staff Queue</button>
-    </div>
-  </div>
-
-  <!-- Step progress dots -->
-  <div style="display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:18px;background:#fff;border-radius:10px;padding:14px;border:1px solid var(--gray2);overflow-x:auto">
-    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-      <div class="sr-dot sr-dot-active" id="sr-dot-1">1</div>
-      <div style="font-size:10px;color:var(--gray5);white-space:nowrap" id="sr-dot-lbl-1">Demographics</div>
-    </div>
-    <div style="height:2px;width:40px;background:var(--gray2);margin-bottom:14px;flex-shrink:0"></div>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-      <div class="sr-dot" id="sr-dot-2">2</div>
-      <div style="font-size:10px;color:var(--gray5);white-space:nowrap" id="sr-dot-lbl-2">Insurance</div>
-    </div>
-    <div style="height:2px;width:40px;background:var(--gray2);margin-bottom:14px;flex-shrink:0"></div>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-      <div class="sr-dot" id="sr-dot-25" style="background:var(--teal);color:#fff;font-size:9px">✓?</div>
-      <div style="font-size:10px;color:var(--gray5);white-space:nowrap" id="sr-dot-lbl-25">Eligibility</div>
-    </div>
-    <div style="height:2px;width:40px;background:var(--gray2);margin-bottom:14px;flex-shrink:0"></div>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-      <div class="sr-dot" id="sr-dot-3">3</div>
-      <div style="font-size:10px;color:var(--gray5);white-space:nowrap" id="sr-dot-lbl-3">Medical Info</div>
-    </div>
-    <div style="height:2px;width:40px;background:var(--gray2);margin-bottom:14px;flex-shrink:0"></div>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-      <div class="sr-dot" id="sr-dot-4">4</div>
-      <div style="font-size:10px;color:var(--gray5);white-space:nowrap" id="sr-dot-lbl-4">Appointment</div>
-    </div>
-    <div style="height:2px;width:40px;background:var(--gray2);margin-bottom:14px;flex-shrink:0"></div>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-      <div class="sr-dot" id="sr-dot-5">5</div>
-      <div style="font-size:10px;color:var(--gray5);white-space:nowrap" id="sr-dot-lbl-5">Confirmation</div>
-    </div>
-  </div>
-
-  <!-- STEP 1: Demographics -->
-  <div id="sr-step-1" class="card">
-    <div class="card-title-bar blue">👤 Step 1 of 5 — Personal & Demographic Information</div>
-    <div class="al al-b" style="margin-bottom:12px"><div class="al-ic">ℹ️</div><div><div class="al-t">Demo data pre-filled</div><div class="al-s">This demo shows a new patient — Maria Elena Gonzalez — filling out the form from the practice website</div></div></div>
-    <div class="frow fr3">
-      <div class="fld"><label>First Name *</label><input id="sr-fname" value="Maria Elena"></div>
-      <div class="fld"><label>Last Name *</label><input id="sr-lname" value="Gonzalez"></div>
-      <div class="fld"><label>Middle Initial</label><input value="R"></div>
-    </div>
-    <div class="frow fr4">
-      <div class="fld"><label>Date of Birth *</label><input type="date" id="sr-dob" value="1975-08-14"></div>
-      <div class="fld"><label>Gender *</label><select id="sr-gender"><option>Female</option><option>Male</option><option>Non-binary</option><option>Prefer not to say</option></select></div>
-      <div class="fld"><label>Preferred Language</label><select><option>English</option><option>Spanish</option><option>Vietnamese</option></select></div>
-      <div class="fld"><label>Race / Ethnicity</label><select><option>Hispanic or Latino</option><option>White / Caucasian</option><option>Black or African American</option><option>Asian</option></select></div>
-    </div>
-    <div class="frow fr3">
-      <div class="fld"><label>Phone (Mobile) *</label><input id="sr-phone" value="(713) 445-2281"></div>
-      <div class="fld"><label>Email Address *</label><input id="sr-email" value="m.gonzalez@email.com"></div>
-      <div class="fld"><label>Emergency Contact</label><input value="Carlos Gonzalez (Husband) — (713) 445-9012"></div>
-    </div>
-    <div class="frow fr2">
-      <div class="fld"><label>Street Address *</label><input id="sr-address" value="1204 Westheimer Rd"></div>
-      <div class="fld"><label>Apt / Suite</label><input value="Apt 4B"></div>
-    </div>
-    <div class="frow fr3">
-      <div class="fld"><label>City *</label><input id="sr-city" value="Houston"></div>
-      <div class="fld"><label>State *</label><input id="sr-state" value="TX"></div>
-      <div class="fld"><label>ZIP Code *</label><input id="sr-zip" value="77006"></div>
-    </div>
-    <div style="margin-top:6px;padding:10px;background:var(--gray0);border-radius:8px;font-size:11px;color:var(--gray5)">
-      <label style="cursor:pointer"><input type="checkbox" checked style="accent-color:var(--blue)"> &nbsp;I consent to receive appointment reminders via SMS/Email (HIPAA-compliant)</label>
-    </div>
-    <div style="display:flex;justify-content:flex-end;margin-top:14px">
-      <button class="btn btn-pri" onclick="srNext(1)">Next: Insurance Info →</button>
-    </div>
-  </div>
-
-  <!-- STEP 2: Insurance -->
-  <div id="sr-step-2" style="display:none" class="card">
-    <div class="card-title-bar teal">🏥 Step 2 of 5 — Insurance & Coverage Information</div>
-    <div class="frow fr2">
-      <div class="fld"><label>Primary Insurance Name *</label><input id="sr-ins-name" value="Blue Cross Blue Shield"></div>
-      <div class="fld"><label>Insurance Plan Type</label><select><option>PPO</option><option>HMO</option><option>EPO</option><option>Medicare</option><option>Medicaid</option><option>Self-Pay</option></select></div>
-    </div>
-    <div class="frow fr3">
-      <div class="fld"><label>Member ID / Policy # *</label><input id="sr-member-id" value="BCB-7712-9034" style="font-family:var(--mono)"></div>
-      <div class="fld"><label>Group Number</label><input id="sr-group" value="GRP-00234" style="font-family:var(--mono)"></div>
-      <div class="fld"><label>Insurance Phone</label><input value="1-800-441-9188"></div>
-    </div>
-    <div class="frow fr2">
-      <div class="fld"><label>Policy Holder Name</label><input value="Maria Elena Gonzalez"></div>
-      <div class="fld"><label>Policy Holder DOB</label><input type="date" value="1975-08-14"></div>
-    </div>
-    <div style="background:var(--amber-lt);border:1px solid var(--amber);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:12px;color:#92400e">
-      ⚠️ <strong>Secondary Insurance:</strong> If you have a secondary insurance, please bring the card to your appointment. Staff will update your chart.
-    </div>
-    <div class="frow fr2">
-      <div class="fld"><label>Secondary Insurance (optional)</label><input placeholder="e.g. Medicare Part B"></div>
-      <div class="fld"><label>Secondary Member ID</label><input placeholder="Optional" style="font-family:var(--mono)"></div>
-    </div>
-    <div style="display:flex;justify-content:space-between;margin-top:14px">
-      <button class="btn" onclick="srBack(2)">← Back</button>
-      <button class="btn btn-pri" onclick="srNext(2)">Next: Verify Eligibility →</button>
-    </div>
-  </div>
-
-  <!-- STEP ELIG: Waystar Eligibility Check -->
-  <div id="sr-step-elig" style="display:none">
-
-    <!-- STICKY NAV BAR — always visible at top -->
-    <div style="position:sticky;top:0;z-index:100;background:#fff;border:2px solid #0d9488;border-radius:10px;padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(13,148,136,.2)">
-      <button class="btn" onclick="srBack('elig')" style="font-size:13px;padding:8px 18px">← Back to Insurance</button>
-      <div style="font-size:12px;font-weight:700;color:#0f766e;display:flex;align-items:center;gap:8px">
-        <span style="font-size:16px">🏦</span> Step 2b — Waystar Eligibility · Scroll down to review benefits
-      </div>
-      <button class="btn btn-teal" onclick="srNext('elig')" style="font-size:13px;padding:8px 18px;font-weight:700">Benefits Confirmed — Next: Medical Info →</button>
-    </div>
-    <div class="card" style="margin-bottom:12px">
-      <div class="card-title-bar teal" style="display:flex;align-items:center;justify-content:space-between">
-        <span>🔌 Step 2b — Real-Time Eligibility Check via Waystar (270/271)</span>
-        <span style="font-size:10px;background:rgba(255,255,255,.25);padding:2px 8px;border-radius:8px;font-weight:700">EDI X12 271</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f0fdf4;border-radius:8px;border:1px solid #bbf7d0;margin-bottom:12px">
-        <div style="width:40px;height:40px;border-radius:10px;background:#0d9488;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🏦</div>
-        <div style="flex:1">
-          <div style="font-size:13px;font-weight:700;color:#0f766e">Waystar Eligibility Network — Live Response</div>
-          <div style="font-size:11px;color:#166534;margin-top:2px">Payer: Blue Cross Blue Shield TX &nbsp;·&nbsp; Payer ID: <span style="font-family:var(--mono)">BCBST</span> &nbsp;·&nbsp; Transaction: 270/271 &nbsp;·&nbsp; Response time: 1.2 sec</div>
-        </div>
-        <div style="text-align:right;flex-shrink:0">
-          <div style="font-size:11px;font-weight:700;color:#15803d;background:#dcfce7;border:1px solid #86efac;padding:4px 10px;border-radius:20px">✅ ACTIVE &amp; ELIGIBLE</div>
-          <div style="font-size:10px;color:#6b7280;margin-top:3px">Checked: May 19, 2026 · 09:14 AM CST</div>
-        </div>
-      </div>
-
-      <!-- Subscriber info row -->
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:14px">
-        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px">
-          <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#6b7280;margin-bottom:4px">Subscriber</div>
-          <div style="font-size:12.5px;font-weight:700;color:#1f2937">Maria Elena Gonzalez</div>
-          <div style="font-size:10.5px;color:#6b7280">DOB: 08/14/1975 · Female</div>
-        </div>
-        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px">
-          <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#6b7280;margin-bottom:4px">Member ID</div>
-          <div style="font-size:12.5px;font-weight:700;color:#1f2937;font-family:var(--mono)">BCB-7712-9034</div>
-          <div style="font-size:10.5px;color:#6b7280">Group: GRP-00234</div>
-        </div>
-        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px">
-          <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#6b7280;margin-bottom:4px">Plan Name</div>
-          <div style="font-size:12.5px;font-weight:700;color:#1f2937">BCBS TX BluePPO</div>
-          <div style="font-size:10.5px;color:#6b7280">PPO · Plan Year: Jan–Dec 2026</div>
-        </div>
-        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px">
-          <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#6b7280;margin-bottom:4px">Coverage Period</div>
-          <div style="font-size:12.5px;font-weight:700;color:#15803d">01/01/2026 – 12/31/2026</div>
-          <div style="font-size:10.5px;color:#6b7280">Employer sponsored · Active</div>
-        </div>
-      </div>
-
-      <!-- THE BIG BENEFIT BREAKDOWN TABLE -->
-      <div style="font-size:12px;font-weight:700;color:#0b1e3d;margin-bottom:8px;display:flex;align-items:center;gap:6px">
-        💰 Benefit Summary — What Insurance Pays vs. What Patient Owes
-        <span style="font-size:9px;background:#dbeafe;color:#1d4ed8;padding:2px 7px;border-radius:8px;font-weight:700">Plan Year 2026</span>
-      </div>
-      <div style="overflow-x:auto;border-radius:8px;border:1px solid #e5e7eb">
-        <table style="width:100%;border-collapse:collapse;font-size:12px">
-          <thead>
-            <tr style="background:#f0f9ff">
-              <th style="padding:10px 12px;text-align:left;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#1d4ed8;border-bottom:2px solid #bfdbfe">Benefit / Service Type</th>
-              <th style="padding:10px 12px;text-align:center;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#1d4ed8;border-bottom:2px solid #bfdbfe">In-Network</th>
-              <th style="padding:10px 12px;text-align:center;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#1d4ed8;border-bottom:2px solid #bfdbfe">Out-of-Network</th>
-              <th style="padding:10px 12px;text-align:center;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#15803d;border-bottom:2px solid #bfdbfe;background:#f0fdf4">✅ Used YTD</th>
-              <th style="padding:10px 12px;text-align:center;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#b45309;border-bottom:2px solid #bfdbfe;background:#fefce8">⚠️ Remaining</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- DEDUCTIBLE -->
-            <tr style="background:#fafafa;border-bottom:1px solid #f3f4f6">
-              <td style="padding:10px 12px;font-weight:700;color:#1f2937">🎯 Annual Deductible (Individual)</td>
-              <td style="padding:10px 12px;text-align:center;font-family:var(--mono);font-weight:700;color:#1d4ed8">$1,500.00</td>
-              <td style="padding:10px 12px;text-align:center;font-family:var(--mono);color:#6b7280">$3,000.00</td>
-              <td style="padding:10px 12px;text-align:center;font-family:var(--mono);font-weight:700;color:#15803d;background:#f0fdf4">$620.00</td>
-              <td style="padding:10px 12px;text-align:center;background:#fefce8">
-                <div style="font-family:var(--mono);font-weight:800;font-size:14px;color:#b45309">$880.00</div>
-                <div style="width:80px;height:6px;background:#e5e7eb;border-radius:3px;margin:4px auto 0"><div style="width:41%;height:100%;background:#f59e0b;border-radius:3px"></div></div>
-                <div style="font-size:9.5px;color:#92400e;margin-top:2px">41% met</div>
-              </td>
-            </tr>
-            <!-- FAMILY DEDUCTIBLE -->
-            <tr style="border-bottom:1px solid #f3f4f6">
-              <td style="padding:10px 12px;color:#374151;padding-left:24px">↳ Family Deductible</td>
-              <td style="padding:10px 12px;text-align:center;font-family:var(--mono);color:#6b7280">$3,000.00</td>
-              <td style="padding:10px 12px;text-align:center;font-family:var(--mono);color:#6b7280">$6,000.00</td>
-              <td style="padding:10px 12px;text-align:center;font-family:var(--mono);color:#15803d;background:#f0fdf4">$1,240.00</td>
-              <td style="padding:10px 12px;text-align:center;background:#fefce8;font-family:var(--mono);color:#b45309;font-weight:700">$1,760.00</td>
-            </tr>
-            <!-- OOP MAX -->
-            <tr style="background:#fafafa;border-bottom:1px solid #f3f4f6">
-              <td style="padding:10px 12px;font-weight:700;color:#1f2937">🛡️ Out-of-Pocket Maximum (Individual)</td>
-              <td style="padding:10px 12px;text-align:center;font-family:var(--mono);font-weight:700;color:#1d4ed8">$5,000.00</td>
-              <td style="padding:10px 12px;text-align:center;font-family:var(--mono);color:#6b7280">$10,000.00</td>
-              <td style="padding:10px 12px;text-align:center;font-family:var(--mono);font-weight:700;color:#15803d;background:#f0fdf4">$620.00</td>
-              <td style="padding:10px 12px;text-align:center;background:#fefce8">
-                <div style="font-family:var(--mono);font-weight:800;font-size:14px;color:#b45309">$4,380.00</div>
-                <div style="width:80px;height:6px;background:#e5e7eb;border-radius:3px;margin:4px auto 0"><div style="width:12%;height:100%;background:#22c55e;border-radius:3px"></div></div>
-                <div style="font-size:9.5px;color:#92400e;margin-top:2px">12% met</div>
-              </td>
-            </tr>
-            <!-- DIVIDER -->
-            <tr><td colspan="5" style="padding:6px 12px;background:#eff6ff;font-size:10.5px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:.4px">👨‍⚕️ Office Visit — Copays &amp; Cost Sharing</td></tr>
-            <!-- PCP COPAY -->
-            <tr style="background:#f0fdf4;border-bottom:1px solid #f3f4f6">
-              <td style="padding:10px 12px;font-weight:700;color:#166534">🏥 Primary Care Visit (PCP) — Office Visit</td>
-              <td style="padding:10px 12px;text-align:center">
-                <div style="font-size:16px;font-weight:800;color:#15803d;font-family:var(--mono)">$30</div>
-                <div style="font-size:10px;color:#166534">copay per visit</div>
-                <div style="font-size:10px;color:#166534">After deductible: <strong>$30 copay</strong></div>
-              </td>
-              <td style="padding:10px 12px;text-align:center;font-family:var(--mono);color:#6b7280">40% coinsurance<br><span style="font-size:10px">after OON deductible</span></td>
-              <td style="padding:10px 12px;text-align:center;background:#f0fdf4;color:#6b7280;font-size:11px">N/A (copay)</td>
-              <td style="padding:10px 12px;text-align:center;background:#fefce8">
-                <div style="font-size:13px;font-weight:800;color:#15803d">Patient Pays: $30</div>
-                <div style="font-size:10.5px;color:#166534;margin-top:2px">Insurance Pays: remainder</div>
-              </td>
-            </tr>
-            <!-- SPECIALIST COPAY -->
-            <tr style="border-bottom:1px solid #f3f4f6">
-              <td style="padding:10px 12px;font-weight:700;color:#1f2937">🩺 Specialist Visit — Office Visit</td>
-              <td style="padding:10px 12px;text-align:center">
-                <div style="font-size:16px;font-weight:800;color:#1d4ed8;font-family:var(--mono)">$60</div>
-                <div style="font-size:10px;color:#1d4ed8">copay per visit</div>
-                <div style="font-size:10px;color:#1d4ed8">After deductible: <strong>$60 copay</strong></div>
-              </td>
-              <td style="padding:10px 12px;text-align:center;font-family:var(--mono);color:#6b7280">50% coinsurance<br><span style="font-size:10px">after OON deductible</span></td>
-              <td style="padding:10px 12px;text-align:center;color:#6b7280;font-size:11px">N/A (copay)</td>
-              <td style="padding:10px 12px;text-align:center;background:#fefce8">
-                <div style="font-size:13px;font-weight:800;color:#1d4ed8">Patient Pays: $60</div>
-                <div style="font-size:10.5px;color:#374151;margin-top:2px">Insurance Pays: remainder</div>
-              </td>
-            </tr>
-            <!-- PREVENTIVE -->
-            <tr style="background:#fafafa;border-bottom:1px solid #f3f4f6">
-              <td style="padding:10px 12px;font-weight:700;color:#1f2937">✅ Preventive Care (Annual Wellness)</td>
-              <td style="padding:10px 12px;text-align:center">
-                <div style="font-size:16px;font-weight:800;color:#15803d;font-family:var(--mono)">$0</div>
-                <div style="font-size:10px;color:#166534">no copay · no deductible</div>
-              </td>
-              <td style="padding:10px 12px;text-align:center;font-family:var(--mono);color:#6b7280">Not covered</td>
-              <td style="padding:10px 12px;text-align:center;background:#f0fdf4;color:#6b7280;font-size:11px">N/A</td>
-              <td style="padding:10px 12px;text-align:center;background:#fefce8">
-                <div style="font-size:13px;font-weight:800;color:#15803d">Patient Pays: $0</div>
-                <div style="font-size:10.5px;color:#166534">100% covered by insurance</div>
-              </td>
-            </tr>
-            <!-- DIVIDER -->
-            <tr><td colspan="5" style="padding:6px 12px;background:#fdf4ff;font-size:10.5px;font-weight:700;color:#7c3aed;text-transform:uppercase;letter-spacing:.4px">💊 Other Benefits</td></tr>
-            <!-- COINSURANCE -->
-            <tr style="border-bottom:1px solid #f3f4f6">
-              <td style="padding:10px 12px;font-weight:700;color:#1f2937">📊 Coinsurance (after deductible met)</td>
-              <td style="padding:10px 12px;text-align:center">
-                <div style="font-size:13px;font-weight:700;color:#1d4ed8">Insurance: <span style="font-family:var(--mono)">80%</span></div>
-                <div style="font-size:13px;font-weight:700;color:#b45309">Patient: <span style="font-family:var(--mono)">20%</span></div>
-              </td>
-              <td style="padding:10px 12px;text-align:center;color:#6b7280">Ins: 60% / Pt: 40%</td>
-              <td colspan="2" style="padding:10px 12px;text-align:center;color:#6b7280;font-size:11px">Applies to services after deductible is met and when no copay applies</td>
-            </tr>
-            <!-- RX -->
-            <tr style="background:#fafafa;border-bottom:1px solid #f3f4f6">
-              <td style="padding:10px 12px;font-weight:700;color:#1f2937">💊 Prescription Drug Coverage</td>
-              <td style="padding:10px 12px;text-align:center;font-size:11.5px;color:#374151">
-                Tier 1 Generic: <strong style="color:#15803d">$10</strong><br>
-                Tier 2 Brand: <strong style="color:#1d4ed8">$40</strong><br>
-                Tier 3 Non-Preferred: <strong style="color:#b45309">$75</strong><br>
-                Specialty: <strong style="color:#dc2626">30% coinsurance</strong>
-              </td>
-              <td style="padding:10px 12px;text-align:center;color:#6b7280;font-size:11px">Not covered</td>
-              <td colspan="2" style="padding:10px 12px;text-align:center;color:#6b7280;font-size:11px">Rx deductible: $150/yr · Mail-order: 3x supply for 2x copay</td>
-            </tr>
-            <!-- LAB -->
-            <tr style="border-bottom:1px solid #f3f4f6">
-              <td style="padding:10px 12px;font-weight:700;color:#1f2937">🧪 Lab / Diagnostic Tests</td>
-              <td style="padding:10px 12px;text-align:center">
-                <div style="font-size:13px;font-weight:700;color:#1d4ed8">$0 copay</div>
-                <div style="font-size:10px;color:#374151">In-network lab · then 20% coinsurance after deductible</div>
-              </td>
-              <td style="padding:10px 12px;text-align:center;color:#6b7280">40% coinsurance</td>
-              <td style="padding:10px 12px;text-align:center;background:#f0fdf4;font-family:var(--mono);color:#6b7280;font-size:11px">—</td>
-              <td style="padding:10px 12px;text-align:center;background:#fefce8;font-size:11.5px;color:#374151">Deductible applies first, then 20% of allowed amount</td>
-            </tr>
-            <!-- IMAGING -->
-            <tr style="background:#fafafa;border-bottom:1px solid #f3f4f6">
-              <td style="padding:10px 12px;font-weight:700;color:#1f2937">📷 Imaging (X-Ray, MRI, CT)</td>
-              <td style="padding:10px 12px;text-align:center">
-                <div style="font-size:13px;font-weight:700;color:#b45309">20% coinsurance</div>
-                <div style="font-size:10px;color:#374151">after deductible</div>
-              </td>
-              <td style="padding:10px 12px;text-align:center;color:#6b7280">40% coinsurance</td>
-              <td colspan="2" style="padding:10px 12px;text-align:center;color:#6b7280;font-size:11px">Prior auth may be required for MRI/CT. Confirm with BCBS before ordering.</td>
-            </tr>
-            <!-- URGENT CARE -->
-            <tr style="border-bottom:1px solid #f3f4f6">
-              <td style="padding:10px 12px;font-weight:700;color:#1f2937">🚑 Urgent Care</td>
-              <td style="padding:10px 12px;text-align:center">
-                <div style="font-size:16px;font-weight:800;color:#1d4ed8;font-family:var(--mono)">$75</div>
-                <div style="font-size:10px;color:#374151">copay per visit</div>
-              </td>
-              <td style="padding:10px 12px;text-align:center;font-family:var(--mono);color:#6b7280">$75 copay</td>
-              <td colspan="2" style="padding:10px 12px;text-align:center;background:#fefce8;font-size:12px;font-weight:700;color:#b45309">Patient Pays: $75</td>
-            </tr>
-            <!-- ER -->
-            <tr style="background:#fff5f5">
-              <td style="padding:10px 12px;font-weight:700;color:#dc2626">🏥 Emergency Room</td>
-              <td style="padding:10px 12px;text-align:center">
-                <div style="font-size:16px;font-weight:800;color:#dc2626;font-family:var(--mono)">$350</div>
-                <div style="font-size:10px;color:#dc2626">copay + 20% coinsurance after deductible</div>
-              </td>
-              <td style="padding:10px 12px;text-align:center;font-family:var(--mono);color:#dc2626">$350 copay<br><span style="font-size:10px">waived if admitted</span></td>
-              <td colspan="2" style="padding:10px 12px;text-align:center;background:#fee2e2;font-size:12px;font-weight:700;color:#dc2626">Patient Pays: $350 + 20% after deductible</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- PATIENT COST ESTIMATOR CARD -->
-    <div class="card" style="margin-bottom:12px;border:2px solid #bfdbfe;background:linear-gradient(135deg,#eff6ff,#f0fdf4)">
-      <div style="font-size:14px;font-weight:800;color:#0b1e3d;margin-bottom:14px;display:flex;align-items:center;gap:8px">
-        🧾 Your Estimated Cost for Today's Visit
-        <span style="font-size:10px;background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:8px;font-weight:700">Based on current benefits</span>
-      </div>
-
-      <!-- Visit type selector -->
-      <div style="margin-bottom:14px">
-        <label style="font-size:11.5px;font-weight:600;color:#374151;display:block;margin-bottom:6px">Select Visit Type to Estimate Cost:</label>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button onclick="srShowEstimate('pcp')" id="est-btn-pcp" style="padding:8px 16px;background:#1a6ef5;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">🏥 Primary Care Visit</button>
-          <button onclick="srShowEstimate('specialist')" id="est-btn-spec" style="padding:8px 16px;background:#fff;color:#374151;border:1.5px solid #e5e7eb;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">🩺 Specialist Visit</button>
-          <button onclick="srShowEstimate('preventive')" id="est-btn-prev" style="padding:8px 16px;background:#fff;color:#374151;border:1.5px solid #e5e7eb;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">✅ Preventive / Wellness</button>
-          <button onclick="srShowEstimate('urgent')" id="est-btn-urg" style="padding:8px 16px;background:#fff;color:#374151;border:1.5px solid #e5e7eb;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">🚑 Urgent Care</button>
-        </div>
-      </div>
-
-      <!-- Estimate display -->
-      <div id="sr-estimate-box" style="background:#fff;border-radius:10px;border:1.5px solid #bfdbfe;padding:18px">
-        <div style="display:flex;gap:0;margin-bottom:14px;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb">
-          <div style="flex:1;padding:16px;text-align:center;background:#eff6ff">
-            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#1d4ed8;margin-bottom:4px">🏦 Insurance Pays</div>
-            <div id="est-ins-pays" style="font-size:28px;font-weight:800;color:#1d4ed8;font-family:var(--mono)">Remainder</div>
-            <div id="est-ins-note" style="font-size:10.5px;color:#6b7280;margin-top:3px">After your copay</div>
-          </div>
-          <div style="width:2px;background:#e5e7eb"></div>
-          <div style="flex:1;padding:16px;text-align:center;background:#fefce8">
-            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#b45309;margin-bottom:4px">👤 You Pay at Office</div>
-            <div id="est-pt-pays" style="font-size:28px;font-weight:800;color:#b45309;font-family:var(--mono)">$30</div>
-            <div id="est-pt-note" style="font-size:10.5px;color:#6b7280;margin-top:3px">Copay due at check-in</div>
-          </div>
-          <div style="width:2px;background:#e5e7eb"></div>
-          <div style="flex:1;padding:16px;text-align:center;background:#f0fdf4">
-            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#15803d;margin-bottom:4px">📋 Deductible Status</div>
-            <div style="font-size:28px;font-weight:800;color:#b45309;font-family:var(--mono)">$880</div>
-            <div style="font-size:10.5px;color:#6b7280;margin-top:3px">Remaining of $1,500</div>
-          </div>
-        </div>
-        <div id="est-detail-box" style="background:#f9fafb;border-radius:8px;padding:12px;font-size:12px;color:#374151;line-height:1.8">
-          <strong>Primary Care Visit (PCP):</strong><br>
-          • Your copay: <strong style="color:#b45309">$30 due at check-in</strong><br>
-          • Insurance pays the remainder of the allowed amount<br>
-          • Deductible: Does <strong>not</strong> apply to PCP copay visits — you pay $30 regardless<br>
-          • Note: If labs or procedures are ordered during visit, those are billed separately and deductible applies
-        </div>
-      </div>
-
-      <!-- Important notes -->
-      <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11.5px">
-        <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px">
-          <strong style="color:#92400e">⚠️ Important:</strong><br>
-          <span style="color:#78350f">Your deductible of $1,500 is <strong>41% met</strong> ($880 remaining). Services like labs, imaging, and procedures will apply to your deductible first before insurance pays its share.</span>
-        </div>
-        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px">
-          <strong style="color:#166534">✅ In-Network Reminder:</strong><br>
-          <span style="color:#166534">Lifecare Health Services is <strong>in-network</strong> with BCBS TX BluePPO. Always use in-network providers to maximize your benefits and minimize out-of-pocket costs.</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Waystar raw 271 snippet -->
-    <div class="card" style="margin-bottom:12px">
-      <div class="card-title-bar blue" style="cursor:pointer" onclick="document.getElementById('elig-raw-271').style.display=document.getElementById('elig-raw-271').style.display==='none'?'block':'none'">
-        📄 Raw 271 Response — Waystar API (click to expand)
-      </div>
-      <div id="elig-raw-271" style="display:none;background:#0b1e3d;border-radius:0 0 8px 8px;padding:14px;font-family:var(--mono);font-size:11px;color:#93c5fd;line-height:1.7;overflow-x:auto">
-        ISA*00*          *00*          *ZZ*WAYSTAR        *ZZ*BCBSTX         *260519*0914*^*00501*000000001*0*P*:~<br>
-        GS*HR*CARESYNC*BCBSTX*20260519*0914*1*X*005010X279A1~<br>
-        ST*271*0001*005010X279A1~<br>
-        BHT*0022*11*MEG20260519*20260519*0914~<br>
-        HL*1**20*1~<br>
-        NM1*PR*2*BLUE CROSS BLUE SHIELD OF TEXAS*****PI*BCBST~<br>
-        HL*2*1*21*1~<br>
-        NM1*1P*2*LIFECARE HEALTH SERVICES*****XX*1407889579~<br>
-        HL*3*2*22*0~<br>
-        TRN*2*MEG-271-20260519-001*9WAYSTAR~<br>
-        NM1*IL*1*GONZALEZ*MARIA ELENA****MI*BCB-7712-9034~<br>
-        N3*1204 WESTHEIMER RD APT 4B~<br>
-        N4*HOUSTON*TX*77006~<br>
-        DMG*D8*19750814*F~<br>
-        DTP*307*RD8*20260101-20261231~<br>
-        EB*1**30^98^AL^UC^MH^RX**BCBS TX BLUEPPO**1~<br>
-        EB*C*IND*30*CB**1500*****Y~  <span style="color:#86efac">← Deductible: $1,500 IND</span><br>
-        EB*C*IND*30*CB**620*****Y~   <span style="color:#86efac">← YTD Applied: $620</span><br>
-        EB*G*IND*30*CB**5000*****Y~  <span style="color:#86efac">← OOP Max: $5,000</span><br>
-        EB*B*IND*98*CP**30~          <span style="color:#86efac">← PCP Copay: $30</span><br>
-        EB*B*IND*SC*CP**60~          <span style="color:#86efac">← Specialist Copay: $60</span><br>
-        EB*B*IND*UC*CP**75~          <span style="color:#86efac">← Urgent Care: $75</span><br>
-        EB*B*IND*ER*CP**350~         <span style="color:#86efac">← ER Copay: $350</span><br>
-        EB*A*IND*30*PC**80~          <span style="color:#86efac">← Coinsurance: Ins 80% / Pt 20%</span><br>
-        SE*28*0001~<br>
-        GE*1*1~<br>
-        IEA*1*000000001~
-      </div>
-    </div>
-
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding:14px 16px;background:linear-gradient(135deg,#f0fdf4,#eff6ff);border-radius:10px;border:2px solid #bfdbfe">
-      <button class="btn" onclick="srBack('elig')" style="font-size:13px;padding:10px 22px">← Back to Insurance</button>
-      <div style="font-size:11.5px;color:#6b7280;text-align:center">Review benefits above, then continue</div>
-      <button class="btn btn-teal" onclick="srNext('elig')" style="font-size:13px;padding:10px 22px;font-weight:700;background:var(--teal)">✅ Benefits Confirmed — Next: Medical Info →</button>
-    </div>
-  </div>
-  <div id="sr-step-3" style="display:none" class="card">
-    <div class="card-title-bar blue">💊 Step 3 of 5 — Medical History & Current Medications</div>
-    <div class="frow fr2">
-      <div class="fld"><label>Chief Complaint / Reason for Visit *</label><textarea id="sr-complaint" style="width:100%;padding:8px;border:1px solid var(--gray2);border-radius:6px;font-size:12px;height:70px;font-family:var(--font);resize:none">Diabetes management and blood pressure monitoring</textarea></div>
-      <div class="fld"><label>Known Drug Allergies *</label><textarea id="sr-allergies" style="width:100%;padding:8px;border:1px solid var(--gray2);border-radius:6px;font-size:12px;height:70px;font-family:var(--font);resize:none">Penicillin, Sulfa drugs</textarea></div>
-    </div>
-    <div class="fld" style="margin-top:10px"><label>Current Medications (name + dosage)</label><textarea id="sr-meds" style="width:100%;padding:8px;border:1px solid var(--gray2);border-radius:6px;font-size:12px;height:70px;font-family:var(--font);resize:none">Metformin 500mg twice daily, Lisinopril 10mg once daily, Atorvastatin 20mg nightly</textarea></div>
-    <div style="margin-top:12px"><label style="font-size:11.5px;font-weight:600;color:var(--gray6);display:block;margin-bottom:6px">Medical History (check all that apply)</label>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:12px">
-      <label style="cursor:pointer"><input type="checkbox" checked style="accent-color:var(--blue)"> Type 2 Diabetes</label>
-      <label style="cursor:pointer"><input type="checkbox" checked style="accent-color:var(--blue)"> Hypertension</label>
-      <label style="cursor:pointer"><input type="checkbox" style="accent-color:var(--blue)"> Heart Disease</label>
-      <label style="cursor:pointer"><input type="checkbox" style="accent-color:var(--blue)"> Asthma / COPD</label>
-      <label style="cursor:pointer"><input type="checkbox" style="accent-color:var(--blue)"> Depression / Anxiety</label>
-      <label style="cursor:pointer"><input type="checkbox" style="accent-color:var(--blue)"> Thyroid Disorder</label>
-      <label style="cursor:pointer"><input type="checkbox" style="accent-color:var(--blue)"> Cancer (current/prior)</label>
-      <label style="cursor:pointer"><input type="checkbox" style="accent-color:var(--blue)"> Kidney Disease</label>
-    </div></div>
-    <div class="frow fr3" style="margin-top:12px">
-      <div class="fld"><label>Last Physical Exam</label><input type="date" value="2024-11-08"></div>
-      <div class="fld"><label>Primary Care Physician (Prior)</label><input value="Dr. Sofia Reyes — Houston Medical Group"></div>
-      <div class="fld"><label>Preferred Pharmacy</label><input value="CVS Pharmacy — Westheimer & Shepherd"></div>
-    </div>
-    <div style="margin-top:8px;padding:10px;background:var(--green-lt);border-radius:8px;font-size:11px;color:var(--green)">
-      <label style="cursor:pointer"><input type="checkbox" checked style="accent-color:var(--green)"> &nbsp;I authorize release of medical records from my prior provider (HIPAA Release)</label>
-    </div>
-    <div style="display:flex;justify-content:space-between;margin-top:14px">
-      <button class="btn" onclick="srBack(3)">← Back</button>
-      <button class="btn btn-pri" onclick="srNext(3)">Next: Appointment Request →</button>
-    </div>
-  </div>
-
-  <!-- STEP 4: Appointment -->
-  <div id="sr-step-4" style="display:none" class="card">
-    <div class="card-title-bar purple" style="background:var(--purple)">📅 Step 4 of 5 — Request Your Appointment</div>
-    <div class="frow fr3">
-      <div class="fld"><label>Preferred Date *</label><input type="date" id="sr-appt-date" value="2025-06-10" oninput="srData.apptDate=this.value"></div>
-      <div class="fld"><label>Preferred Time</label><select><option>8:00 AM – 9:00 AM</option><option>9:00 AM – 10:00 AM</option><option>10:00 AM – 11:00 AM</option><option>1:00 PM – 2:00 PM</option><option>2:00 PM – 3:00 PM</option></select></div>
-      <div class="fld"><label>Visit Type</label><select><option>New Patient — Initial Evaluation</option><option>Telehealth (Video)</option><option>Phone Consultation</option></select></div>
-    </div>
-    <div class="frow fr2">
-      <div class="fld"><label>Alternate Date (if unavailable)</label><input type="date" value="2025-06-13"></div>
-      <div class="fld"><label>Appointment Notes (optional)</label><input placeholder="e.g. interpreter needed, wheelchair access..."></div>
-    </div>
-    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 14px;margin:12px 0">
-      <div style="font-size:12px;font-weight:700;color:#166534;margin-bottom:8px">✅ What to Bring on Your First Visit</div>
-      <div style="font-size:11.5px;color:#166534;line-height:1.8">
-        📄 Photo ID (Driver's License or Passport) &nbsp;·&nbsp;
-        🏥 Insurance Card(s) — Primary + Secondary &nbsp;·&nbsp;
-        💊 Medication bottles or a list of current meds &nbsp;·&nbsp;
-        📋 Referral letter (if required by insurance) &nbsp;·&nbsp;
-        🔢 Confirmation code from this registration
-      </div>
-    </div>
-    <!-- Consent section -->
-    <div style="background:var(--gray0);border-radius:8px;padding:14px;margin-top:4px">
-      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px">📜 Consent & Acknowledgments</div>
-      <div style="display:flex;flex-direction:column;gap:7px;font-size:12px">
-        <label style="cursor:pointer;display:flex;align-items:flex-start;gap:8px"><input type="checkbox" checked style="accent-color:var(--blue);margin-top:2px"> I consent to treatment and authorize Lifecare Health Services to provide medical care</label>
-        <label style="cursor:pointer;display:flex;align-items:flex-start;gap:8px"><input type="checkbox" checked style="accent-color:var(--blue);margin-top:2px"> I have read and accept the Practice's HIPAA Privacy Notice & Notice of Privacy Practices</label>
-        <label style="cursor:pointer;display:flex;align-items:flex-start;gap:8px"><input type="checkbox" checked style="accent-color:var(--blue);margin-top:2px"> I authorize my insurance carrier to pay benefits directly to the provider</label>
-        <label style="cursor:pointer;display:flex;align-items:flex-start;gap:8px"><input type="checkbox" style="accent-color:var(--blue);margin-top:2px"> I opt-in to receive health news and appointment reminders via email/SMS</label>
-      </div>
-      <div style="margin-top:10px">
-        <label style="font-size:11.5px;font-weight:600;color:var(--gray6)">Electronic Signature *</label>
-        <input style="width:100%;padding:8px;border:1px solid var(--gray2);border-radius:6px;font-size:12px;margin-top:4px;font-style:italic" value="Maria Elena Gonzalez" placeholder="Type your full legal name as signature">
-        <div style="font-size:10px;color:var(--gray4);margin-top:3px">By typing your name, you are providing a legally binding electronic signature</div>
-      </div>
-    </div>
-    <div style="display:flex;justify-content:space-between;margin-top:14px">
-      <button class="btn" onclick="srBack(4)">← Back</button>
-      <button class="btn btn-pri" style="background:var(--green);font-size:13px;padding:10px 24px" onclick="srSubmit()">✅ Submit Registration →</button>
-    </div>
-  </div>
-
-  <!-- STEP 5: Confirmation -->
-  <div id="sr-step-5" style="display:none" class="card">
-    <div style="text-align:center;padding:30px 20px">
-      <div style="font-size:56px;margin-bottom:12px">🎉</div>
-      <div style="font-size:22px;font-weight:800;color:var(--green);margin-bottom:8px">Registration Submitted Successfully!</div>
-      <div style="font-size:13px;color:var(--gray5);max-width:480px;margin:0 auto;line-height:1.7">Thank you, <strong>Maria Elena</strong>! Your registration has been received and is being reviewed by our team. You will receive a confirmation by email and SMS within 24 hours.</div>
-      <div style="margin:20px auto;max-width:360px;background:var(--blue-lt);border:2px solid var(--blue2);border-radius:12px;padding:20px">
-        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;font-weight:700;color:var(--blue);margin-bottom:4px">Your Confirmation Code</div>
-        <div style="font-size:28px;font-weight:800;color:var(--navy);font-family:var(--mono);letter-spacing:3px">MEG-2025-061</div>
-        <div style="font-size:11px;color:var(--gray4);margin-top:4px">Bring this code to your first visit</div>
-      </div>
-      <div style="background:var(--green-lt);border-radius:10px;padding:14px;max-width:440px;margin:0 auto 20px;text-align:left">
-        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:6px">📋 What Happens Next</div>
-        <div style="font-size:12px;color:#166534;line-height:1.9">
-          🔍 Staff will review your registration within 1 business day<br>
-          📱 You'll receive an SMS/email confirmation with appointment details<br>
-          🆔 A Medical Record Number (MRN) will be assigned upon approval<br>
-          📂 Your chart will be created in our EMR before your visit
-        </div>
-      </div>
-      <div style="display:flex;gap:10px;justify-content:center">
-        <button class="btn btn-pri" onclick="go('patient-portal-landing')">← Back to Home</button>
-        <button class="btn btn-teal" onclick="window.print()">🖨 Print Confirmation</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     PAGE: STAFF REVIEW QUEUE
-═══════════════════════════════════════════════════════════════ -->
-<div class="pg" id="pg-staff-review-queue">
-  <div class="pg-hdr">
-    <div><div class="pg-title">🔍 Staff Review Queue — New Patient Registrations</div><div class="pg-sub">Review patient-submitted registrations before importing into EMR · <span id="sr-queue-count" style="color:var(--amber);font-weight:700">3 Pending</span></div></div>
-    <div class="pg-actions">
-      <button class="btn btn-sm btn-pri" onclick="go('patient-portal-landing')">🌐 Portal Preview</button>
-      <button class="btn btn-sm btn-teal" onclick="go('emr-import')">⬆️ EMR Import →</button>
-      <button class="btn btn-sm btn-amber" onclick="srRenderQueue();toast('🔄 Queue refreshed')">🔄 Refresh</button>
-    </div>
-  </div>
-  <div class="al al-a" style="margin-bottom:12px"><div class="al-ic">⚠️</div><div><div class="al-t">3 patients awaiting staff review</div><div class="al-s">Review each submission, verify insurance, and approve or reject before importing to EMR. Approved patients will appear in the EMR Import tab.</div></div></div>
-  <div class="card">
-    <div class="card-title-bar blue">📋 Pending Patient Registrations</div>
-    <div style="overflow-x:auto">
-    <table class="tbl" id="sr-queue-table">
-      <thead><tr>
-        <th>Patient Name</th><th>Date of Birth</th><th>Phone</th><th>Insurance</th><th>Appt. Request</th><th>Form Completion</th><th>Status</th><th>Submitted</th><th>Actions</th>
-      </tr></thead>
-      <tbody id="sr-queue-tbody"></tbody>
-    </table>
-    </div>
-  </div>
-  <div class="card" style="margin-top:12px;background:var(--blue-xlt);border:1px solid #bfdbfe">
-    <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px">📌 Staff Review Checklist — Before Approving Any Patient</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
-      <label style="cursor:pointer;display:flex;align-items:center;gap:7px"><input type="checkbox" style="accent-color:var(--blue)"> Verify patient identity matches submitted ID</label>
-      <label style="cursor:pointer;display:flex;align-items:center;gap:7px"><input type="checkbox" style="accent-color:var(--blue)"> Run 270/271 insurance eligibility check</label>
-      <label style="cursor:pointer;display:flex;align-items:center;gap:7px"><input type="checkbox" style="accent-color:var(--blue)"> Confirm no duplicate MRN exists in EMR</label>
-      <label style="cursor:pointer;display:flex;align-items:center;gap:7px"><input type="checkbox" style="accent-color:var(--blue)"> Check for prior balance or collections</label>
-      <label style="cursor:pointer;display:flex;align-items:center;gap:7px"><input type="checkbox" style="accent-color:var(--blue)"> Verify all required consent forms signed</label>
-      <label style="cursor:pointer;display:flex;align-items:center;gap:7px"><input type="checkbox" style="accent-color:var(--blue)"> Confirm appointment slot is available</label>
-    </div>
-  </div>
-</div>
-
-<!-- REVIEW MODAL -->
-<div id="sr-review-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center">
-  <div style="background:#fff;border-radius:14px;padding:28px;max-width:560px;width:90%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-      <div><div style="font-size:17px;font-weight:800;color:var(--navy)" id="review-modal-name">Patient Name</div><div style="font-size:11px;color:var(--gray4)" id="review-modal-id">ID</div></div>
-      <button onclick="document.getElementById('sr-review-modal').style.display='none'" style="background:var(--gray1);border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:16px">✕</button>
-    </div>
-    <table style="width:100%;font-size:12px;border-collapse:collapse">
-      <tr><td style="padding:6px 0;color:var(--gray5);width:130px">Date of Birth</td><td id="review-modal-dob" style="font-weight:600"></td></tr>
-      <tr><td style="padding:6px 0;color:var(--gray5)">Phone</td><td id="review-modal-phone" style="font-weight:600"></td></tr>
-      <tr><td style="padding:6px 0;color:var(--gray5)">Email</td><td id="review-modal-email" style="font-weight:600"></td></tr>
-      <tr><td style="padding:6px 0;color:var(--gray5)">Insurance</td><td id="review-modal-ins" style="font-weight:600"></td></tr>
-      <tr><td style="padding:6px 0;color:var(--gray5)">Appt. Request</td><td id="review-modal-appt" style="font-weight:600"></td></tr>
-      <tr><td style="padding:6px 0;color:var(--gray5)">Reason / Chief Complaint</td><td id="review-modal-reason" style="font-weight:600"></td></tr>
-      <tr><td style="padding:6px 0;color:var(--gray5)">Submitted</td><td id="review-modal-submitted" style="font-weight:600;font-size:11px"></td></tr>
-    </table>
-    <div style="background:var(--gray0);border-radius:8px;padding:12px;margin-top:12px;font-size:11.5px">
-      <div style="font-weight:700;color:var(--navy);margin-bottom:6px">Staff Verification Notes</div>
-      <textarea placeholder="Add verification notes here (e.g. called patient, verified ID, insurance active)..." style="width:100%;padding:8px;border:1px solid var(--gray2);border-radius:6px;font-size:11.5px;height:60px;resize:none;font-family:var(--font)"></textarea>
-    </div>
-    <div style="display:flex;gap:10px;margin-top:16px;justify-content:flex-end">
-      <button class="btn btn-sm" onclick="document.getElementById('sr-review-modal').style.display='none'">Cancel</button>
-      <button class="btn btn-sm btn-amber" onclick="srRejectRegistration()">❌ Reject</button>
-      <button class="btn btn-sm btn-teal" onclick="srApproveImport()">✅ Approve & Queue for EMR Import</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     PAGE: EMR IMPORT
-═══════════════════════════════════════════════════════════════ -->
-<div class="pg" id="pg-emr-import">
-  <div class="pg-hdr">
-    <div><div class="pg-title">⬆️ EMR Import — Approved New Patients</div><div class="pg-sub">Import staff-approved patient registrations into the EMR · MRN will be auto-assigned</div></div>
-    <div class="pg-actions">
-      <button class="btn btn-sm" onclick="go('staff-review-queue')">← Review Queue</button>
-      <button class="btn btn-sm btn-amber" onclick="srEmrImportRender();toast('🔄 Refreshed')">🔄 Refresh</button>
-    </div>
-  </div>
-  <div class="al al-b" style="margin-bottom:12px"><div class="al-ic">ℹ️</div><div><div class="al-t">How EMR Import Works</div><div class="al-s">After staff approves a registration, the patient appears here. Click "Import Now" to create a new chart in the EMR — a Medical Record Number (MRN) is auto-assigned, the patient chart is created, and the patient is added to your population list.</div></div></div>
-  <div class="card">
-    <div class="card-title-bar teal">📂 Patients Ready for EMR Import</div>
-    <div style="overflow-x:auto">
-    <table class="tbl">
-      <thead><tr><th><input type="checkbox" style="accent-color:var(--blue)"></th><th>Patient Name</th><th>Date of Birth</th><th>Insurance</th><th>Status</th><th>Action</th></tr></thead>
-      <tbody id="emr-import-tbody">
-        <tr><td colspan="6" style="text-align:center;color:var(--gray4);padding:30px">No approved registrations yet — approve patients in the Staff Review Queue first</td></tr>
-      </tbody>
-    </table>
-    </div>
-    <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn btn-teal" onclick="srEmrImportRender();srDoImportAll()">⬆️ Import All Selected</button>
-      <button class="btn" onclick="go('staff-review-queue')">← Back to Review Queue</button>
-    </div>
-  </div>
-  <div class="card" style="margin-top:12px;background:var(--green-lt);border:1px solid #bbf7d0">
-    <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px">✅ What Happens When You Import a Patient</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;color:#166534">
-      <div>🆔 New MRN is auto-generated (e.g. Clinic-10901)</div>
-      <div>📂 Patient chart created in EMR with all submitted data</div>
-      <div>🏥 Insurance on file — eligibility check triggered</div>
-      <div>📅 Appointment confirmed and added to scheduler</div>
-      <div>📱 Patient receives welcome SMS + MRN via text/email</div>
-      <div>👥 Patient added to Population list for care management</div>
-    </div>
-  </div>
-</div>
-
-<!-- CSS for self-registration steps -->
-<style>
-.sr-dot{width:30px;height:30px;border-radius:50%;background:var(--gray2);color:var(--gray5);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;transition:all .2s}
-.sr-dot-active{background:var(--blue);color:#fff;box-shadow:0 0 0 4px var(--blue-lt)}
-.sr-dot-done{background:var(--green);color:#fff}
-.card-title-bar.purple{background:var(--purple)!important}
-</style>
-
-</div><!-- end mcontent -->
-</div><!-- end main-layout -->
 </body>
 </html>
