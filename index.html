@@ -117,6 +117,7 @@ var ALL_MODULES = [
   {id:"telehealth",name:"Telehealth",icon:"\u{1F4F9}",desc:"Video visits",color:"#1D4ED8"},
   {id:"erx",name:"e-Prescribe",icon:"\u{1F48A}",desc:"Rx + EPCS",color:"#7C3AED"},
   {id:"ai_agent",name:"AI Call Agent",icon:"\u{1F916}",desc:"Phone automation",color:"#2E7D32"},
+  {id:"ai_emr",name:"AI-Assisted EMR",icon:"\uD83E\uDD16",desc:"AI Scribe · HCC · Coding · Quality",color:"#1a6eb5",link:"mof-ai-emr.html"},
   {id:"voip",name:"VOIP System",icon:"\u260E\uFE0F",desc:"Phone lines",color:"#B45309"},
   {id:"mips",name:"MIPS / Quality",icon:"\u{1F4CA}",desc:"MACRA reporting",color:"#9A6B10"},
   {id:"audit",name:"Audit & Compliance",icon:"\u{1F512}",desc:"HIPAA, ONC",color:"#8A3B5E"},
@@ -379,6 +380,7 @@ function App() {
             )
           ),
           h("a", {href:"schedule.html", target:"_blank", className:"btn-sm", style:{background:"#1a6ef5",color:"#fff",border:"1.5px solid #1a6ef5",textDecoration:"none",display:"inline-flex",alignItems:"center",gap:"4px"}}, "\uD83D\uDCC5 Schedule Engine"),
+          h("a", {href:"mof-ai-emr.html", target:"_blank", className:"btn-sm", style:{background:"linear-gradient(135deg,#1a6eb5,#2563eb)",color:"#fff",border:"1.5px solid #2563eb",textDecoration:"none",display:"inline-flex",alignItems:"center",gap:"4px",boxShadow:"0 2px 8px rgba(26,110,181,.3)"}}, "\uD83E\uDD16 AI EMR"),
           h("button", {className:"btn-sm btn-so", onClick:doSignout}, "Sign Out")
         )
       ),
