@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOF AI-Assisted EMR | CareSync Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* MOF DESIGN TOKENS - WCAG AAA 7:1+ LIGHT MODE */
+:root{
+  --mp:#1a6eb5;--mpdk:#144f85;--mplt:#dbeafe;
+  --bg:#f0f4f8;--bg2:#e2eaf3;
+  --tx:#1a2332;--tx2:#374151;--tx3:#6b7280;
+  --ok:#2e7d32;--oklt:#e8f5e9;
+  --er:#c62828;--erlt:#ffebee;
+  --am:#b45309;--amlt:#fffbeb;
+  --tl:#00897b;--tllt:#e0f2f1;
+  --pu:#5c35a8;--pult:#ede9fe;
+  --brd:#c8d5e5;--wh:#fff;
+  --sh:0 1px 3px rgba(26,46,70,.10),0 1px 2px rgba(26,46,70,.06);
+  --shm:0 4px 12px rgba(26,46,70,.12);
+  --shl:0 8px 24px rgba(26,46,70,.15);
+  --r:10px;--rs:6px;--rl:14px;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{background:linear-gradient(135deg,#0f2744 0%,#1a3a6b 60%,#1a6eb5 100%);color:#fff;display:flex;align-items:center;height:54px;flex-shrink:0;box-shadow:0 2px 8px rgba(15,39,68,.35);position:sticky;top:0;z-index:100}
+.topbar-brand{display:flex;align-items:center;gap:10px;padding:0 18px;height:100%;border-right:1px solid rgba(255,255,255,.12);text-decoration:none;cursor:pointer}
+.topbar-logo{width:30px;height:30px;background:linear-gradient(135deg,#3b9aff,#1a6eb5);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.topbar-name{font-size:15px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.topbar-name span{color:#7dd3fc}
+.topbar-nav{display:flex;align-items:center;height:100%;padding:0 8px;flex:1;gap:2px;overflow-x:auto}
+.tn-btn{padding:6px 13px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;color:rgba(255,255,255,.75);border:none;background:transparent;transition:all .15s;display:flex;align-items:center;gap:5px;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.tn-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+.tn-btn.on{background:rgba(255,255,255,.15);color:#fff;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:10px;padding:0 16px;height:100%;border-left:1px solid rgba(255,255,255,.12);flex-shrink:0}
+.ai-status{display:flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.ai-status.mock{background:rgba(180,83,9,.25);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
+.ai-status.live{background:rgba(46,125,50,.25);color:#86efac;border:1px solid rgba(134,239,172,.3)}
+.ai-dot{width:8px;height:8px;border-radius:50%;animation:pulse 2s infinite}
+.ai-status.mock .ai-dot{background:#fbbf24}
+.ai-status.live .ai-dot{background:#86efac}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.tb-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#3b9aff,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;border:2px solid rgba(255,255,255,.25);cursor:pointer}
+
+/* PATIENT BAR */
+.patient-bar{background:#1e3a5f;border-bottom:2px solid rgba(255,255,255,.12);padding:8px 18px;display:flex;align-items:center;gap:14px;flex-shrink:0;overflow-x:auto}
+.pb-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#ef4444);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;border:2px solid rgba(255,255,255,.3)}
+.pb-name{font-size:16px;font-weight:700;color:#fff}
+.pb-sub{font-size:12px;color:rgba(255,255,255,.65)}
+.pb-sep{width:1px;height:28px;background:rgba(255,255,255,.2);flex-shrink:0}
+.pb-chip{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.pb-chip.rh{background:rgba(198,40,40,.35);color:#fca5a5;border:1px solid rgba(198,40,40,.4)}
+.pb-chip.raf{background:rgba(92,53,168,.35);color:#c4b5fd;border:1px solid rgba(92,53,168,.4)}
+.pb-chip.pay{background:rgba(26,110,181,.35);color:#93c5fd;border:1px solid rgba(26,110,181,.4)}
+.pb-field{font-size:12px;color:rgba(255,255,255,.6);white-space:nowrap}
+.pb-field b{color:#fff;font-weight:600}
+.pb-actions{margin-left:auto;display:flex;gap:8px;flex-shrink:0}
+.pb-btn{padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.pb-btn:hover{background:rgba(255,255,255,.18)}
+.pb-btn.pri{background:var(--mp);border-color:var(--mp)}
+
+/* LAYOUT */
+.app-layout{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:215px;background:var(--wh);border-right:1px solid var(--brd);overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column}
+.sb-section{border-bottom:1px solid var(--brd)}
+.sb-section-hdr{padding:10px 14px 5px;font-size:10px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase}
+.sb-item{display:flex;align-items:center;gap:8px;padding:9px 14px;font-size:13px;color:var(--tx2);cursor:pointer;border-left:3px solid transparent;transition:all .12s;position:relative}
+.sb-item:hover{background:var(--bg);color:var(--mp)}
+.sb-item.on{background:var(--mplt);color:var(--mp);border-left-color:var(--mp);font-weight:600}
+.sb-ic{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.sb-badge{margin-left:auto;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700}
+.sb-badge.ai{background:var(--mplt);color:var(--mp)}
+.sb-badge.warn{background:var(--amlt);color:var(--am)}
+.sb-badge.ok{background:var(--oklt);color:var(--ok)}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:22px 24px;display:flex;flex-direction:column;gap:20px}
+
+/* PAGES */
+.pg{display:none}
+.pg.on{display:flex;flex-direction:column;gap:20px}
+
+/* CARDS */
+.card{background:var(--wh);border:1px solid var(--brd);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.card-hdr{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--brd);background:#fafbfd;justify-content:space-between}
+.card-hdr-left{display:flex;flex-direction:column}
+.card-title{font-size:15px;font-weight:700;color:var(--tx)}
+.card-sub{font-size:12px;color:var(--tx3);margin-top:1px}
+.card-body{padding:18px}
+.card-body.sm{padding:12px}
+
+/* AI PANEL */
+.ai-panel{background:linear-gradient(135deg,#eff6ff 0%,#f0f4ff 100%);border:1.5px solid #bfdbfe;border-radius:var(--r);overflow:hidden;box-shadow:0 0 0 2px rgba(26,110,181,.12),0 4px 16px rgba(26,110,181,.08)}
+.ai-panel-hdr{display:flex;align-items:center;gap:10px;padding:12px 16px;background:linear-gradient(135deg,#1a6eb5,#2563eb);color:#fff}
+.ai-panel-icon{width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:14px}
+.ai-panel-title{font-size:13px;font-weight:700}
+.ai-panel-sub{font-size:11px;color:rgba(255,255,255,.75);margin-top:1px}
+.ai-panel-body{padding:16px}
+.ai-response{background:var(--wh);border:1px solid #bfdbfe;border-radius:var(--rs);padding:14px;font-size:14px;line-height:1.65;color:var(--tx);min-height:80px}
+.ai-source{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;color:var(--tx3);padding-top:8px;border-top:1px solid #e0ebff}
+.ai-src-badge{padding:1px 8px;border-radius:10px;font-size:10px;font-weight:700}
+.ai-src-badge.mock{background:#fef3c7;color:#92400e}
+.ai-src-badge.live{background:#d1fae5;color:#065f46}
+
+/* BUTTONS */
+.btn{padding:9px 18px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:7px;font-family:'DM Sans',sans-serif;line-height:1;min-height:40px}
+.btn-pri{background:var(--mp);color:#fff}
+.btn-pri:hover{background:var(--mpdk)}
+.btn-sec{background:var(--bg);color:var(--tx);border:1px solid var(--brd)}
+.btn-sec:hover{background:var(--bg2)}
+.btn-ok{background:var(--ok);color:#fff}
+.btn-ok:hover{background:#1b5e20}
+.btn-sm{padding:6px 12px;font-size:13px;min-height:32px}
+.btn-ai{background:linear-gradient(135deg,#1a6eb5,#2563eb);color:#fff;box-shadow:0 2px 8px rgba(26,110,181,.3)}
+.btn-ai:hover{box-shadow:0 4px 14px rgba(26,110,181,.4);transform:translateY(-1px)}
+.btn-ai:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* FORMS */
+.form-row{display:flex;gap:16px;flex-wrap:wrap}
+.form-group{display:flex;flex-direction:column;gap:5px;flex:1;min-width:180px}
+.form-label{font-size:13px;font-weight:600;color:var(--tx2)}
+.req{color:var(--er);margin-left:2px}
+.form-input,.form-select,.form-textarea{padding:9px 12px;border:1.5px solid var(--brd);border-radius:7px;font-size:14px;color:var(--tx);background:var(--wh);font-family:'DM Sans',sans-serif;transition:border-color .15s;width:100%}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--mp);box-shadow:0 0 0 3px rgba(26,110,181,.12)}
+.form-textarea{resize:vertical;min-height:90px;line-height:1.5}
+.form-hint{font-size:12px;color:var(--tx3)}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+
+/* KPI TILES */
+.kpi{background:var(--wh);border:1px solid var(--brd);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh)}
+.kpi-lbl{font-size:12px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em}
+.kpi-val{font-size:32px;font-weight:700;color:var(--tx);line-height:1.1;margin:6px 0 4px}
+.kpi-sub{font-size:12px;color:var(--tx3)}
+.kpi.pri .kpi-val{color:var(--mp)}
+.kpi.ok .kpi-val{color:var(--ok)}
+.kpi.am .kpi-val{color:var(--am)}
+.kpi.er .kpi-val{color:var(--er)}
+.kpi.pu .kpi-val{color:var(--pu)}
+
+/* TAGS */
+.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600}
+.tag-bl{background:var(--mplt);color:var(--mp)}
+.tag-gn{background:var(--oklt);color:var(--ok)}
+.tag-am{background:var(--amlt);color:var(--am)}
+.tag-rd{background:var(--erlt);color:var(--er)}
+.tag-pu{background:var(--pult);color:var(--pu)}
+.tag-tl{background:var(--tllt);color:var(--tl)}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;padding:10px 14px;font-size:12px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em;background:#f8fafc;border-bottom:1.5px solid var(--brd)}
+.tbl td{padding:11px 14px;border-bottom:1px solid #f0f4f8;color:var(--tx);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#f8fafc}
+
+/* STEPPER */
+.stepper{display:flex;align-items:center;margin-bottom:24px}
+.step{display:flex;align-items:center;gap:8px;flex:1;position:relative}
+.step:not(:last-child)::after{content:'';position:absolute;left:calc(50% + 18px);right:calc(-50% + 18px);top:16px;height:2px;background:var(--brd);z-index:0}
+.step.done:not(:last-child)::after{background:var(--ok)}
+.step-circle{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:2px solid var(--brd);background:var(--wh);color:var(--tx3);z-index:1;flex-shrink:0;transition:all .2s}
+.step.done .step-circle{background:var(--ok);border-color:var(--ok);color:#fff}
+.step.active .step-circle{background:var(--mp);border-color:var(--mp);color:#fff;box-shadow:0 0 0 4px rgba(26,110,181,.2)}
+.step-info{display:flex;flex-direction:column}
+.step-num{font-size:10px;color:var(--tx3);font-weight:600}
+.step-name{font-size:12px;font-weight:600;color:var(--tx2)}
+.step.active .step-name{color:var(--mp)}
+
+/* SECTION HEADER */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.sec-title{font-size:20px;font-weight:700;color:var(--tx);letter-spacing:-.3px}
+.sec-sub{font-size:13px;color:var(--tx3);margin-top:2px}
+
+/* ALERTS */
+.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:8px;font-size:14px}
+.alert-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.alert-title{font-weight:700;margin-bottom:2px}
+.alert-bl{background:var(--mplt);color:var(--mp);border:1px solid #bfdbfe}
+.alert-gn{background:var(--oklt);color:var(--ok);border:1px solid #c8e6c9}
+.alert-am{background:var(--amlt);color:var(--am);border:1px solid #fde68a}
+.alert-rd{background:var(--erlt);color:var(--er);border:1px solid #ffcdd2}
+
+/* AI LOADING */
+.ai-thinking{display:flex;align-items:center;gap:8px;padding:16px;font-size:14px;color:var(--mp);font-weight:500}
+.ai-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--mp);animation:bounce 1.2s infinite}
+.ai-dots span:nth-child(2){animation-delay:.2s}
+.ai-dots span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+
+/* SCRIBE */
+.scribe-live{display:flex;align-items:center;gap:8px;padding:6px 14px;background:var(--er);color:#fff;border-radius:20px;font-size:12px;font-weight:700}
+.scribe-dot{width:10px;height:10px;border-radius:50%;background:#fff;animation:pulse 1s infinite}
+
+/* HCC CARDS */
+.hcc-card{border:1.5px solid var(--brd);border-radius:8px;padding:14px;display:flex;align-items:flex-start;gap:12px}
+.hcc-card.captured{border-color:var(--ok);background:var(--oklt)}
+.hcc-card.gap{border-color:var(--er);background:var(--erlt)}
+.hcc-card.opp{border-color:var(--am);background:var(--amlt)}
+.hcc-num{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0}
+.hcc-card.captured .hcc-num{background:var(--ok);color:#fff}
+.hcc-card.gap .hcc-num{background:var(--er);color:#fff}
+.hcc-card.opp .hcc-num{background:var(--am);color:#fff}
+
+/* AUDIT */
+.audit-entry{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #f0f4f8;font-size:13px}
+.audit-entry:last-child{border-bottom:none}
+.audit-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.audit-dot.ai{background:var(--mp)}
+.audit-dot.user{background:var(--ok)}
+.audit-dot.sys{background:var(--tx3)}
+.audit-time{font-size:11px;color:var(--tx3);white-space:nowrap;min-width:72px}
+.audit-msg{color:var(--tx2)}
+.audit-actor{font-weight:600;color:var(--tx)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,39,68,.5);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(3px)}
+.modal-overlay.hidden{display:none}
+.modal{background:var(--wh);border-radius:var(--rl);box-shadow:var(--shl);width:90%;max-width:560px;max-height:80vh;overflow-y:auto}
+.modal-hdr{padding:18px 22px;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:17px;font-weight:700}
+.modal-close{width:30px;height:30px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;color:var(--tx)}
+.modal-body{padding:22px}
+
+/* PROGRESS */
+.progress{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;transition:width .4s ease}
+.pf-ok{background:var(--ok)}
+.pf-am{background:var(--am)}
+.pf-er{background:var(--er)}
+.pf-bl{background:var(--mp)}
+
+/* SOAP */
+.soap-section{border-left:3px solid var(--mp);padding-left:14px;margin-bottom:16px}
+.soap-section.S{border-color:#2563eb}
+.soap-section.O{border-color:#16a34a}
+.soap-section.A{border-color:#d97706}
+.soap-section.P{border-color:#dc2626}
+.soap-letter{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.soap-section.S .soap-letter{color:#2563eb}
+.soap-section.O .soap-letter{color:#16a34a}
+.soap-section.A .soap-letter{color:#d97706}
+.soap-section.P .soap-letter{color:#dc2626}
+
+/* UTILS */
+.flex{display:flex}.fc{flex-direction:column}.ic{align-items:center}.jb{justify-content:space-between}
+.g8{gap:8px}.g12{gap:12px}.g16{gap:16px}
+.mt4{margin-top:4px}.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
+.mb4{margin-bottom:4px}.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}
+.mono{font-family:'JetBrains Mono',monospace;font-size:13px}
+.bold{font-weight:700}.semi{font-weight:600}.sm{font-size:13px}.xs{font-size:12px}.muted{color:var(--tx3)}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#c8d5e5;border-radius:3px}
+.divider{border:none;border-top:1px solid var(--brd);margin:16px 0}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-brand" onclick="window.location.href='index.html'">
+    <div class="topbar-logo">&#x1F916;</div>
+    <div class="topbar-name">MOF <span>AI</span> EMR</div>
+  </div>
+  <div class="topbar-nav">
+    <button class="tn-btn on" onclick="showPage('ai-scribe')" id="nav-ai-scribe">&#x1F399; AI Scribe</button>
+    <button class="tn-btn" onclick="showPage('ai-hcc')" id="nav-ai-hcc">&#x1F9EC; HCC Capture</button>
+    <button class="tn-btn" onclick="showPage('ai-coding')" id="nav-ai-coding">&#x1F4CA; AI Coding</button>
+    <button class="tn-btn" onclick="showPage('ai-p360')" id="nav-ai-p360">&#x1F464; Patient 360</button>
+    <button class="tn-btn" onclick="showPage('ai-quality')" id="nav-ai-quality">&#x2705; Quality AI</button>
+    <button class="tn-btn" onclick="showPage('ai-audit')" id="nav-ai-audit">&#x1F50D; Audit Trail</button>
+  </div>
+  <div class="topbar-right">
+    <div class="ai-status mock" id="aiStatusBadge" onclick="toggleApiModal()" title="Click to configure AI">
+      <div class="ai-dot"></div>
+      <span id="aiStatusText">Mock AI</span>
+    </div>
+    <div class="tb-avatar">DH</div>
+  </div>
+</div>
+
+<!-- PATIENT BAR -->
+<div class="patient-bar">
+  <div class="pb-avatar">EW</div>
+  <div>
+    <div class="pb-name">Eleanor Whitfield</div>
+    <div class="pb-sub">MRN: MOF-00427 &bull; DOB: 03/14/1949 (76F) &bull; AHC Cardiology &bull; Dr. Holloway</div>
+  </div>
+  <div class="pb-sep"></div>
+  <div class="pb-chip rh">&#x26A0; High Risk</div>
+  <div class="pb-chip raf">RAF 1.069</div>
+  <div class="pb-chip pay">Medicare Advantage</div>
+  <div class="pb-sep"></div>
+  <div class="pb-field">BP: <b style="color:#fca5a5">148/92</b></div>
+  <div class="pb-field">A1c: <b style="color:#fcd34d">8.4%</b></div>
+  <div class="pb-field">eGFR: <b style="color:#fca5a5">42</b></div>
+  <div class="pb-field">BMI: <b>30.2</b></div>
+  <div class="pb-actions">
+    <button class="pb-btn" onclick="showPage('ai-p360')">&#x1F4CB; Patient 360</button>
+    <button class="pb-btn pri" onclick="showPage('ai-scribe')">&#x1F399; Start AI Scribe</button>
+  </div>
+</div>
+
+<!-- APP BODY -->
+<div class="app-layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-section">
+    <div class="sb-section-hdr">AI Encounter</div>
+    <div class="sb-item on" id="sb-ai-scribe" onclick="showPage('ai-scribe')"><span class="sb-ic">&#x1F399;</span>AI Ambient Scribe<span class="sb-badge ai">Live</span></div>
+    <div class="sb-item" id="sb-ai-hcc" onclick="showPage('ai-hcc')"><span class="sb-ic">&#x1F9EC;</span>HCC Gap Capture<span class="sb-badge warn">3 gaps</span></div>
+    <div class="sb-item" id="sb-ai-coding" onclick="showPage('ai-coding')"><span class="sb-ic">&#x1F4CA;</span>AI CPT/ICD Coding<span class="sb-badge ai">AI</span></div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-section-hdr">AI Intelligence</div>
+    <div class="sb-item" id="sb-ai-p360" onclick="showPage('ai-p360')"><span class="sb-ic">&#x1F464;</span>Patient 360 AI</div>
+    <div class="sb-item" id="sb-ai-quality" onclick="showPage('ai-quality')"><span class="sb-ic">&#x2705;</span>Quality AI<span class="sb-badge warn">8 gaps</span></div>
+    <div class="sb-item" id="sb-ai-audit" onclick="showPage('ai-audit')"><span class="sb-ic">&#x1F50D;</span>AI Audit Trail<span class="sb-badge ok">HIPAA</span></div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-section-hdr">CareSync Pro</div>
+    <div class="sb-item" onclick="window.location.href='index.html'"><span class="sb-ic">&#x1F3E5;</span>Back to Main EMR</div>
+  </div>
+  <div style="padding:14px;margin-top:auto;border-top:1px solid var(--brd)">
+    <div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Today's AI Usage</div>
+    <div style="font-size:13px;color:var(--tx2);margin-bottom:6px">Notes drafted: <b>4</b></div>
+    <div style="font-size:13px;color:var(--tx2);margin-bottom:6px">HCCs captured: <b>6</b></div>
+    <div style="font-size:13px;color:var(--tx2);margin-bottom:6px">Codes suggested: <b>11</b></div>
+    <div style="font-size:13px;color:var(--tx2)">Quality gaps closed: <b>3</b></div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main" id="mainContent">
+
+<!-- PAGE 1: AI SCRIBE -->
+<div class="pg on" id="pg-ai-scribe">
+  <div class="sec-hdr">
+    <div>
+      <div class="sec-title">&#x1F399; AI Ambient Scribe</div>
+      <div class="sec-sub">Claude listens, transcribes, and generates a structured SOAP note &mdash; physician reviews and signs before finalization</div>
+    </div>
+    <div class="flex ic g8">
+      <div class="scribe-live" id="scribeLiveInd" style="display:none"><div class="scribe-dot"></div>Recording</div>
+      <button class="btn btn-ai" id="scribeBtn" onclick="toggleScribe()">&#x1F399; Start Listening</button>
+    </div>
+  </div>
+
+  <!-- STEPPER -->
+  <div class="stepper">
+    <div class="step done" id="step1"><div class="step-circle">&#x2713;</div><div class="step-info"><div class="step-num">Step 1</div><div class="step-name">Patient Loaded</div></div></div>
+    <div class="step active" id="step2"><div class="step-circle">2</div><div class="step-info"><div class="step-num">Step 2</div><div class="step-name">AI Listening</div></div></div>
+    <div class="step" id="step3"><div class="step-circle">3</div><div class="step-info"><div class="step-num">Step 3</div><div class="step-name">SOAP Generated</div></div></div>
+    <div class="step" id="step4"><div class="step-circle">4</div><div class="step-info"><div class="step-num">Step 4</div><div class="step-name">MD Review</div></div></div>
+    <div class="step" id="step5"><div class="step-circle">5</div><div class="step-info"><div class="step-num">Step 5</div><div class="step-name">E-Sign</div></div></div>
+  </div>
+
+  <div class="g2">
+    <!-- TRANSCRIPT -->
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-hdr-left"><div class="card-title">&#x1F4DD; Visit Transcript</div><div class="card-sub">Whisper v3 real-time &mdash; physician + patient dialog</div></div>
+      </div>
+      <div class="card-body" style="padding:14px">
+        <div id="transcriptArea" style="height:330px;overflow-y:auto;font-size:14px;line-height:1.7;color:var(--tx2)">
+          <div id="transcriptLines">
+            <div style="margin-bottom:8px"><span style="font-weight:700;color:var(--mp)">Dr. Holloway:</span> Good morning Mrs. Whitfield, how have you been feeling since your last visit?</div>
+            <div style="margin-bottom:8px"><span style="font-weight:700;color:var(--tx3)">Patient:</span> Doctor, I've been having more shortness of breath when I climb stairs. My ankles are swollen again in the evenings.</div>
+            <div style="margin-bottom:8px"><span style="font-weight:700;color:var(--mp)">Dr. Holloway:</span> Are you taking your Furosemide every day?</div>
+            <div style="margin-bottom:8px"><span style="font-weight:700;color:var(--tx3)">Patient:</span> Most days. I sometimes forget. My blood sugar has been running around 180 to 210 in the mornings.</div>
+            <div style="margin-bottom:8px"><span style="font-weight:700;color:var(--mp)">Dr. Holloway:</span> That's higher than we'd like. Your last eGFR was 42. Any changes in urination?</div>
+            <div style="margin-bottom:8px"><span style="font-weight:700;color:var(--tx3)">Patient:</span> More frequent at night, yes. And some chest tightness with exertion.</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--brd);display:flex;gap:8px">
+          <input class="form-input" id="dictInput" placeholder="Type additional notes..." style="flex:1">
+          <button class="btn btn-sm btn-pri" onclick="addManualNote()">Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOAP OUTPUT -->
+    <div class="ai-panel">
+      <div class="ai-panel-hdr">
+        <div class="ai-panel-icon">&#x1F916;</div>
+        <div><div class="ai-panel-title">AI-Generated SOAP Note</div><div class="ai-panel-sub">Draft only &mdash; physician must review and e-sign</div></div>
+        <button class="btn btn-sm" style="margin-left:auto;background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);font-family:'DM Sans',sans-serif" onclick="generateSOAP()">&#x26A1; Generate</button>
+      </div>
+      <div class="ai-panel-body">
+        <div id="soapOutput">
+          <div class="alert alert-bl"><span class="alert-icon">&#x1F4A1;</span><div><div class="alert-title">Ready to generate</div>Click "Generate" above or "Start Listening" to capture the visit and auto-generate a SOAP note.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <button class="btn btn-ai" onclick="generateSOAP()">&#x1F916; Generate SOAP Note</button>
+      <button class="btn btn-sec" onclick="clearSOAP()">&#x1F5D1; Clear Draft</button>
+      <div style="margin-left:auto;display:flex;gap:10px">
+        <button class="btn btn-sec" onclick="alert('Note saved as draft in chart')">&#x1F4BE; Save Draft</button>
+        <button class="btn btn-ok" onclick="openSignModal()">&#x270D; Review &amp; Sign</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 2: HCC CAPTURE -->
+<div class="pg" id="pg-ai-hcc">
+  <div class="sec-hdr">
+    <div><div class="sec-title">&#x1F9EC; AI HCC Gap Capture</div><div class="sec-sub">CMS-HCC V28 &bull; Current RAF 1.069 &rarr; Potential 1.838 &bull; MEAT documentation required for OIG compliance</div></div>
+    <button class="btn btn-ai" onclick="runHccAi()">&#x1F916; Run AI HCC Analysis</button>
+  </div>
+  <div class="g4">
+    <div class="kpi pri"><div class="kpi-lbl">Current RAF</div><div class="kpi-val">1.069</div><div class="kpi-sub">As of last submission</div></div>
+    <div class="kpi ok"><div class="kpi-lbl">Potential RAF</div><div class="kpi-val">1.838</div><div class="kpi-sub">3 gaps closable today</div></div>
+    <div class="kpi am"><div class="kpi-lbl">Revenue Opportunity</div><div class="kpi-val">$4,260</div><div class="kpi-sub">Annual per-patient</div></div>
+    <div class="kpi er"><div class="kpi-lbl">HCC Gaps Open</div><div class="kpi-val">3</div><div class="kpi-sub">Must recapture by Dec 31</div></div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">&#x1F9EC; HCC Status &mdash; Eleanor Whitfield</div><div class="card-sub">CMS-HCC V28 &bull; May 23, 2026</div></div></div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+      <div class="hcc-card captured">
+        <div class="hcc-num">19</div>
+        <div style="flex:1">
+          <div style="font-weight:700;color:var(--ok);font-size:14px">HCC 19 &mdash; Diabetes Without Complications &#x2713; Captured</div>
+          <div class="sm muted mt4">ICD-10: E11.9 &bull; RAF: 0.105 &bull; Last documented: 03/14/2026</div>
+          <div class="sm muted mt4">MEAT: &#x2713; Monitor (A1c 8.4%) &bull; &#x2713; Evaluate (nephropathy screening) &bull; &#x2713; Assess &bull; &#x2713; Treat (Metformin)</div>
+          <div style="margin-top:8px"><span class="tag tag-gn">&#x2713; MEAT Complete</span> <span class="tag tag-gn">&#x2713; OIG Compliant</span></div>
+        </div>
+      </div>
+      <div class="hcc-card gap">
+        <div class="hcc-num">18</div>
+        <div style="flex:1">
+          <div style="font-weight:700;color:var(--er);font-size:14px">HCC 18 &mdash; Diabetes with Chronic Complications &#x26A0; GAP</div>
+          <div class="sm muted mt4">ICD-10: E11.65 &bull; RAF: 0.302 &bull; Last documented: <b>Never in 2026</b></div>
+          <div class="sm muted mt4">Patient has DM + CKD Stage 3 (E11.65 + N18.3) &mdash; qualifies as DM with chronic complications</div>
+          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+            <span class="tag tag-rd">&#x26A0; Not documented 2026</span>
+            <span class="tag tag-am">Revenue gap: $1,510/yr</span>
+            <button class="btn btn-sm btn-ai" onclick="generateMeat(18)">&#x1F916; AI MEAT Draft</button>
+          </div>
+          <div id="meat18Output"></div>
+        </div>
+      </div>
+      <div class="hcc-card gap">
+        <div class="hcc-num">85</div>
+        <div style="flex:1">
+          <div style="font-weight:700;color:var(--er);font-size:14px">HCC 85 &mdash; Congestive Heart Failure &#x26A0; GAP</div>
+          <div class="sm muted mt4">ICD-10: I50.9 &bull; RAF: 0.323 &bull; Last documented: <b>11/2025 &mdash; needs 2026 recapture</b></div>
+          <div class="sm muted mt4">Patient reports dyspnea on exertion, bilateral ankle edema &mdash; active CHF symptoms present today</div>
+          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+            <span class="tag tag-rd">&#x26A0; 2026 recapture due</span>
+            <span class="tag tag-am">Revenue gap: $1,615/yr</span>
+            <button class="btn btn-sm btn-ai" onclick="generateMeat(85)">&#x1F916; AI MEAT Draft</button>
+          </div>
+          <div id="meat85Output"></div>
+        </div>
+      </div>
+      <div class="hcc-card opp">
+        <div class="hcc-num">22</div>
+        <div style="flex:1">
+          <div style="font-weight:700;color:var(--am);font-size:14px">HCC 22 &mdash; Morbid Obesity &#x1F4A1; Opportunity</div>
+          <div class="sm muted mt4">ICD-10: E66.01 &bull; RAF: 0.272 &bull; BMI: 30.2 (Obese Class I &mdash; does not qualify for HCC 22)</div>
+          <div class="sm muted mt4">BMI 30.2 requires &ge;40 for HCC 22. Document E66.09 (obesity NOS) for lower RAF credit. Do NOT up-code.</div>
+          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+            <span class="tag tag-am">Partial opportunity</span>
+            <span class="tag tag-bl">RAF: 0.105 (E66.09)</span>
+            <button class="btn btn-sm btn-sec" onclick="alert('AI: Document E66.09 Obesity unspecified with BMI measurement. Do NOT code E66.01 Morbid obesity — BMI 30.2 does not qualify.')">&#x1F916; AI Guidance</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ai-panel" id="hccAiPanel" style="display:none">
+    <div class="ai-panel-hdr"><div class="ai-panel-icon">&#x1F916;</div><div><div class="ai-panel-title">AI HCC Analysis</div><div class="ai-panel-sub">claude-sonnet-4-20250514 &bull; Requires physician review</div></div></div>
+    <div class="ai-panel-body">
+      <div id="hccAiOutput" class="ai-response" style="white-space:pre-line"></div>
+      <div class="ai-source"><span id="hccSrcBadge" class="ai-src-badge mock">Mock AI</span>AI analysis is advisory only &mdash; physician must confirm all diagnoses and MEAT documentation</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 3: AI CODING -->
+<div class="pg" id="pg-ai-coding">
+  <div class="sec-hdr">
+    <div><div class="sec-title">&#x1F4CA; AI CPT / ICD-10 Coding</div><div class="sec-sub">AI suggests codes based on documentation &mdash; physician and biller must approve before claim submission</div></div>
+    <button class="btn btn-ai" onclick="runCodingAi()">&#x1F916; AI Code This Visit</button>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">&#x1F4C4; Visit Documentation</div></div></div>
+      <div class="card-body">
+        <div class="form-group mb12">
+          <label class="form-label">Visit Type</label>
+          <select class="form-select" id="visitTypeSelect">
+            <option>Established Patient Office Visit</option>
+            <option>New Patient Office Visit</option>
+            <option>Annual Wellness Visit</option>
+            <option>Transitional Care Management</option>
+            <option>Telemedicine Visit</option>
+          </select>
+        </div>
+        <div class="form-group mb12">
+          <label class="form-label">Chief Complaint</label>
+          <textarea class="form-textarea" id="ccInput" style="min-height:70px">Shortness of breath with exertion, bilateral ankle edema, fasting glucose 180-210, elevated blood pressure 148/92</textarea>
+        </div>
+        <div class="form-group mb12">
+          <label class="form-label">MDM Summary</label>
+          <textarea class="form-textarea" id="mdmInput" style="min-height:90px">Problems: CHF exacerbation (high complexity), uncontrolled DM with CKD stage 3 (high complexity). Data: review external labs (eGFR 42), ordering BNP and chest X-ray. Risk: prescription drug management (Furosemide dose adjustment, Metformin increase).</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time Spent (minutes, if time-based)</label>
+          <input class="form-input" type="number" id="timeInput" placeholder="Leave blank for MDM-based coding">
+        </div>
+      </div>
+    </div>
+    <div class="ai-panel">
+      <div class="ai-panel-hdr"><div class="ai-panel-icon">&#x1F4CA;</div><div><div class="ai-panel-title">AI Code Suggestions</div><div class="ai-panel-sub">Draft &mdash; physician + biller approval required</div></div></div>
+      <div class="ai-panel-body">
+        <div id="codingOutput"><div class="alert alert-bl"><span class="alert-icon">&#x1F4A1;</span><div>Click "AI Code This Visit" to generate CPT and ICD-10 suggestions based on your documentation.</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="codeTableCard" style="display:none">
+    <div class="card-hdr">
+      <div class="card-hdr-left"><div class="card-title">&#x2705; Suggested Codes &mdash; Awaiting Approval</div><div class="card-sub">AI confidence shown &bull; Physician and biller must approve before submission</div></div>
+      <div style="display:flex;gap:8px"><button class="btn btn-sm btn-sec" onclick="alert('All codes rejected')">&#x2717; Reject All</button><button class="btn btn-sm btn-ok" onclick="approveCodes()">&#x2713; Approve &amp; Submit to Billing</button></div>
+    </div>
+    <div class="card-body sm"><table class="tbl"><thead><tr><th>Type</th><th>Code</th><th>Description</th><th>Confidence</th><th>Mod</th><th>Action</th></tr></thead><tbody id="codeTableBody"></tbody></table></div>
+  </div>
+</div>
+
+<!-- PAGE 4: PATIENT 360 -->
+<div class="pg" id="pg-ai-p360">
+  <div class="sec-hdr">
+    <div><div class="sec-title">&#x1F464; Patient 360 &mdash; AI Intelligence</div><div class="sec-sub">Unified view of Eleanor Whitfield &bull; AI-powered insights &bull; All data requires physician interpretation</div></div>
+    <button class="btn btn-ai" onclick="runPatient360Ai()">&#x1F916; AI Next Best Action</button>
+  </div>
+  <div class="g4">
+    <div class="kpi er"><div class="kpi-lbl">Risk Score</div><div class="kpi-val">8.4</div><div class="kpi-sub">High &bull; Top 15% of panel</div></div>
+    <div class="kpi am"><div class="kpi-lbl">Open Care Gaps</div><div class="kpi-val">8</div><div class="kpi-sub">HEDIS &bull; MIPS &bull; HCC</div></div>
+    <div class="kpi pri"><div class="kpi-lbl">RAF Score</div><div class="kpi-val">1.069</div><div class="kpi-sub">Potential: 1.838</div></div>
+    <div class="kpi ok"><div class="kpi-lbl">Engagement</div><div class="kpi-val">84%</div><div class="kpi-sub">Appointment adherence</div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">&#x1FA7A; Active Problem List</div></div></div>
+      <div class="card-body sm">
+        <table class="tbl">
+          <thead><tr><th>ICD-10</th><th>Diagnosis</th><th>HCC</th><th>RAF</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">E11.65</td><td>DM Type 2 w/ hyperglycemia</td><td>18</td><td>0.302</td><td><span class="tag tag-rd">Gap</span></td></tr>
+            <tr><td class="mono">I50.9</td><td>Congestive Heart Failure</td><td>85</td><td>0.323</td><td><span class="tag tag-rd">Gap</span></td></tr>
+            <tr><td class="mono">I10</td><td>Essential Hypertension</td><td>&mdash;</td><td>&mdash;</td><td><span class="tag tag-gn">Active</span></td></tr>
+            <tr><td class="mono">N18.3</td><td>CKD Stage 3a</td><td>137</td><td>0.244</td><td><span class="tag tag-gn">Captured</span></td></tr>
+            <tr><td class="mono">E11.9</td><td>DM Type 2 NOS</td><td>19</td><td>0.105</td><td><span class="tag tag-gn">Captured</span></td></tr>
+            <tr><td class="mono">E66.09</td><td>Obesity, unspecified</td><td>&mdash;</td><td>&mdash;</td><td><span class="tag tag-am">Pending</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">&#x1F48A; Current Medications &amp; AI Flags</div></div></div>
+      <div class="card-body sm">
+        <table class="tbl">
+          <thead><tr><th>Medication</th><th>Dose</th><th>Sig</th><th>AI Flag</th></tr></thead>
+          <tbody>
+            <tr><td>Metformin</td><td>500 mg</td><td>BID</td><td><span class="tag tag-am">Dose low for A1c 8.4%</span></td></tr>
+            <tr><td>Lisinopril</td><td>10 mg</td><td>QD</td><td><span class="tag tag-gn">Appropriate</span></td></tr>
+            <tr><td>Atorvastatin</td><td>20 mg</td><td>QHS</td><td><span class="tag tag-am">Consider 40mg (ASCVD)</span></td></tr>
+            <tr><td>Furosemide</td><td>40 mg</td><td>QD</td><td><span class="tag tag-rd">Adherence issue noted</span></td></tr>
+            <tr><td>Aspirin</td><td>81 mg</td><td>QD</td><td><span class="tag tag-gn">Appropriate</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">&#x1F4CA; Vital Trends &mdash; Last 90 Days</div></div></div>
+      <div class="card-body sm">
+        <table class="tbl">
+          <thead><tr><th>Date</th><th>BP</th><th>Glucose</th><th>Weight</th><th>eGFR</th></tr></thead>
+          <tbody>
+            <tr><td>05/23/2026</td><td style="color:var(--er);font-weight:600">148/92</td><td style="color:var(--am);font-weight:600">187</td><td>168 lb</td><td style="color:var(--am);font-weight:600">42</td></tr>
+            <tr><td>04/15/2026</td><td style="color:var(--am);font-weight:600">142/88</td><td style="color:var(--am);font-weight:600">201</td><td>167 lb</td><td>43</td></tr>
+            <tr><td>03/10/2026</td><td style="color:var(--am);font-weight:600">138/86</td><td>176</td><td>165 lb</td><td>44</td></tr>
+            <tr><td>02/05/2026</td><td>136/84</td><td>168</td><td>164 lb</td><td>45</td></tr>
+          </tbody>
+        </table>
+        <div class="alert alert-rd mt12"><span class="alert-icon">&#x26A0;</span><div><div class="alert-title">AI Trend Alert</div>BP trending up (+12 pts systolic in 3 months), eGFR declining (45&rarr;42). Consider nephrology referral if eGFR drops below 40.</div></div>
+      </div>
+    </div>
+    <div class="ai-panel">
+      <div class="ai-panel-hdr"><div class="ai-panel-icon">&#x1F916;</div><div><div class="ai-panel-title">AI Next Best Action</div><div class="ai-panel-sub">Personalized care recommendations</div></div></div>
+      <div class="ai-panel-body">
+        <div id="p360AiOutput"><div class="alert alert-bl"><span class="alert-icon">&#x1F4A1;</span><div>Click "AI Next Best Action" to generate personalized care priorities for today's visit.</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 5: QUALITY AI -->
+<div class="pg" id="pg-ai-quality">
+  <div class="sec-hdr">
+    <div><div class="sec-title">&#x2705; Quality AI &mdash; Care Gap Command Center</div><div class="sec-sub">HEDIS &bull; MIPS &bull; CMS Stars &bull; AI-prioritized gaps for today's visit</div></div>
+    <button class="btn btn-ai" onclick="runQualityAi()">&#x1F916; AI Prioritize Gaps</button>
+  </div>
+  <div class="g4">
+    <div class="kpi er"><div class="kpi-lbl">Open Gaps</div><div class="kpi-val">8</div><div class="kpi-sub">This patient</div></div>
+    <div class="kpi ok"><div class="kpi-lbl">Closable Today</div><div class="kpi-val">4</div><div class="kpi-sub">AI recommendation</div></div>
+    <div class="kpi am"><div class="kpi-lbl">MIPS Score Impact</div><div class="kpi-val">+18 pts</div><div class="kpi-sub">If all 4 closed</div></div>
+    <div class="kpi pri"><div class="kpi-lbl">Stars Impact</div><div class="kpi-val">+0.3</div><div class="kpi-sub">Estimated CMS Stars</div></div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">&#x1F4CB; Open Care Gaps &mdash; Eleanor Whitfield</div><div class="card-sub">AI-prioritized &bull; Green = closable today &bull; Orange = needs outreach</div></div></div>
+    <div class="card-body sm">
+      <table class="tbl">
+        <thead><tr><th>Measure</th><th>Source</th><th>AI Priority</th><th>Action</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><b>HbA1c Control &lt;8%</b><br><span class="xs muted">HEDIS NQF 0059</span></td><td>HEDIS</td><td><span class="tag tag-rd">&#x1F534; Critical</span></td><td><button class="btn btn-sm btn-ai" onclick="closeGap(this,'HbA1c','gap-a1c')">&#x1F916; Close Now</button></td><td id="gap-a1c"><span class="tag tag-am">Open &mdash; A1c 8.4%</span></td></tr>
+          <tr><td><b>BP Control &lt;140/90</b><br><span class="xs muted">CMS Stars</span></td><td>CMS Stars</td><td><span class="tag tag-rd">&#x1F534; Critical</span></td><td><button class="btn btn-sm btn-ai" onclick="closeGap(this,'BP Control','gap-bp')">&#x1F916; Document</button></td><td id="gap-bp"><span class="tag tag-am">Open &mdash; BP 148/92</span></td></tr>
+          <tr><td><b>Nephropathy Screening</b><br><span class="xs muted">HEDIS</span></td><td>HEDIS</td><td><span class="tag tag-am">&#x1F7E1; High</span></td><td><button class="btn btn-sm btn-ai" onclick="closeGap(this,'Nephropathy','gap-nephro')">&#x1F916; Order Lab</button></td><td id="gap-nephro"><span class="tag tag-am">Urine microalbumin due</span></td></tr>
+          <tr><td><b>Statin Use in DM</b><br><span class="xs muted">HEDIS NQF 0380</span></td><td>HEDIS</td><td><span class="tag tag-gn">&#x1F7E2; Closable</span></td><td><button class="btn btn-sm btn-ai" onclick="closeGap(this,'Statin','gap-statin')">&#x1F916; Document</button></td><td id="gap-statin"><span class="tag tag-gn">Atorvastatin on med list</span></td></tr>
+          <tr><td><b>Diabetic Eye Exam</b><br><span class="xs muted">HEDIS</span></td><td>HEDIS</td><td><span class="tag tag-am">&#x1F7E1; High</span></td><td><button class="btn btn-sm btn-sec" onclick="alert('Referral placed to ophthalmology')">&#x1F4CB; Refer</button></td><td><span class="tag tag-am">Last: 2024</span></td></tr>
+          <tr><td><b>Foot Exam in DM</b><br><span class="xs muted">HEDIS</span></td><td>HEDIS</td><td><span class="tag tag-gn">&#x1F7E2; Closable</span></td><td><button class="btn btn-sm btn-ai" onclick="closeGap(this,'Foot Exam','gap-foot')">&#x1F916; Document</button></td><td id="gap-foot"><span class="tag tag-am">Exam today &mdash; document</span></td></tr>
+          <tr><td><b>PHQ-2 Depression Screen</b><br><span class="xs muted">USPSTF/MIPS</span></td><td>MIPS</td><td><span class="tag tag-gn">&#x1F7E2; Closable</span></td><td><button class="btn btn-sm btn-ai" onclick="closeGap(this,'PHQ-2','gap-phq')">&#x1F916; Screen Now</button></td><td id="gap-phq"><span class="tag tag-am">Annual screen due</span></td></tr>
+          <tr><td><b>Medication Adherence PDC</b><br><span class="xs muted">CMS Stars</span></td><td>CMS Stars</td><td><span class="tag tag-am">&#x1F7E1; High</span></td><td><button class="btn btn-sm btn-sec" onclick="alert('Task: Pharmacist outreach for Furosemide adherence')">&#x1F4DE; Outreach</button></td><td><span class="tag tag-rd">PDC 68% &mdash; below 80%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="ai-panel" id="qualityAiPanel" style="display:none">
+    <div class="ai-panel-hdr"><div class="ai-panel-icon">&#x1F916;</div><div><div class="ai-panel-title">AI Quality Prioritization</div><div class="ai-panel-sub">Evidence-based gap closure recommendations</div></div></div>
+    <div class="ai-panel-body"><div id="qualityAiOutput" class="ai-response" style="white-space:pre-line"></div></div>
+  </div>
+</div>
+
+<!-- PAGE 6: AUDIT TRAIL -->
+<div class="pg" id="pg-ai-audit">
+  <div class="sec-hdr">
+    <div><div class="sec-title">&#x1F50D; AI Audit Trail &mdash; HIPAA Compliance</div><div class="sec-sub">45 CFR 164.312(b) &bull; Every AI action logged &bull; Immutable &bull; Append-only event store</div></div>
+    <div class="flex ic g8"><span class="tag tag-gn">&#x2713; HIPAA Compliant</span><button class="btn btn-sm btn-sec" onclick="alert('Audit log exported to compliance officer')">&#x1F4E4; Export Log</button></div>
+  </div>
+  <div class="g4">
+    <div class="kpi pri"><div class="kpi-lbl">AI Actions Today</div><div class="kpi-val">14</div><div class="kpi-sub">All logged</div></div>
+    <div class="kpi ok"><div class="kpi-lbl">Human Approvals</div><div class="kpi-val">9</div><div class="kpi-sub">Required before write</div></div>
+    <div class="kpi am"><div class="kpi-lbl">Pending Review</div><div class="kpi-val">3</div><div class="kpi-sub">SOAP + codes + note</div></div>
+    <div class="kpi ok"><div class="kpi-lbl">AI Overrides</div><div class="kpi-val">2</div><div class="kpi-sub">Physician changed AI output</div></div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">&#x1F4CB; AI Interaction Log &mdash; May 23, 2026</div><div class="card-sub">Session: dr-holloway &bull; Patient: MOF-00427 &bull; SHA-256 sealed</div></div></div>
+    <div class="card-body" id="auditLogContainer"></div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">&#x1F5C4; AiInteraction Table Schema</div><div class="card-sub">Every AI call logged &mdash; never deleted &mdash; 45 CFR 164.312(b) &bull; Append-only</div></div></div>
+    <div class="card-body sm">
+      <table class="tbl">
+        <thead><tr><th>Field</th><th>Type</th><th>Example</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">ai_interaction_id</td><td>UUID</td><td class="mono xs">550e8400-e29b...</td><td>Unique immutable ID</td></tr>
+          <tr><td class="mono">user_id</td><td>VARCHAR</td><td class="mono">dr-holloway</td><td>Who triggered AI</td></tr>
+          <tr><td class="mono">patient_id</td><td>VARCHAR</td><td class="mono">MOF-00427</td><td>PHI reference</td></tr>
+          <tr><td class="mono">module</td><td>VARCHAR</td><td>AI_SCRIBE</td><td>Which AI feature</td></tr>
+          <tr><td class="mono">model</td><td>VARCHAR</td><td>claude-sonnet-4-20250514</td><td>Model version</td></tr>
+          <tr><td class="mono">prompt_hash</td><td>SHA256</td><td class="mono xs">a1b2c3d4...</td><td>Prompt fingerprint</td></tr>
+          <tr><td class="mono">ai_output</td><td>TEXT</td><td>SOAP note draft...</td><td>What AI produced</td></tr>
+          <tr><td class="mono">human_action</td><td>ENUM</td><td>APPROVED / REJECTED / MODIFIED</td><td>Human decision</td></tr>
+          <tr><td class="mono">approved_by</td><td>VARCHAR</td><td class="mono">dr-holloway</td><td>Approving user</td></tr>
+          <tr><td class="mono">timestamp</td><td>TIMESTAMPTZ</td><td>2026-05-23 09:14:32Z</td><td>Immutable time</td></tr>
+          <tr><td class="mono">ip_address</td><td>INET</td><td>192.168.1.45</td><td>Source IP for audit</td></tr>
+          <tr><td class="mono">mode</td><td>ENUM</td><td>live / mock</td><td>AI mode used</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app-layout -->
+
+<!-- API KEY MODAL -->
+<div class="modal-overlay hidden" id="apiModal">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-title">&#x1F511; Configure AI Mode</div><button class="modal-close" onclick="toggleApiModal()">&#x2715;</button></div>
+    <div class="modal-body">
+      <div class="alert alert-bl mb12"><span class="alert-icon">&#x2139;</span><div><b>Mock Mode</b> uses realistic pre-built responses &mdash; no API key needed, perfect for demos.<br><b>Live Mode</b> makes real Claude API calls using your Anthropic API key.</div></div>
+      <div class="form-group mb12">
+        <label class="form-label">Anthropic API Key</label>
+        <input class="form-input mono" id="apiKeyInput" type="password" placeholder="sk-ant-..." autocomplete="off">
+        <div class="form-hint">Key stored in sessionStorage only &mdash; sent only to api.anthropic.com</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn btn-sec" onclick="setMockMode()">Use Mock Mode</button>
+        <button class="btn btn-ai" onclick="setLiveMode()">Activate Live AI</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGN MODAL -->
+<div class="modal-overlay hidden" id="signModal">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-hdr"><div class="modal-title">&#x270D; Review &amp; E-Sign SOAP Note</div><button class="modal-close" onclick="closeSignModal()">&#x2715;</button></div>
+    <div class="modal-body">
+      <div class="alert alert-am mb12"><span class="alert-icon">&#x26A0;</span><div><b>Physician review required.</b> AI-generated content. Verify all clinical details before signing. Your e-signature is a legal attestation under 45 CFR 164.312(d).</div></div>
+      <div id="signModalContent" style="font-size:14px;line-height:1.7;background:#f8fafc;padding:16px;border-radius:8px;border:1px solid var(--brd);max-height:280px;overflow-y:auto;color:var(--tx)">[Generate SOAP note first, then open this dialog]</div>
+      <hr class="divider">
+      <div class="form-group mb12">
+        <label class="form-label">Physician Signature</label>
+        <input class="form-input" value="Dr. Anthony Holloway, MD &mdash; NPI 1234567890" readonly style="background:#f0f4f8">
+      </div>
+      <div class="form-group mb16">
+        <label class="form-label">PIN Confirmation <span class="req">*</span></label>
+        <input class="form-input" type="password" placeholder="Enter your 6-digit PIN" id="signPin">
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-sec" onclick="closeSignModal()">Cancel</button>
+        <button class="btn btn-ok" onclick="signNote()" style="flex:1">&#x270D; E-Sign &amp; Lock Note</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// MOF AI EMR JavaScript Engine
+// Model: claude-sonnet-4-20250514
+// All AI calls logged to AiInteraction table (HIPAA)
+
+var AI_MODE='mock',ANTHROPIC_KEY='',isScribeActive=false,soapGenerated=false,scribeTimer=null,lineIdx=0;
+
+var extraLines=[
+  {speaker:'Dr. Holloway',text:"I'm going to increase your Furosemide to 80mg daily given the edema. We'll recheck BMP in 2 weeks."},
+  {speaker:'Patient',text:'Will that help with the swelling? Can I still drink my usual fluids?'},
+  {speaker:'Dr. Holloway',text:'Yes, but limit sodium to under 2 grams daily. I\'d like to order a BNP and chest X-ray today to evaluate your heart function.'},
+  {speaker:'Patient',text:'Okay doctor. Should I be checking my blood sugar more often?'},
+  {speaker:'Dr. Holloway',text:'Yes, check fasting every morning. I\'m increasing your Metformin to 1000mg BID and adding a referral to endocrinology.'}
+];
+
+function showPage(id){
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on')});
+  document.querySelectorAll('.tn-btn').forEach(function(b){b.classList.remove('on')});
+  document.querySelectorAll('.sb-item').forEach(function(s){s.classList.remove('on')});
+  var pg=document.getElementById('pg-'+id);if(pg)pg.classList.add('on');
+  var nb=document.getElementById('nav-'+id);if(nb)nb.classList.add('on');
+  var sb=document.getElementById('sb-'+id);if(sb)sb.classList.add('on');
+}
+
+function toggleApiModal(){document.getElementById('apiModal').classList.toggle('hidden')}
+function setMockMode(){AI_MODE='mock';ANTHROPIC_KEY='';updateAiStatus();toggleApiModal()}
+function setLiveMode(){
+  var k=document.getElementById('apiKeyInput').value.trim();
+  if(!k.startsWith('sk-ant-')){alert('Please enter a valid Anthropic API key starting with sk-ant-');return}
+  ANTHROPIC_KEY=k;sessionStorage.setItem('mof_ai_key',k);AI_MODE='live';updateAiStatus();toggleApiModal()
+}
+function updateAiStatus(){
+  var b=document.getElementById('aiStatusBadge');var t=document.getElementById('aiStatusText');
+  b.className='ai-status '+AI_MODE;t.textContent=AI_MODE==='live'?'Live AI':'Mock AI'
+}
+
+async function callClaude(prompt,sys){
+  if(AI_MODE==='mock')return null;
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys||'You are an AI medical assistant for MOF EMR. Generate structured clinical content concisely. All output requires physician review before use.',messages:[{role:'user',content:prompt}]})
+    });
+    var d=await r.json();return d.content&&d.content[0]?d.content[0].text:null
+  }catch(e){console.error('Claude API error:',e);return null}
+}
+
+function logAI(module,output,action){
+  var e={timestamp:new Date().toISOString(),user:'dr-holloway',patient:'MOF-00427',module:module,model:AI_MODE==='live'?'claude-sonnet-4-20250514':'mock',output_preview:output?output.substring(0,80):'',human_action:action||'PENDING',mode:AI_MODE};
+  var ex=JSON.parse(sessionStorage.getItem('mof_audit_log')||'[]');ex.push(e);
+  sessionStorage.setItem('mof_audit_log',JSON.stringify(ex));refreshAuditLog()
+}
+
+function toggleScribe(){
+  isScribeActive=!isScribeActive;
+  var btn=document.getElementById('scribeBtn');var live=document.getElementById('scribeLiveInd');
+  if(isScribeActive){
+    btn.innerHTML='&#x23F9; Stop Listening';btn.className='btn btn-sec';
+    live.style.display='flex';lineIdx=0;simulateTranscription()
+  } else {
+    btn.innerHTML='&#x1F399; Start Listening';btn.className='btn btn-ai';
+    live.style.display='none';clearInterval(scribeTimer)
+  }
+}
+
+function simulateTranscription(){
+  if(lineIdx>=extraLines.length)return;
+  scribeTimer=setInterval(function(){
+    if(lineIdx>=extraLines.length){clearInterval(scribeTimer);return}
+    var l=extraLines[lineIdx++];var area=document.getElementById('transcriptLines');
+    var div=document.createElement('div');div.style.marginBottom='8px';
+    div.innerHTML='<span style="font-weight:700;color:'+(l.speaker.includes('Dr')?'var(--mp)':'var(--tx3)')+'">'+l.speaker+':</span> '+l.text;
+    div.style.animation='fadeIn .4s ease';area.appendChild(div);
+    var ta=document.getElementById('transcriptArea');ta.scrollTop=ta.scrollHeight
+  },2800)
+}
+
+function addManualNote(){
+  var v=document.getElementById('dictInput').value.trim();if(!v)return;
+  var area=document.getElementById('transcriptLines');
+  var div=document.createElement('div');div.style.marginBottom='8px';
+  div.innerHTML='<span style="font-weight:700;color:var(--tx3)">Note:</span> '+v;
+  area.appendChild(div);document.getElementById('dictInput').value=''
+}
+
+async function generateSOAP(){
+  var out=document.getElementById('soapOutput');
+  out.innerHTML='<div class="ai-thinking"><div class="ai-dots"><span></span><span></span><span></span></div>AI generating SOAP note from transcript...</div>';
+  setStep(3,'active');
+  var prompt='Generate a structured SOAP note. Patient: Eleanor Whitfield, 76F. CC: dyspnea on exertion, bilateral ankle edema, fasting glucose 180-210, BP 148/92. PMH: CHF (I50.9), DM2+CKD3 (E11.65+N18.3), HTN (I10). Meds: Metformin 500mg BID, Lisinopril 10mg, Atorvastatin 20mg, Furosemide 40mg, ASA 81mg. Plan: Furosemide 80mg, Metformin 1000mg BID, order BNP+CXR, endocrinology+nephrology referrals, BMP in 2wks. Format with S: O: A: P: labels.';
+  var aiText=await callClaude(prompt);var isLive=aiText!==null;
+  if(!isLive)aiText=getMockSOAP();
+  logAI('AI_SCRIBE',aiText,'PENDING');soapGenerated=true;
+  setStep(3,'done');setStep(4,'active');
+  out.innerHTML=buildSoapHTML(aiText)+'<div class="ai-source"><span class="ai-src-badge '+(isLive?'live':'mock')+'">'+(isLive?'Live AI \u00B7 claude-sonnet-4-20250514':'Mock AI \u00B7 Demo')+'</span>Draft only \u2014 physician review and e-signature required</div>'
+}
+
+function getMockSOAP(){
+  return 'S: 76-year-old female with CHF, DM2, CKD Stage 3a, and HTN presents for follow-up. Reports progressive dyspnea on exertion and bilateral ankle edema over 2-3 weeks. Fasting glucose 180-210 mg/dL at home. Inconsistent Furosemide adherence. Chest tightness with exertion and nocturia.\n\nO: BP 148/92 mmHg, HR 78, SpO2 98% RA, Weight 168 lbs (+3 lbs), BMI 30.2. Bilateral lower extremity pitting edema 2+. Lungs with bibasilar crackles. JVD at 45 degrees. Fasting glucose 187 mg/dL. eGFR 42 (down from 45). A1c 8.4%.\n\nA: 1. CHF exacerbation (I50.9) -- likely diuretic non-adherence, volume overloaded. 2. Uncontrolled DM2 with hyperglycemia (E11.65) -- A1c 8.4%, above goal. 3. CKD Stage 3a (N18.3) -- eGFR declining trend. 4. Hypertension, uncontrolled (I10) -- BP 148/92. MDM: HIGH complexity. E/M: 99215.\n\nP: 1. Furosemide increased to 80mg daily -- recheck BMP in 2 weeks. Sodium restriction <2g/day. 2. Metformin increased to 1000mg BID -- endocrinology referral placed. 3. BNP and portable chest X-ray ordered today. 4. Nephrology referral if eGFR <40 at next visit. 5. Atorvastatin increased to 40mg QHS for ASCVD risk. 6. Return in 2 weeks or sooner if symptoms worsen.'
+}
+
+function buildSoapHTML(text){
+  var s={S:'',O:'',A:'',P:''},cur=null;
+  text.split('\n').forEach(function(line){
+    var t=line.trim();
+    if(/^S:/i.test(t)){cur='S';s.S+=t.replace(/^S:/i,'').trim()+' '}
+    else if(/^O:/i.test(t)){cur='O';s.O+=t.replace(/^O:/i,'').trim()+' '}
+    else if(/^A:/i.test(t)){cur='A';s.A+=t.replace(/^A:/i,'').trim()+' '}
+    else if(/^P:/i.test(t)){cur='P';s.P+=t.replace(/^P:/i,'').trim()+' '}
+    else if(cur&&t){s[cur]+=t+' '}
+  });
+  var labels={S:'Subjective',O:'Objective',A:'Assessment',P:'Plan'};
+  var html='';
+  ['S','O','A','P'].forEach(function(k){
+    if(s[k].trim())html+='<div class="soap-section '+k+'"><div class="soap-letter">'+labels[k]+'</div><div style="font-size:14px;line-height:1.65;color:var(--tx2)">'+s[k].trim()+'</div></div>'
+  });
+  return html||'<div style="font-size:14px;line-height:1.65;white-space:pre-line;color:var(--tx2)">'+text+'</div>'
+}
+
+function clearSOAP(){document.getElementById('soapOutput').innerHTML='<div class="alert alert-bl"><span class="alert-icon">&#x1F4A1;</span><div>SOAP note cleared. Click Generate to create a new draft.</div></div>';soapGenerated=false}
+function setStep(n,state){var el=document.getElementById('step'+n);if(!el)return;el.className='step '+state;var c=el.querySelector('.step-circle');if(state==='done')c.innerHTML='&#x2713;'}
+
+async function runHccAi(){
+  var panel=document.getElementById('hccAiPanel');var out=document.getElementById('hccAiOutput');
+  panel.style.display='block';out.innerHTML='<div class="ai-thinking"><div class="ai-dots"><span></span><span></span><span></span></div>Analyzing HCC gaps against CMS-HCC V28...</div>';
+  var prompt='Patient Eleanor Whitfield, 76F, Medicare Advantage. Conditions: CHF (I50.9 HCC85), DM2+hyperglycemia (E11.65 HCC18), CKD3a (N18.3 HCC137), HTN (I10). Current RAF 1.069. Identify: 1) Which HCCs need 2026 recapture 2) MEAT requirements for each 3) ICD-10 codes to document today 4) RAF improvement estimate. Use CMS-HCC V28. Be concise and actionable.';
+  var aiText=await callClaude(prompt);var isLive=aiText!==null;
+  if(!isLive)aiText='HCC ANALYSIS (CMS-HCC V28, 2026)\n\nIMMEDIATE ACTION REQUIRED:\n\n1. HCC 85 -- CHF (I50.9) RAF 0.323\nLast documented: Nov 2025 -- MUST recapture in 2026\nMEAT today: M=bilateral edema, dyspnea documented; E=BNP+CXR ordered; A=CHF exacerbation with volume overload; T=Furosemide increased to 80mg\nDocument: "CHF exacerbation (I50.9) -- active, monitored, treated today"\n\n2. HCC 18 -- DM with Chronic Complications (E11.65) RAF 0.302\nNever documented in 2026 -- DM+CKD3 qualifies\nMEAT today: M=glucose 187, A1c 8.4%; E=urine microalbumin ordered; A=DM with CKD3a = chronic complication; T=Metformin increased\nDocument: "Diabetes mellitus type 2 with hyperglycemia and CKD (E11.65 + N18.3)"\n\nRAF IMPACT:\nCurrent 1.069 | After capture 1.838 | Improvement +0.769\nEstimated annual revenue (Medicare Advantage): ~$4,260\n\nCOMPLIANCE: Document MEAT for each condition. Do not up-code. OIG monitors RAF optimization closely.';
+  logAI('HCC_ANALYSIS',aiText,'PENDING');
+  out.textContent=aiText;
+  document.getElementById('hccSrcBadge').className='ai-src-badge '+(isLive?'live':'mock');
+  document.getElementById('hccSrcBadge').textContent=isLive?'Live AI':'Mock AI'
+}
+
+async function generateMeat(hcc){
+  var out=document.getElementById('meat'+hcc+'Output');
+  out.innerHTML='<div class="ai-thinking mt8"><div class="ai-dots"><span></span><span></span><span></span></div>Generating MEAT documentation...</div>';
+  var prompts={
+    18:'Generate MEAT documentation (under 120 words) for HCC 18 (DM with Chronic Complications E11.65) for 76F with DM2+CKD3a (eGFR 42), A1c 8.4%, Metformin. Clinical format.',
+    85:'Generate MEAT documentation (under 120 words) for HCC 85 (CHF I50.9) for 76F with dyspnea on exertion, bilateral edema 2+, bibasilar crackles, BNP ordered, Furosemide increased. Clinical format.'
+  };
+  var aiText=await callClaude(prompts[hcc]);var isLive=aiText!==null;
+  if(!isLive){
+    if(hcc===18)aiText='MEAT -- HCC 18 (E11.65):\n- Monitor: A1c 8.4%, fasting glucose 187 mg/dL, home readings 180-210\n- Evaluate: eGFR 42 (CKD3a) -- urine microalbumin ordered\n- Assess: DM2 with CKD Stage 3a = diabetes with chronic complication (E11.65+N18.3)\n- Treat: Metformin increased to 1000mg BID; endocrinology referral; dietary counseling';
+    else aiText='MEAT -- HCC 85 (I50.9):\n- Monitor: Bilateral ankle edema 2+, dyspnea on exertion, +3 lb weight gain since last visit\n- Evaluate: BNP ordered, portable CXR ordered, bibasilar crackles on exam\n- Assess: CHF exacerbation secondary to Furosemide non-adherence; volume overloaded\n- Treat: Furosemide increased 40mg to 80mg daily; sodium <2g/day counseled; BMP in 2 weeks'
+  }
+  logAI('HCC_MEAT_'+hcc,aiText,'PENDING');
+  out.innerHTML='<div class="alert alert-bl mt8" style="white-space:pre-line;font-size:13px"><span class="ai-src-badge '+(isLive?'live':'mock')+'" style="margin-right:8px">'+(isLive?'Live AI':'Mock')+'</span>'+aiText+'</div>'
+}
+
+async function runCodingAi(){
+  var out=document.getElementById('codingOutput');
+  out.innerHTML='<div class="ai-thinking"><div class="ai-dots"><span></span><span></span><span></span></div>AI analyzing documentation for CPT and ICD-10 codes...</div>';
+  var vt=document.getElementById('visitTypeSelect').value;
+  var cc=document.getElementById('ccInput').value;
+  var mdm=document.getElementById('mdmInput').value;
+  var prompt='Code this clinical visit as JSON only. Visit: '+vt+'. CC: '+cc+'. MDM: '+mdm+'. Return: {"codes":[{"type":"E/M","code":"99215","description":"...","confidence":95,"modifier":"","rationale":"..."}]}';
+  var aiText=await callClaude(prompt,'Return JSON only, no markdown, no preamble.');
+  var isLive=aiText!==null;var codes=null;
+  if(isLive){try{var cl=aiText.replace(/```json|```/g,'').trim();codes=JSON.parse(cl).codes}catch(e){codes=null}}
+  if(!codes)codes=[
+    {type:'E/M',code:'99215',description:'Established Patient Office Visit -- High Complexity',confidence:97,modifier:'',rationale:'High MDM: multiple chronic problems with acute exacerbation + prescription drug management + test ordering'},
+    {type:'ICD-10',code:'I50.9',description:'Congestive Heart Failure, unspecified',confidence:96,modifier:'',rationale:'Active CHF -- dyspnea, edema, crackles, BNP ordered'},
+    {type:'ICD-10',code:'E11.65',description:'DM Type 2 with hyperglycemia',confidence:95,modifier:'',rationale:'A1c 8.4%, fasting glucose 187 documented'},
+    {type:'ICD-10',code:'N18.3',description:'CKD Stage 3a',confidence:94,modifier:'',rationale:'eGFR 42 documented'},
+    {type:'ICD-10',code:'I10',description:'Essential Hypertension',confidence:93,modifier:'',rationale:'BP 148/92, on Lisinopril'},
+    {type:'CPT',code:'36415',description:'Routine venipuncture (BNP lab draw)',confidence:90,modifier:'',rationale:'Lab ordered -- BNP and BMP'}
+  ];
+  logAI('AI_CODING',JSON.stringify(codes),'PENDING');
+  out.innerHTML='<div class="alert alert-gn"><span class="alert-icon">&#x2713;</span><div><b>AI coding complete.</b> '+codes.length+' codes suggested. Review table below.</div></div><div class="ai-source mt8"><span class="ai-src-badge '+(isLive?'live':'mock')+'">'+(isLive?'Live AI':'Mock AI')+'</span>Code suggestions require physician and biller approval before submission</div>';
+  var tbody=document.getElementById('codeTableBody');tbody.innerHTML='';
+  codes.forEach(function(c){
+    var conf=c.confidence||90;
+    var cc2=conf>=95?'var(--ok)':conf>=85?'var(--am)':'var(--er)';
+    var pfc=conf>=95?'pf-ok':conf>=85?'pf-am':'pf-er';
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><span class="tag '+(c.type==='E/M'?'tag-pu':c.type==='CPT'?'tag-bl':'tag-tl')+'">'+c.type+'</span></td><td class="mono bold">'+c.code+'</td><td>'+c.description+'<br><span class="xs muted">'+(c.rationale||'')+'</span></td><td><div style="display:flex;align-items:center;gap:8px"><div class="progress" style="width:60px"><div class="progress-fill '+pfc+'" style="width:'+conf+'%"></div></div><span style="font-size:12px;font-weight:700;color:'+cc2+'">'+conf+'%</span></div></td><td>'+(c.modifier||'&mdash;')+'</td><td><button class="btn btn-sm btn-ok" onclick="approveCode(this)">&#x2713; Approve</button></td>';
+    tbody.appendChild(tr)
+  });
+  document.getElementById('codeTableCard').style.display='block'
+}
+
+function approveCode(btn){btn.innerHTML='&#x2713; Approved';btn.className='btn btn-sm btn-sec';btn.disabled=true;btn.style.color='var(--ok)'}
+function approveCodes(){document.querySelectorAll('#codeTableBody .btn').forEach(function(b){if(!b.disabled)approveCode(b)});alert('All codes approved and sent to billing queue.');logAI('AI_CODING','All codes approved','APPROVED')}
+
+async function runPatient360Ai(){
+  var out=document.getElementById('p360AiOutput');
+  out.innerHTML='<div class="ai-thinking"><div class="ai-dots"><span></span><span></span><span></span></div>Analyzing patient data for next best action...</div>';
+  var prompt='Eleanor Whitfield, 76F, Medicare Advantage. CHF, DM2 (A1c 8.4%), CKD3 (eGFR 42), HTN (BP 148/92). RAF 1.069 potential 1.838, 8 open care gaps. Generate prioritized Next Best Action list for today -- max 5 actions ranked by clinical urgency and revenue impact. Numbered list format.';
+  var aiText=await callClaude(prompt);var isLive=aiText!==null;
+  if(!isLive)aiText='1. URGENT -- Document HCC 85 (CHF I50.9) and HCC 18 (DM+CKD E11.65) with MEAT. Both closable today. RAF +0.769 = ~$4,260/yr.\n\n2. ORDER -- BNP and chest X-ray today to evaluate CHF exacerbation. Results may require same-day cardiology consult.\n\n3. ADJUST -- Increase Metformin to 1000mg BID (A1c 8.4% not at goal). Consider adding SGLT-2 inhibitor -- dual benefit for DM, CHF, and CKD protection.\n\n4. CLOSE GAPS -- Document statin use (Atorvastatin = HEDIS closed), perform foot exam, administer PHQ-2 screen. Closes 3 HEDIS gaps in under 5 minutes.\n\n5. REFER -- Endocrinology (DM optimization), Nephrology (eGFR declining, refer if <40), Ophthalmology (diabetic eye exam overdue since 2024).';
+  logAI('PATIENT_360',aiText,'VIEWED');
+  out.innerHTML='<div style="white-space:pre-line;font-size:14px;line-height:1.7;color:var(--tx2)">'+aiText+'</div><div class="ai-source mt12"><span class="ai-src-badge '+(isLive?'live':'mock')+'">'+(isLive?'Live AI':'Mock AI')+'</span>Advisory only -- physician must interpret and act</div>'
+}
+
+async function runQualityAi(){
+  var panel=document.getElementById('qualityAiPanel');var out=document.getElementById('qualityAiOutput');
+  panel.style.display='block';out.innerHTML='<div class="ai-thinking"><div class="ai-dots"><span></span><span></span><span></span></div>Prioritizing care gaps...</div>';
+  var prompt='Prioritize 8 care gaps for Eleanor Whitfield: HbA1c control (8.4%), BP control (148/92), nephropathy screening (due), statin use (on atorvastatin), diabetic eye exam (last 2024), foot exam (due), PHQ-2 (due), medication adherence PDC 68%. Rank by: closable today in office, MIPS/Stars impact, clinical urgency.';
+  var aiText=await callClaude(prompt);var isLive=aiText!==null;
+  if(!isLive)aiText='PRIORITY ORDER FOR TODAY\'S VISIT:\n\nCLOSE TODAY (in-office, under 2 min each):\n1. Statin Use -- Atorvastatin already on med list. Document it. HEDIS gap closed instantly.\n2. Foot Exam -- Perform during exam. Document findings. HEDIS closed.\n3. PHQ-2 Screen -- Ask 2 questions now. Document score. MIPS + USPSTF closed.\n\nORDER TODAY (lab/referral):\n4. Nephropathy Screening -- Order urine microalbumin today. Gap pending outside record.\n5. Ophthalmology Referral -- Place order for diabetic eye exam.\n\nONGOING MANAGEMENT (cannot close today):\n6. HbA1c Control -- A1c 8.4%, Metformin adjusted. Gap closes when next A1c <8%.\n7. BP Control -- BP 148/92, med adjustment made. Gap closes when BP <140/90.\n8. Medication Adherence (PDC 68%) -- Pharmacist outreach needed. Takes 90 days to improve PDC.';
+  logAI('QUALITY_AI',aiText,'VIEWED');out.textContent=aiText
+}
+
+function closeGap(btn,gapName,tdId){
+  btn.innerHTML='&#x2713; Done';btn.className='btn btn-sm btn-sec';btn.disabled=true;
+  var td=document.getElementById(tdId);
+  if(td)td.innerHTML='<span class="tag tag-gn">&#x2713; Closed '+new Date().toLocaleTimeString()+'</span>';
+  logAI('QUALITY_GAP_CLOSE',gapName,'APPROVED')
+}
+
+var STATIC_AUDIT=[
+  {ts:'09:02:14',user:'dr-holloway',module:'PATIENT_LOAD',msg:'Patient MOF-00427 chart accessed',actor:'user',ha:'N/A'},
+  {ts:'09:08:31',user:'system',module:'AI_SCRIBE',msg:'Ambient scribe session started -- Whisper v3 activated',actor:'ai',ha:'Initiated by physician'},
+  {ts:'09:14:22',user:'claude-sonnet',module:'AI_SCRIBE',msg:'SOAP note draft generated from visit transcript (847 tokens)',actor:'ai',ha:'PENDING -- physician review required'},
+  {ts:'09:21:05',user:'claude-sonnet',module:'HCC_ANALYSIS',msg:'HCC gap analysis complete -- 2 critical gaps identified (HCC 85, HCC 18)',actor:'ai',ha:'VIEWED'},
+  {ts:'09:28:17',user:'claude-sonnet',module:'HCC_MEAT_85',msg:'MEAT documentation drafted for HCC 85 (CHF I50.9)',actor:'ai',ha:'PENDING'},
+  {ts:'09:31:44',user:'dr-holloway',module:'HCC_MEAT_85',msg:'MEAT documentation approved and added to encounter note',actor:'user',ha:'APPROVED'},
+  {ts:'09:35:02',user:'claude-sonnet',module:'AI_CODING',msg:'CPT/ICD-10 codes suggested: 99215, I50.9, E11.65, N18.3, I10, 36415',actor:'ai',ha:'PENDING'},
+  {ts:'09:38:19',user:'dr-holloway',module:'AI_CODING',msg:'Code E66.09 rejected by physician -- obesity code deferred',actor:'user',ha:'REJECTED'}
+];
+
+function refreshAuditLog(){
+  var c=document.getElementById('auditLogContainer');if(!c)return;
+  var dynamic=JSON.parse(sessionStorage.getItem('mof_audit_log')||'[]');
+  var all=STATIC_AUDIT.concat(dynamic.map(function(e){
+    return{ts:e.timestamp?e.timestamp.split('T')[1].substr(0,8):new Date().toLocaleTimeString(),user:e.user,module:e.module,msg:'AI output: '+e.output_preview+'...',actor:'ai',ha:e.human_action}
+  }));
+  var haColors={APPROVED:'var(--ok)',REJECTED:'var(--er)',PENDING:'var(--am)','N/A':'var(--tx3)',VIEWED:'var(--mp)'};
+  c.innerHTML=all.map(function(e){
+    var dc=e.actor==='ai'?'ai':e.actor==='user'?'user':'sys';
+    var hac=haColors[e.ha]||'var(--tx3)';
+    return '<div class="audit-entry"><div class="audit-dot '+dc+'"></div><div class="audit-time">'+e.ts+'</div><div class="audit-msg"><span class="audit-actor">'+e.user+'</span> &bull; <span class="mono xs" style="color:var(--mp)">'+e.module+'</span> &bull; '+e.msg+(e.ha!=='N/A'?' &bull; <span style="color:'+hac+';font-weight:700;font-size:12px">'+e.ha+'</span>':'')+'</div></div>'
+  }).join('')
+}
+
+function openSignModal(){
+  if(!soapGenerated){alert('Please generate the SOAP note first before signing.');return}
+  document.getElementById('signModalContent').innerHTML=document.getElementById('soapOutput').innerHTML;
+  document.getElementById('signModal').classList.remove('hidden');
+  setStep(4,'done');setStep(5,'active')
+}
+function closeSignModal(){document.getElementById('signModal').classList.add('hidden')}
+function signNote(){
+  var pin=document.getElementById('signPin').value;
+  if(pin.length<4){alert('Please enter your PIN to sign.');return}
+  logAI('NOTE_ESIGN','SOAP note e-signed by dr-holloway','APPROVED');
+  setStep(5,'done');closeSignModal();
+  alert('Note e-signed by Dr. Anthony Holloway, MD at '+new Date().toLocaleTimeString()+'.\nSHA-256 seal applied. Note locked and sent to billing queue.')
+}
+
+window.addEventListener('DOMContentLoaded',function(){
+  var k=sessionStorage.getItem('mof_ai_key');
+  if(k){ANTHROPIC_KEY=k;AI_MODE='live';updateAiStatus()}
+  showPage('ai-scribe');refreshAuditLog()
+});
+</script>
+</body>
+</html>
