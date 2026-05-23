@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CareSync Pro — Schedule Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0b1e3d;--navy2:#102550;--navy3:#163070;
+  --blue:#1a6ef5;--blue2:#3b82f6;--blue-lt:#dbeafe;--blue-xlt:#eff6ff;
+  --teal:#0d9488;--teal-lt:#ccfbf1;--teal2:#0f766e;
+  --green:#15803d;--green-lt:#dcfce7;
+  --amber:#b45309;--amber-lt:#fef3c7;
+  --red:#dc2626;--red-lt:#fee2e2;
+  --purple:#7c3aed;--purple-lt:#ede9fe;
+  --orange:#ea580c;--orange-lt:#ffedd5;
+  --gray0:#f9fafb;--gray1:#f3f4f6;--gray2:#e5e7eb;--gray3:#d1d5db;
+  --gray4:#9ca3af;--gray5:#6b7280;--gray6:#374151;--gray7:#1f2937;
+  --font:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --r:8px;--r2:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+}
+body{font-family:var(--font);background:var(--gray1);color:var(--gray7);font-size:14px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* ═══ TOP NAV ═══ */
+.tnav{height:52px;background:var(--navy);display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.05)}
+.tlogo{display:flex;align-items:center;gap:9px;padding-right:14px;border-right:1px solid rgba(255,255,255,.1)}
+.tlogo-box{width:34px;height:34px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.tlogo-name{font-size:14px;font-weight:700;color:#fff}
+.tlogo-sub{font-size:10px;color:rgba(255,255,255,.4)}
+.tsp{flex:1}
+.tmodule{padding:5px 14px;border:1.5px solid rgba(255,255,255,.25);border-radius:20px;font-size:12px;font-weight:600;color:#fff;background:rgba(255,255,255,.1)}
+.tic{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;color:rgba(255,255,255,.6);cursor:pointer;border:none;background:transparent;transition:all .13s}
+.tic:hover{background:rgba(255,255,255,.08);color:#fff}
+.tuser{display:flex;align-items:center;gap:8px;padding:5px 12px;border-radius:8px;background:rgba(255,255,255,.08);cursor:pointer;border:1px solid rgba(255,255,255,.1);margin-left:6px}
+.tuav{width:28px;height:28px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.tuname{font-size:12px;font-weight:600;color:#fff}
+.turole{font-size:10px;color:rgba(255,255,255,.45)}
+
+/* ═══ LAYOUT ═══ */
+.main-layout{display:flex;flex:1;overflow:hidden}
+
+/* ═══ SIDEBAR ═══ */
+.lsidebar{width:215px;background:#fff;border-right:1px solid var(--gray2);overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column}
+.ls-brand{padding:14px 16px;border-bottom:1px solid var(--gray2);background:var(--blue-xlt)}
+.ls-brand-title{font-size:14px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px}
+.ls-brand-sub{font-size:11px;color:var(--gray5);margin-top:2px}
+.ls-sec{border-bottom:1px solid var(--gray2)}
+.ls-sec-lbl{font-size:10px;font-weight:700;color:var(--gray4);text-transform:uppercase;letter-spacing:.5px;padding:10px 16px 4px}
+.ls-item{display:flex;align-items:center;gap:9px;padding:10px 16px;font-size:13px;color:var(--gray6);cursor:pointer;transition:all .13s;border-left:3px solid transparent;position:relative}
+.ls-item:hover{background:var(--gray0);color:var(--blue)}
+.ls-item.on{background:var(--blue-xlt);color:var(--blue);border-left-color:var(--blue);font-weight:600}
+.ls-ic{font-size:16px;flex-shrink:0;width:20px;text-align:center}
+.ls-badge{margin-left:auto;font-size:10px;padding:2px 7px;border-radius:10px;background:var(--blue-lt);color:var(--blue);font-weight:700}
+.ls-badge-g{background:var(--green-lt);color:var(--green)}
+.ls-badge-a{background:var(--amber-lt);color:var(--amber)}
+.ls-footer{margin-top:auto;padding:14px 16px;border-top:1px solid var(--gray2)}
+.ls-back-btn{display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:var(--r);background:var(--gray0);border:1px solid var(--gray2);font-size:13px;font-weight:600;color:var(--gray6);cursor:pointer;text-decoration:none;width:100%;transition:all .13s}
+.ls-back-btn:hover{background:var(--blue-xlt);color:var(--blue);border-color:var(--blue-lt)}
+
+/* ═══ MAIN CONTENT ═══ */
+.mcontent{flex:1;overflow-y:auto;padding:16px}
+
+/* ═══ PAGE SECTIONS ═══ */
+.pg{display:none}
+.pg.on{display:block}
+.pg-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.pg-title{font-size:20px;font-weight:700;color:var(--navy)}
+.pg-sub{font-size:13px;color:var(--gray5);margin-top:2px}
+.pg-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* ═══ CARDS ═══ */
+.card{background:#fff;border-radius:var(--r2);border:1px solid var(--gray2);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.card-title-bar{padding:10px 14px;border-radius:var(--r);font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.blue{background:var(--blue-lt);color:var(--navy);border-left:4px solid var(--blue)}
+.green{background:var(--green-lt);color:var(--green);border-left:4px solid var(--green)}
+.amber{background:var(--amber-lt);color:var(--amber);border-left:4px solid var(--amber)}
+.purple{background:var(--purple-lt);color:var(--purple);border-left:4px solid var(--purple)}
+.teal{background:var(--teal-lt);color:var(--teal2);border-left:4px solid var(--teal)}
+.red{background:var(--red-lt);color:var(--red);border-left:4px solid var(--red)}
+
+/* ═══ BUTTONS ═══ */
+.btn{padding:8px 16px;border-radius:var(--r);border:1.5px solid var(--gray3);background:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);color:var(--gray6);transition:all .13s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--gray0);border-color:var(--gray4)}
+.btn-pri{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-pri:hover{background:#1558d6;border-color:#1558d6}
+.btn-green{background:var(--green);color:#fff;border-color:var(--green)}
+.btn-green:hover{background:#166534;border-color:#166534}
+.btn-teal{background:var(--teal);color:#fff;border-color:var(--teal)}
+.btn-amber{background:var(--amber);color:#fff;border-color:var(--amber)}
+.btn-red{background:var(--red);color:#fff;border-color:var(--red)}
+.btn-sm{padding:5px 11px;font-size:12px}
+.btn-xs{padding:3px 8px;font-size:11px}
+
+/* ═══ GRID ═══ */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+
+/* ═══ KPI TILES ═══ */
+.kpi-tile{background:#fff;border-radius:var(--r);padding:14px 16px;border:1px solid var(--gray2);box-shadow:var(--shadow);cursor:pointer;transition:all .13s}
+.kpi-tile:hover{border-color:var(--blue);background:var(--blue-xlt)}
+.kpi-val{font-size:26px;font-weight:700;color:var(--navy);font-family:var(--mono)}
+.kpi-lbl{font-size:12px;color:var(--gray5);margin-top:3px;font-weight:500}
+.kpi-delta{font-size:11px;margin-top:4px;font-weight:600}
+.kpi-up{color:var(--green)}.kpi-dn{color:var(--red)}.kpi-eq{color:var(--gray5)}
+
+/* ═══ FORM ELEMENTS ═══ */
+.fld{width:100%;padding:9px 12px;border:1.5px solid var(--gray3);border-radius:var(--r);font-size:14px;font-family:var(--font);color:var(--gray7);background:#fff;outline:none;transition:border .13s}
+.fld:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,110,245,.1)}
+.lbl{font-size:13px;font-weight:600;color:var(--gray6);margin-bottom:5px;display:block}
+
+/* ═══ TABLE ═══ */
+.t{width:100%;border-collapse:collapse;font-size:13px}
+.t th{background:var(--gray0);font-weight:700;color:var(--gray6);padding:10px 12px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.3px;border-bottom:2px solid var(--gray2)}
+.t td{padding:10px 12px;border-bottom:1px solid var(--gray2);vertical-align:middle}
+.t tr:hover td{background:var(--gray0)}
+.t tr:last-child td{border-bottom:none}
+
+/* ═══ BADGES / PILLS ═══ */
+.pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.pill-b{background:var(--blue-lt);color:#1d4ed8}
+.pill-g{background:var(--green-lt);color:var(--green)}
+.pill-a{background:var(--amber-lt);color:var(--amber)}
+.pill-r{background:var(--red-lt);color:var(--red)}
+.pill-p{background:var(--purple-lt);color:var(--purple)}
+.pill-t{background:var(--teal-lt);color:var(--teal2)}
+.pill-gray{background:var(--gray2);color:var(--gray5)}
+
+/* ═══ ALERTS ═══ */
+.al{display:flex;gap:12px;padding:12px 14px;border-radius:var(--r);margin-bottom:12px;border-left:4px solid}
+.al-b{background:var(--blue-xlt);border-color:var(--blue)}
+.al-g{background:var(--green-lt);border-color:var(--green)}
+.al-a{background:var(--amber-lt);border-color:var(--amber)}
+.al-r{background:var(--red-lt);border-color:var(--red)}
+.al-ic{font-size:18px;flex-shrink:0;margin-top:1px}
+.al-t{font-size:14px;font-weight:600;color:var(--gray7)}
+.al-s{font-size:12px;color:var(--gray5);margin-top:2px}
+
+/* ═══ WIZARD STEP BAR ═══ */
+.wiz-bar{display:flex;gap:4px;margin-bottom:18px;flex-wrap:wrap}
+.wiz-step{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--gray3);background:#fff;color:var(--gray5);cursor:pointer;transition:all .15s;white-space:nowrap}
+.wiz-step.done{background:var(--green-lt);border-color:var(--green);color:var(--green)}
+.wiz-step.active{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* ═══ MINI CARD ═══ */
+.mc{background:var(--gray0);border:1px solid var(--gray2);border-radius:var(--r);padding:12px 14px}
+
+/* ═══ SECTION HEADER ═══ */
+.sec-hdr{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:7px 12px;border-radius:6px;margin:12px 0 8px;border-left:3px solid}
+.sec-hdr.blue{color:var(--navy);background:var(--blue-lt);border-color:var(--blue)}
+.sec-hdr.green{color:var(--green);background:var(--green-lt);border-color:var(--green)}
+.sec-hdr.purple{color:var(--purple);background:var(--purple-lt);border-color:var(--purple)}
+
+/* ═══ BOX ═══ */
+.bx{display:inline-block;padding:4px 9px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid}
+.bx-b{background:var(--blue-lt);color:#1e40af;border-color:#93c5fd}
+.bx-g{background:var(--green-lt);color:var(--green);border-color:#86efac}
+
+/* ═══ SCHEDULE CALENDAR ═══ */
+.sched-grid{overflow-x:auto;min-width:0}
+.sched-col-hdr{display:flex;gap:0;border-bottom:2px solid var(--gray2);padding-bottom:8px;margin-bottom:4px}
+.sched-provider-col{width:130px;flex-shrink:0;font-size:11px;font-weight:700;color:var(--navy);padding:6px 8px;text-align:center}
+.sched-time-col{width:60px;flex-shrink:0}
+.sched-slot{min-height:56px;border:1px solid var(--gray2);border-radius:6px;margin:2px;padding:6px 8px;cursor:pointer;transition:all .13s;font-size:12px;position:relative}
+.sched-slot:hover{border-color:var(--blue);background:var(--blue-xlt)}
+.sched-slot.booked{background:var(--blue-lt);border-color:#93c5fd}
+.sched-slot.booked-tele{background:var(--purple-lt);border-color:#c4b5fd}
+.sched-slot.blocked{background:var(--gray1);border-color:var(--gray3);cursor:default}
+.sched-slot.urgent{background:var(--red-lt);border-color:#fca5a5}
+.sched-slot.open{background:#fff;border-color:var(--gray2)}
+.sched-slot.echo{background:var(--teal-lt);border-color:#5eead4}
+.sched-slot.stress{background:#fff7ed;border-color:#fed7aa}
+.sched-slot.nuclear{background:#fdf4ff;border-color:#e9d5ff}
+.sched-slot-name{font-weight:700;font-size:12px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sched-slot-type{font-size:10px;color:var(--gray5);margin-top:1px}
+.sched-slot-ai{font-size:10px;color:var(--purple);font-weight:600;margin-top:2px}
+.sched-row{display:flex;gap:0;align-items:stretch;border-bottom:1px solid var(--gray1)}
+.sched-time{width:60px;flex-shrink:0;font-size:11px;color:var(--gray4);font-family:var(--mono);font-weight:600;padding:4px 6px;padding-top:8px}
+
+/* ═══ CHECK-IN QUEUE ═══ */
+.ci-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--gray2);cursor:pointer;transition:background .13s;background:#fff}
+.ci-row:hover{background:var(--blue-xlt)}
+.ci-row.selected{background:var(--blue-xlt);border-left:3px solid var(--blue)}
+.ci-av{width:38px;height:38px;border-radius:50%;background:var(--blue-lt);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--blue);flex-shrink:0}
+.ci-name{font-size:14px;font-weight:700;color:var(--navy)}
+.ci-meta{font-size:12px;color:var(--gray5);margin-top:2px}
+.ci-status{margin-left:auto;flex-shrink:0;text-align:right}
+.ci-time{font-size:12px;font-weight:700;color:var(--navy);font-family:var(--mono)}
+
+/* ═══ TOGGLE ═══ */
+.tog{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:var(--r);background:var(--gray0);border:1px solid var(--gray2);margin-bottom:6px;cursor:pointer;transition:background .13s}
+.tog:hover{background:var(--blue-xlt)}
+.tog-lbl{font-size:13px;font-weight:600;color:var(--gray7)}
+.tog-sub{font-size:11px;color:var(--gray5);margin-top:1px}
+.tog-sw{width:36px;height:20px;border-radius:10px;background:var(--gray3);position:relative;transition:background .2s;flex-shrink:0}
+.tog-sw.on{background:var(--blue)}
+.tog-sw::after{content:'';width:14px;height:14px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tog-sw.on::after{left:19px}
+
+/* ═══ TOAST ═══ */
+#toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;opacity:0;transition:opacity .3s;z-index:9999;pointer-events:none;max-width:320px}
+#toast.show{opacity:1}
+
+/* ═══ MODAL ═══ */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:800;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:var(--r2);padding:24px;max-width:520px;width:90%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--gray2)}
+.modal-title{font-size:17px;font-weight:700;color:var(--navy)}
+.modal-close{font-size:20px;cursor:pointer;color:var(--gray4);background:none;border:none;font-family:var(--font)}
+.modal-close:hover{color:var(--red)}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOP NAV ═══ -->
+<div class="tnav">
+  <div class="tlogo">
+    <div class="tlogo-box">📅</div>
+    <div>
+      <div class="tlogo-name">CareSync Pro</div>
+      <div class="tlogo-sub">Schedule Engine</div>
+    </div>
+  </div>
+  <span class="tmodule">Athens Heart Center — Cardiology</span>
+  <div class="tsp"></div>
+  <button class="tic" onclick="toast('🔔 No new alerts')">🔔</button>
+  <button class="tic" onclick="toast('⚙️ Settings')">⚙️</button>
+  <div class="tuser" onclick="toast('Signed in: Sarah Chen · Admin')">
+    <div class="tuav">SC</div>
+    <div>
+      <div class="tuname">Sarah Chen</div>
+      <div class="turole">Practice Admin</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MAIN LAYOUT ═══ -->
+<div class="main-layout">
+
+<!-- ═══ SIDEBAR ═══ -->
+<div class="lsidebar">
+  <div class="ls-brand">
+    <div class="ls-brand-title">📅 Schedule Engine</div>
+    <div class="ls-brand-sub">AHC Cardiology · 3 Providers · 7 Labs</div>
+  </div>
+  <div class="ls-sec">
+    <div class="ls-item on" id="nav-setup" onclick="go('setup')"><span class="ls-ic">⚙️</span>Schedule Setup <span class="ls-badge">7-Step</span></div>
+    <div class="ls-item" id="nav-calendar" onclick="go('calendar')"><span class="ls-ic">📅</span>Practice Schedule</div>
+    <div class="ls-item" id="nav-checkin" onclick="go('checkin')"><span class="ls-ic">✅</span>Check-In <span class="ls-badge ls-badge-g" id="ci-count-badge">8 waiting</span></div>
+    <div class="ls-item" id="nav-checkout" onclick="go('checkout')"><span class="ls-ic">💳</span>Checkout <span class="ls-badge ls-badge-a" id="co-count-badge">5 ready</span></div>
+    <div class="ls-item" id="nav-permissions" onclick="go('permissions')"><span class="ls-ic">🔐</span>Permissions</div>
+  </div>
+  <div class="ls-sec">
+    <div class="ls-sec-lbl">Today — May 23, 2026</div>
+    <div class="ls-item" onclick="toast('Provider view: Dr. Raj Patel')"><span class="ls-ic">👨‍⚕️</span>Dr. Raj Patel</div>
+    <div class="ls-item" onclick="toast('Provider view: Dr. Kim Holloway')"><span class="ls-ic">👩‍⚕️</span>Dr. Kim Holloway</div>
+    <div class="ls-item" onclick="toast('Provider view: NP Lisa Chen')"><span class="ls-ic">🩺</span>NP Lisa Chen</div>
+  </div>
+  <div class="ls-footer">
+    <a href="index.html" class="ls-back-btn">← Back to CareSync Pro</a>
+  </div>
+</div>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<div class="mcontent">
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     PAGE: SCHEDULE SETUP (7-STEP WIZARD)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="pg on" id="pg-setup">
+  <div class="pg-hdr">
+    <div>
+      <div class="pg-title">⚙️ Schedule Engine — Configuration</div>
+      <div class="pg-sub">Athens Heart Center · Cardiology · Configure your scheduling system in 7 steps</div>
+    </div>
+    <div class="pg-actions">
+      <button class="btn btn-sm" onclick="toast('📋 Draft saved')">Save Draft</button>
+      <button class="btn btn-sm btn-green" onclick="toast('✅ Schedule Engine activated!')">Activate Engine</button>
+    </div>
+  </div>
+  <div class="wiz-bar" id="wiz-bar"></div>
+  <div id="wiz-content"></div>
+  <div style="display:flex;justify-content:space-between;margin-top:14px">
+    <button class="btn" onclick="wizPrev()">← Previous</button>
+    <button class="btn btn-pri" onclick="wizNext()" id="wiz-next-btn">Next Step →</button>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     PAGE: PRACTICE SCHEDULE (TWO-FLOW CALENDAR)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="pg" id="pg-calendar">
+  <div class="pg-hdr">
+    <div>
+      <div class="pg-title">📅 Practice Schedule</div>
+      <div class="pg-sub" id="cal-date-sub">Friday, May 23, 2026 · AHC Cardiology</div>
+    </div>
+    <div class="pg-actions">
+      <button class="btn btn-sm btn-pri" id="tab-exam" onclick="calSetTab('exam')">🩺 Exam Flow</button>
+      <button class="btn btn-sm" id="tab-diag" onclick="calSetTab('diagnostic')">🔬 Diagnostic Flow</button>
+      <button class="btn btn-sm btn-green" onclick="openBookModal()">+ Book Appointment</button>
+      <button class="btn btn-sm" onclick="toast('📊 Exporting schedule PDF...')">Export PDF</button>
+    </div>
+  </div>
+  <!-- Date nav -->
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+    <button class="btn btn-sm" onclick="toast('← Previous day')">← Prev</button>
+    <div style="padding:6px 16px;background:#fff;border:1.5px solid var(--blue);border-radius:var(--r);font-size:13px;font-weight:700;color:var(--blue)">Friday May 23, 2026</div>
+    <button class="btn btn-sm" onclick="toast('→ Next day')">Next →</button>
+    <button class="btn btn-sm" onclick="toast('Today')">Today</button>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <select class="fld" style="width:auto;font-size:12px;padding:6px 10px" onchange="toast('Filter: '+this.value)">
+        <option>All Providers</option><option>Dr. Raj Patel</option><option>Dr. Kim Holloway</option><option>NP Lisa Chen</option>
+      </select>
+      <select class="fld" style="width:auto;font-size:12px;padding:6px 10px" onchange="toast('Status: '+this.value)">
+        <option>All Status</option><option>Scheduled</option><option>Checked In</option><option>In Progress</option><option>Completed</option>
+      </select>
+    </div>
+  </div>
+  <!-- KPIs -->
+  <div class="g4" style="margin-bottom:14px">
+    <div class="kpi-tile" onclick="toast('Total appointments today')"><div class="kpi-val">24</div><div class="kpi-lbl">Total Appointments</div><div class="kpi-delta kpi-up">↑ 3 vs yesterday</div></div>
+    <div class="kpi-tile" onclick="toast('Checked in so far')"><div class="kpi-val">11</div><div class="kpi-lbl">Checked In</div><div class="kpi-delta kpi-up">On track</div></div>
+    <div class="kpi-tile" onclick="toast('Open appointment slots')"><div class="kpi-val">6</div><div class="kpi-lbl">Open Slots</div><div class="kpi-delta kpi-eq">Fill rate: 75%</div></div>
+    <div class="kpi-tile" onclick="toast('No-show rate today')"><div class="kpi-val">1</div><div class="kpi-lbl">No-Shows</div><div class="kpi-delta kpi-dn">1 pending confirm</div></div>
+  </div>
+  <div class="card" id="cal-content" style="padding:0;overflow:hidden"></div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     PAGE: CHECK-IN DASHBOARD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="pg" id="pg-checkin">
+  <div class="pg-hdr">
+    <div>
+      <div class="pg-title">✅ Check-In Dashboard</div>
+      <div class="pg-sub">Insurance · Referral · Eligibility · Copay Collection · May 23, 2026</div>
+    </div>
+    <div class="pg-actions">
+      <button class="btn btn-sm btn-green" onclick="openWalkinModal()">+ Walk-In Patient</button>
+      <button class="btn btn-sm" onclick="toast('📞 Reminder calls sent to 3 patients')">Send Reminders</button>
+    </div>
+  </div>
+  <div class="g4" id="ci-kpis"></div>
+  <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+    <select class="fld" style="width:auto;font-size:12px;padding:6px 10px" id="ci-prov-filter" onchange="ciRender()">
+      <option>All Providers</option><option>Dr. Raj Patel</option><option>Dr. Kim Holloway</option><option>NP Lisa Chen</option>
+    </select>
+    <select class="fld" style="width:auto;font-size:12px;padding:6px 10px" id="ci-status-filter" onchange="ciRender()">
+      <option>All</option><option>Waiting</option><option>Checked In</option><option>In Progress</option>
+    </select>
+    <input class="fld" style="width:200px;font-size:12px;padding:6px 10px" placeholder="Search patient..." id="ci-search" oninput="ciRender()">
+  </div>
+  <div style="display:flex;gap:14px">
+    <div style="flex:1;min-width:0">
+      <div class="card" style="padding:0;overflow:hidden" id="ci-queue"></div>
+    </div>
+    <div style="flex:0 0 44%;min-width:0;display:none" id="ci-detail-pane"></div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     PAGE: CHECKOUT DASHBOARD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="pg" id="pg-checkout">
+  <div class="pg-hdr">
+    <div>
+      <div class="pg-title">💳 Checkout Dashboard</div>
+      <div class="pg-sub">Superbill · Payment · Follow-Up Scheduling · May 23, 2026</div>
+    </div>
+    <div class="pg-actions">
+      <button class="btn btn-sm btn-pri" onclick="toast('📊 Running end-of-day reconciliation...')">End-of-Day Reconciliation</button>
+      <button class="btn btn-sm" onclick="toast('📄 Export checkout report')">Export Report</button>
+    </div>
+  </div>
+  <div class="g4" id="co-kpis"></div>
+  <div style="display:flex;gap:14px">
+    <div style="flex:1;min-width:0">
+      <div class="card" style="padding:0;overflow:hidden" id="co-queue"></div>
+    </div>
+    <div style="flex:0 0 48%;min-width:0;display:none" id="co-detail-pane"></div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     PAGE: PERMISSIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="pg" id="pg-permissions">
+  <div class="pg-hdr">
+    <div>
+      <div class="pg-title">🔐 Schedule Permissions</div>
+      <div class="pg-sub">Role-Based Access Control for Scheduling Modules</div>
+    </div>
+    <div class="pg-actions">
+      <button class="btn btn-sm btn-green" onclick="toast('✅ Permission changes saved')">Save Permissions</button>
+      <button class="btn btn-sm" onclick="toast('↩️ Reset to defaults')">Reset to Defaults</button>
+    </div>
+  </div>
+  <div class="al al-b"><div class="al-ic">ℹ️</div><div><div class="al-t">HIPAA-compliant role-based access</div><div class="al-s">All permission changes are audit-logged per 45 CFR §164.312(b). Only Super Admin and Practice Admin can modify role permissions.</div></div></div>
+  <div id="perm-content"></div>
+</div>
+
+</div><!-- end mcontent -->
+</div><!-- end main-layout -->
+
+<!-- ═══ MODALS ═══ -->
+<div class="modal-bg" id="book-modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">+ Book Appointment</div>
+      <button class="modal-close" onclick="closeModal('book-modal')">✕</button>
+    </div>
+    <div class="g2" style="gap:10px;margin-bottom:12px">
+      <div><label class="lbl">Patient Name</label><input class="fld" value="Crystal K Villarral" placeholder="Search patient..."></div>
+      <div><label class="lbl">Date</label><input class="fld" type="date" value="2026-05-23"></div>
+      <div><label class="lbl">Time</label><select class="fld"><option>8:00 AM</option><option>8:30 AM</option><option selected>9:00 AM</option><option>9:30 AM</option><option>10:00 AM</option><option>10:30 AM</option><option>11:00 AM</option><option>1:00 PM</option><option>1:30 PM</option><option>2:00 PM</option><option>2:30 PM</option><option>3:00 PM</option><option>3:30 PM</option><option>4:00 PM</option></select></div>
+      <div><label class="lbl">Provider</label><select class="fld"><option>Dr. Raj Patel</option><option>Dr. Kim Holloway</option><option>NP Lisa Chen</option></select></div>
+      <div><label class="lbl">Visit Type</label><select class="fld"><option>Follow-Up · 15min · 99214</option><option>New Consult · 45min · 99205</option><option>AWV · 30min · G0439</option><option>Urgent · 30min · 99215</option><option>RPM F2F · 20min · 99457</option><option>Telehealth · 20min · 99214+95</option></select></div>
+      <div><label class="lbl">Room / Location</label><select class="fld"><option>Exam 1</option><option>Exam 2</option><option>Exam 3</option><option>Exam 4</option><option>Telehealth Room</option></select></div>
+    </div>
+    <div class="g2" style="gap:10px;margin-bottom:12px">
+      <div>
+        <label class="lbl">Follow-Up Period</label>
+        <select class="fld" id="book-followup" onchange="toggleFollowupNote(this.value)">
+          <option value="">— Select follow-up —</option>
+          <option value="1w">1 Week</option>
+          <option value="2w">2 Weeks</option>
+          <option value="3w">3 Weeks</option>
+          <option value="4w">4 Weeks</option>
+          <option value="6w">6 Weeks</option>
+          <option value="2m">2 Months</option>
+          <option value="3m">3 Months</option>
+          <option value="6m">6 Months</option>
+          <option value="1y">1 Year</option>
+          <option value="prn">PRN (As Needed)</option>
+          <option value="special">Special Need — Describe Below</option>
+        </select>
+      </div>
+      <div id="book-followup-date-wrap">
+        <label class="lbl">Suggested Follow-Up Date</label>
+        <input class="fld" id="book-followup-date" readonly style="background:var(--gray0);color:var(--gray5)" placeholder="Auto-calculated from period">
+      </div>
+    </div>
+    <div id="book-special-wrap" style="display:none;margin-bottom:12px">
+      <label class="lbl" style="color:var(--amber)">⚠️ Special Need — Please describe</label>
+      <textarea class="fld" id="book-special-desc" rows="2" placeholder="Describe the special clinical need or custom follow-up requirement..."></textarea>
+    </div>
+    <div style="margin-bottom:12px"><label class="lbl">Notes</label><textarea class="fld" rows="2" placeholder="Any special instructions...">Patient prefers morning slots. Check BP meds before visit.</textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn" onclick="closeModal('book-modal')">Cancel</button>
+      <button class="btn btn-pri" onclick="
+        var fu=document.getElementById('book-followup');
+        var fd=document.getElementById('book-followup-date');
+        var fuLabel=fu&&fu.options[fu.selectedIndex]?fu.options[fu.selectedIndex].text:'';
+        var fuDate=fd&&fd.value?fd.value:'';
+        var msg='✅ Appointment booked: Crystal — 9:00 AM Dr. Patel';
+        if(fuLabel&&fuLabel!=='— Select follow-up —') msg+=' · Follow-up: '+fuLabel+(fuDate?' ('+fuDate+')':'');
+        toast(msg);closeModal('book-modal')
+      ">Confirm Booking</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="walkin-modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">+ Walk-In Patient</div>
+      <button class="modal-close" onclick="closeModal('walkin-modal')">✕</button>
+    </div>
+    <div class="g2" style="gap:10px;margin-bottom:12px">
+      <div><label class="lbl">Patient Name</label><input class="fld" placeholder="Search existing patient..."></div>
+      <div><label class="lbl">DOB</label><input class="fld" type="date" value="1983-02-21"></div>
+      <div><label class="lbl">Chief Complaint</label><input class="fld" value="Chest pain / shortness of breath"></div>
+      <div><label class="lbl">Urgency</label><select class="fld"><option>Routine</option><option selected>Urgent</option><option>Emergency → Transfer to ED</option></select></div>
+      <div><label class="lbl">Assign Provider</label><select class="fld"><option>Next Available</option><option>Dr. Raj Patel</option><option>Dr. Kim Holloway</option><option>NP Lisa Chen</option></select></div>
+      <div><label class="lbl">Insurance on File</label><select class="fld"><option selected>BCBS TX PPO (on file)</option><option>Medicare (on file)</option><option>Medicaid</option><option>Self-Pay</option></select></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn" onclick="closeModal('walkin-modal')">Cancel</button>
+      <button class="btn btn-amber" onclick="toast('⚡ Walk-in added to queue — Urgent · Dr. Patel next');closeModal('walkin-modal')">Add to Queue</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="checkin-detail-modal">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-hdr">
+      <div class="modal-title" id="ci-modal-title">Check-In: Patient Name</div>
+      <button class="modal-close" onclick="closeModal('checkin-detail-modal')">✕</button>
+    </div>
+    <div id="ci-modal-body"></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="checkout-detail-modal">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-hdr">
+      <div class="modal-title" id="co-modal-title">Checkout: Patient Name</div>
+      <button class="modal-close" onclick="closeModal('checkout-detail-modal')">✕</button>
+    </div>
+    <div id="co-modal-body"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CARESYNC PRO — SCHEDULE ENGINE
+// Athens Heart Center (AHC) · Cardiology Demo
+// ═══════════════════════════════════════════════════════
+
+// ── Navigation ──
+var currentPage = 'setup';
+function go(id) {
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+  var pg = document.getElementById('pg-'+id);
+  if(pg) pg.classList.add('on');
+  document.querySelectorAll('.ls-item').forEach(function(i){i.classList.remove('on');});
+  var nav = document.getElementById('nav-'+id);
+  if(nav) nav.classList.add('on');
+  currentPage = id;
+  if(id==='setup') wizRender();
+  if(id==='calendar'){calRender();calSetTab('exam');}
+  if(id==='checkin') ciRender();
+  if(id==='checkout') coRender();
+  if(id==='permissions') permRender();
+}
+
+// ── Toast ──
+function toast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(function(){el.classList.remove('show');}, 3000);
+}
+
+// ── Modals ──
+function openBookModal(){document.getElementById('book-modal').classList.add('open');}
+function openWalkinModal(){document.getElementById('walkin-modal').classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-bg').forEach(function(m){
+  m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('open');});
+});
+
+// ═══════════════════════════════════════════════════════
+// SETUP WIZARD (7 Steps)
+// ═══════════════════════════════════════════════════════
+var wizStep = 1;
+var wizSteps = ['Practice Info','Providers','Hours & Slots','Exam Flow','Diagnostic Flow','AI Settings','Review & Activate'];
+
+function wizRender() {
+  // Step bar
+  var bar = document.getElementById('wiz-bar');
+  bar.innerHTML = wizSteps.map(function(s,i){
+    var cls = i+1 < wizStep ? 'wiz-step done' : i+1===wizStep ? 'wiz-step active' : 'wiz-step';
+    var prefix = i+1 < wizStep ? '✓ ' : (i+1)+'. ';
+    return '<div class="'+cls+'" onclick="wizJump('+(i+1)+')">'+prefix+s+'</div>';
+  }).join('');
+
+  var c = document.getElementById('wiz-content');
+  var next = document.getElementById('wiz-next-btn');
+  next.textContent = wizStep===7 ? '✅ Activate Engine' : 'Next Step →';
+
+  if(wizStep===1) c.innerHTML = `
+    <div class="card">
+      <div class="card-title-bar blue">🏥 Step 1 — Practice Information</div>
+      <div class="g2">
+        <div><label class="lbl">Practice Name</label><input class="fld" value="Athens Heart Center"></div>
+        <div><label class="lbl">Practice NPI</label><input class="fld" value="1407889579"></div>
+        <div><label class="lbl">Specialty</label><select class="fld"><option selected>Cardiology</option><option>Internal Medicine</option><option>Family Medicine</option><option>Endocrinology</option></select></div>
+        <div><label class="lbl">Tax ID (EIN)</label><input class="fld" value="82-4521900"></div>
+        <div><label class="lbl">Location</label><input class="fld" value="1250 Peachtree Rd NE, Atlanta, GA 30309"></div>
+        <div><label class="lbl">Timezone</label><select class="fld"><option selected>Eastern (ET)</option><option>Central (CT)</option><option>Mountain (MT)</option><option>Pacific (PT)</option></select></div>
+      </div>
+      <div class="g2" style="margin-top:10px">
+        <div><label class="lbl">Main Phone</label><input class="fld" value="(404) 555-0123"></div>
+        <div><label class="lbl">Fax</label><input class="fld" value="(404) 555-0124"></div>
+      </div>
+      <div class="al al-g" style="margin-top:14px"><div class="al-ic">✅</div><div><div class="al-t">Practice profile auto-loaded from CareSync Super Admin</div><div class="al-s">NPI verified via NPPES · EIN on file · License active through 12/2027</div></div></div>
+    </div>`;
+
+  else if(wizStep===2) c.innerHTML = `
+    <div class="card">
+      <div class="card-title-bar blue">👨‍⚕️ Step 2 — Providers</div>
+      <div class="al al-b"><div class="al-ic">ℹ️</div><div><div class="al-t">3 providers configured for AHC Cardiology</div><div class="al-s">Each provider gets their own column in the Exam Flow schedule</div></div></div>
+      ${[
+        {name:'Dr. Raj Patel',cred:'MD, FACC',spec:'Interventional Cardiology',npi:'1234567890',color:'#1a6eb5',slots:'8:00 AM – 5:00 PM',appts:8},
+        {name:'Dr. Kim Holloway',cred:'MD, FACC',spec:'Electrophysiology',npi:'2345678901',color:'#0d9488',slots:'9:00 AM – 4:00 PM',appts:7},
+        {name:'NP Lisa Chen',cred:'NP-C, AACC',spec:'Heart Failure · RPM',npi:'3456789012',color:'#7c3aed',slots:'8:30 AM – 3:30 PM',appts:6}
+      ].map(function(p){return `
+        <div class="card" style="border-left:4px solid ${p.color};margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:44px;height:44px;border-radius:50%;background:${p.color};display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0">${p.name.split(' ').map(function(w){return w[0];}).join('').slice(0,2)}</div>
+            <div style="flex:1">
+              <div style="font-size:15px;font-weight:700;color:var(--navy)">${p.name}</div>
+              <div style="font-size:12px;color:var(--gray5)">${p.cred} · ${p.spec}</div>
+              <div style="font-size:12px;color:var(--gray4);margin-top:2px">NPI: ${p.npi} · Slots: ${p.slots} · Max/day: ${p.appts}</div>
+            </div>
+            <button class="btn btn-sm" onclick="toast('Edit provider: ${p.name}')">Edit</button>
+          </div>
+        </div>`}).join('')}
+      <button class="btn btn-sm btn-green" onclick="toast('+ Add provider wizard')">+ Add Provider</button>
+    </div>`;
+
+  else if(wizStep===3) c.innerHTML = `
+    <div class="card">
+      <div class="card-title-bar blue">🕐 Step 3 — Office Hours & Slot Duration</div>
+      <div class="g2" style="margin-bottom:14px">
+        <div>
+          <label class="lbl">Office Hours — Monday–Friday</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input class="fld" value="8:00 AM" style="flex:1"><span style="color:var(--gray5);font-size:13px">to</span><input class="fld" value="5:00 PM" style="flex:1">
+          </div>
+        </div>
+        <div>
+          <label class="lbl">Saturday Hours</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input class="fld" value="9:00 AM" style="flex:1"><span style="color:var(--gray5);font-size:13px">to</span><input class="fld" value="1:00 PM" style="flex:1">
+          </div>
+        </div>
+      </div>
+      <div class="sec-hdr blue">Appointment Slot Templates</div>
+      <div style="overflow:auto"><table class="t">
+        <thead><tr><th>Visit Type</th><th>CPT Code</th><th>Duration</th><th>Buffer</th><th>Telehealth?</th><th>Auth Required?</th></tr></thead>
+        <tbody>
+          ${[
+            ['New Consult','99205','45 min','15 min','Yes','No'],
+            ['Follow-Up (Est)','99214','15 min','5 min','Yes','No'],
+            ['AWV','G0439','30 min','10 min','No','No'],
+            ['Urgent Visit','99215','30 min','10 min','Yes','No'],
+            ['Pre-Op Clearance','99214','30 min','10 min','No','Yes'],
+            ['Cardio Consult','99245','45 min','15 min','Yes','Yes'],
+            ['RPM F2F','99457','20 min','5 min','Yes','No'],
+            ['Telehealth Only','99214+95','20 min','5 min','Yes','No']
+          ].map(function(r){return '<tr><td><strong>'+r[0]+'</strong></td><td><code style="font-family:var(--mono);font-size:11px;background:var(--gray1);padding:2px 6px;border-radius:4px">'+r[1]+'</code></td><td>'+r[2]+'</td><td>'+r[3]+'</td><td>'+r[4]+'</td><td>'+(r[5]==='Yes'?'<span class="pill pill-a">Required</span>':'<span class="pill pill-g">Not req.</span>')+'</td></tr>';}).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+
+  else if(wizStep===4) c.innerHTML = `
+    <div class="card">
+      <div class="card-title-bar blue">🩺 Step 4 — Exam Flow (In-Person Encounter Rooms)</div>
+      <div class="al al-b"><div class="al-ic">ℹ️</div><div><div class="al-t">Exam Flow = face-to-face encounters with providers</div><div class="al-s">Schedule engine creates one column per provider + telehealth column. Rooms are assigned at check-in.</div></div></div>
+      <div class="sec-hdr blue">📍 In-Person Exam Rooms (5 configured)</div>
+      <div class="g3" style="margin-bottom:14px">
+        ${['Exam 1 — Multi-Provider','Exam 2 — Dr. Patel','Exam 3 — Dr. Holloway','Exam 4 — NP Chen','Exam 5 — Procedure Room'].map(function(r,i){return `
+          <div class="mc">
+            <div style="font-size:13px;font-weight:700;color:var(--blue)">${r.split('—')[0].trim()}</div>
+            <div style="font-size:11px;color:var(--gray5)">— ${r.split('—')[1]?r.split('—')[1].trim():'Multi-use'}</div>
+            <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">
+              <span class="pill pill-g">Active</span>
+              <button class="btn btn-xs" onclick="toast('Edit room: ${r}')">Edit</button>
+            </div>
+          </div>`}).join('')}
+      </div>
+      <div class="sec-hdr" style="background:var(--purple-lt);border-color:#c4b5fd;color:var(--purple)">📹 Telehealth Room (1 configured)</div>
+      <div class="mc" style="margin-bottom:14px">
+        <div style="font-size:13px;font-weight:700;color:var(--purple)">Tele-Room 1 — All Providers</div>
+        <div style="font-size:11px;color:var(--gray5)">WebRTC via Daily.co · HIPAA-encrypted · Camera + speaker + waiting room</div>
+        <div style="margin-top:6px"><span class="pill pill-p">Active</span> <span class="pill pill-g">HIPAA Compliant</span></div>
+      </div>
+      <div class="sec-hdr blue">Exam Visit Types (configured above in Step 3)</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${['New Consult 45m','Follow-Up 15m','AWV 30m','Urgent 30m','Pre-Op 30m','Cardio Consult 45m','RPM F2F 20m','Telehealth 20m'].map(function(vt){return '<span class="bx bx-b">'+vt+'</span>';}).join('')}
+      </div>
+    </div>`;
+
+  else if(wizStep===5) c.innerHTML = `
+    <div class="card">
+      <div class="card-title-bar green">🔬 Step 5 — Diagnostic Flow (Equipment-Based Rooms)</div>
+      <div class="al al-g"><div class="al-ic">ℹ️</div><div><div class="al-t">Diagnostic Flow = resource-based scheduling</div><div class="al-s">Each room has specific equipment + required technicians. Schedule engine creates one column per room — not per provider.</div></div></div>
+      <div class="sec-hdr green">🏥 Diagnostic Rooms (7 configured)</div>
+      <div class="g3" style="margin-bottom:14px">
+        ${[
+          {name:'Echo Lab',equip:'GE Vivid E95',color:'var(--teal)',tests:'Transthoracic Echo, TEE, Stress Echo'},
+          {name:'Stress Lab',equip:'GE CASE Treadmill',color:'var(--orange)',tests:'Exercise Stress, Chemical Stress'},
+          {name:'Nuclear Room',equip:'Siemens SPECT/CT',color:'var(--purple)',tests:'Myocardial Perfusion, Gated SPECT'},
+          {name:'Cardiac PET Suite',equip:'Siemens Biograph',color:'var(--red)',tests:'Rubidium PET, Ammonia PET'},
+          {name:'Vascular Lab',equip:'Philips EPIQ CVx',color:'var(--blue)',tests:'Carotid Doppler, ABI, RVSP'},
+          {name:'Device Clinic',equip:'Medtronic/Abbott/BSci',color:'var(--amber)',tests:'PPM/ICD Check, Loop Recorder'},
+          {name:'Blood Draw',equip:'Phlebotomy Station',color:'var(--green)',tests:'BMP, CBC, Lipid Panel, BNP, Troponin'}
+        ].map(function(r){return `
+          <div class="mc" style="border-left:3px solid ${r.color}">
+            <div style="font-size:13px;font-weight:700;color:${r.color}">${r.name}</div>
+            <div style="font-size:11px;color:var(--gray6);font-weight:600;margin-top:2px">🔧 ${r.equip}</div>
+            <div style="font-size:11px;color:var(--gray5);margin-top:3px">${r.tests}</div>
+            <div style="margin-top:6px"><span class="pill pill-g">Active</span></div>
+          </div>`}).join('')}
+      </div>
+      <div style="padding:10px 14px;background:var(--amber-lt);border-radius:var(--r);font-size:12px;color:var(--amber);border-left:3px solid var(--amber)">
+        <strong>Auth Required:</strong> Nuclear, Cardiac PET, and Vascular studies require prior authorization from most payers. AI will auto-check auth requirements at booking.
+      </div>
+    </div>`;
+
+  else if(wizStep===6) c.innerHTML = `
+    <div class="card">
+      <div class="card-title-bar" style="background:var(--purple-lt);color:var(--purple);border-left:4px solid var(--purple)">🤖 Step 6 — AI Scheduling Intelligence</div>
+      <div class="al al-b"><div class="al-ic">ℹ️</div><div><div class="al-t">CareSync AI — Claude API powered</div><div class="al-s">All AI actions require staff confirmation before executing. Full audit log per HIPAA §164.312(b).</div></div></div>
+      <div class="g2">
+        ${[
+          {l:'AI Can Book Appointments',s:'AI receptionist auto-books via phone/portal',on:true},
+          {l:'AI Can Reschedule',s:'Offer alternatives when patient cancels',on:true},
+          {l:'AI Can Cancel',s:'Requires staff confirmation always',on:false},
+          {l:'AI Symptom Triage',s:'Route urgent calls to same-day or ED',on:true},
+          {l:'Auto Eligibility Check',s:'270/271 at booking + check-in',on:true},
+          {l:'Auto Prior Auth Check',s:'Checks payer rules before scheduling diagnostics',on:true},
+          {l:'Waitlist Auto-Fill',s:'Fill cancellations from waitlist automatically',on:true},
+          {l:'Copay Collection at Check-In',s:'Stripe terminal integration',on:true},
+          {l:'AI Pre-Chart Brief',s:'Summarize patient chart before provider enters room',on:true},
+          {l:'AI Ambient Scribe',s:'Whisper v3 + Claude API SOAP generation',on:true}
+        ].map(function(item){return `
+          <div class="tog" onclick="this.querySelector('.tog-sw').classList.toggle('on');toast((this.querySelector('.tog-sw').classList.contains('on')?'✅':'🔴')+' ${item.l}: '+(this.querySelector('.tog-sw').classList.contains('on')?'ON':'OFF'))">
+            <div><div class="tog-lbl">${item.l}</div><div class="tog-sub">${item.s}</div></div>
+            <div class="tog-sw ${item.on?'on':''}"></div>
+          </div>`}).join('')}
+      </div>
+    </div>`;
+
+  else if(wizStep===7) c.innerHTML = `
+    <div class="card">
+      <div class="card-title-bar green">✅ Step 7 — Review & Activate</div>
+      <div class="al al-g"><div class="al-ic">🎉</div><div><div class="al-t">Schedule Engine ready to activate</div><div class="al-s">Review the configuration summary below. Click Activate Engine to go live.</div></div></div>
+      <div class="g2" style="margin-top:10px">
+        ${[
+          ['Practice','Athens Heart Center · NPI 1407889579'],
+          ['Specialty','Cardiology'],
+          ['Providers','3 configured (Dr. Patel, Dr. Holloway, NP Chen)'],
+          ['Office Hours','Mon–Fri 8:00–5:00 · Sat 9:00–1:00'],
+          ['Exam Rooms','5 in-person + 1 telehealth'],
+          ['Diagnostic Rooms','7 (Echo, Stress, Nuclear, PET, Vascular, Device, Blood Draw)'],
+          ['Visit Types','8 configured · Auth required on 2'],
+          ['AI Features','10 enabled · Ambient Scribe ON'],
+          ['Eligibility Check','Auto (Waystar 270/271)'],
+          ['Prior Auth','Auto-check ON for 3 room types']
+        ].map(function(r){return `
+          <div class="mc" style="padding:10px 14px">
+            <div style="font-size:11px;color:var(--gray5);font-weight:600;text-transform:uppercase;letter-spacing:.3px">${r[0]}</div>
+            <div style="font-size:13px;font-weight:700;color:var(--navy);margin-top:3px">${r[1]}</div>
+          </div>`}).join('')}
+      </div>
+      <div style="text-align:center;margin-top:20px">
+        <button class="btn btn-green" style="padding:12px 32px;font-size:15px" onclick="toast('🚀 Schedule Engine activated! AHC Cardiology is now live.')">🚀 Activate Schedule Engine</button>
+      </div>
+    </div>`;
+}
+
+function wizNext() { if(wizStep<7){wizStep++;wizRender();}else{toast('🚀 Schedule Engine activated!');} }
+function wizPrev() { if(wizStep>1){wizStep--;wizRender();} }
+function wizJump(n) { wizStep=n; wizRender(); }
+
+// ═══════════════════════════════════════════════════════
+// PRACTICE SCHEDULE — TWO-FLOW CALENDAR
+// ═══════════════════════════════════════════════════════
+var calTab = 'exam';
+var PROVIDERS = [
+  {id:'p1',name:'Dr. Patel',short:'Patel',color:'#1a6eb5'},
+  {id:'p2',name:'Dr. Holloway',short:'Holloway',color:'#0d9488'},
+  {id:'p3',name:'NP Chen',short:'Chen',color:'#7c3aed'},
+  {id:'tele',name:'Telehealth',short:'Tele',color:'#a21caf'}
+];
+var DIAG_ROOMS = [
+  {id:'echo',name:'Echo Lab',short:'Echo',color:'#0d9488'},
+  {id:'stress',name:'Stress Lab',short:'Stress',color:'#ea580c'},
+  {id:'nuclear',name:'Nuclear',short:'Nuclear',color:'#7c3aed'},
+  {id:'pet',name:'Cardiac PET',short:'PET',color:'#dc2626'},
+  {id:'vascular',name:'Vascular Lab',short:'Vascular',color:'#1a6eb5'},
+  {id:'device',name:'Device Clinic',short:'Device',color:'#b45309'},
+  {id:'blood',name:'Blood Draw',short:'Blood Draw',color:'#15803d'}
+];
+var TIMES = ['8:00 AM','8:30 AM','9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM','12:00 PM','1:00 PM','1:30 PM','2:00 PM','2:30 PM','3:00 PM','3:30 PM','4:00 PM','4:30 PM'];
+
+var EXAM_SLOTS = {
+  p1:{
+    '8:00 AM':{name:'Maria Garcia',type:'CCM Monthly',typeColor:'#dcfce7',typeText:'#15803d',status:'Checked In',ai:''},
+    '8:30 AM':{name:'Thomas Liu',type:'BP Check',typeColor:'#fee2e2',typeText:'#991b1b',status:'Waiting',ai:'BP trending ↑ — 3 readings >150'},
+    '9:00 AM':{name:'Crystal Villarral',type:'RPM F2F',typeColor:'#ede9fe',typeText:'#5b21b6',status:'Scheduled',ai:'BP avg 158/94 — med adjustment?'},
+    '9:30 AM':{name:'Dorothy Martinez',type:'AWV',typeColor:'#fef3c7',typeText:'#92400e',status:'Scheduled',ai:'3 HEDIS gaps open'},
+    '10:00 AM':{name:'William Harris',type:'Follow-Up',typeColor:'#dbeafe',typeText:'#1d4ed8',status:'Scheduled',ai:''},
+    '10:30 AM':{name:'OPEN','open':true},
+    '11:00 AM':{name:'Linda Jackson',type:'New Consult',typeColor:'#fce7f3',typeText:'#9d174d',status:'Scheduled',ai:'New patient — no prior chart'},
+    '11:30 AM':{name:'BREAK','blocked':true},
+    '12:00 PM':{name:'LUNCH','blocked':true},
+    '1:00 PM':{name:'George Anderson',type:'TCM F2F',typeColor:'#ccfbf1',typeText:'#0f766e',status:'Scheduled',ai:'14-day TCM window ends May 25'},
+    '1:30 PM':{name:'Susan Patel',type:'CCM Monthly',typeColor:'#dcfce7',typeText:'#15803d',status:'Scheduled',ai:''},
+    '2:00 PM':{name:'Richard Kim',type:'Urgent',typeColor:'#fee2e2',typeText:'#991b1b',status:'Walk-In',ai:'⚡ Urgent — chest pain reported'},
+    '2:30 PM':{name:'OPEN','open':true},
+    '3:00 PM':{name:'OPEN','open':true},
+    '3:30 PM':{name:'Margaret Thompson',type:'Follow-Up',typeColor:'#dbeafe',typeText:'#1d4ed8',status:'Scheduled',ai:''},
+    '4:00 PM':{name:'OPEN','open':true},
+    '4:30 PM':{name:'David Cooper',type:'Lab Review',typeColor:'#ffedd5',typeText:'#c2410c',status:'Scheduled',ai:''}
+  },
+  p2:{
+    '8:00 AM':{name:'OPEN','open':true},
+    '8:30 AM':{name:'OPEN','open':true},
+    '9:00 AM':{name:'James Wilson',type:'EP Consult',typeColor:'#ede9fe',typeText:'#5b21b6',status:'Scheduled',ai:''},
+    '9:30 AM':{name:'Patricia Moore',type:'Follow-Up',typeColor:'#dbeafe',typeText:'#1d4ed8',status:'Checked In',ai:''},
+    '10:00 AM':{name:'Charles Taylor',type:'New Consult',typeColor:'#fce7f3',typeText:'#9d174d',status:'Scheduled',ai:''},
+    '10:30 AM':{name:'Barbara Anderson',type:'AWV',typeColor:'#fef3c7',typeText:'#92400e',status:'Scheduled',ai:'Flu shot due'},
+    '11:00 AM':{name:'BREAK','blocked':true},
+    '11:30 AM':{name:'OPEN','open':true},
+    '12:00 PM':{name:'LUNCH','blocked':true},
+    '1:00 PM':{name:'Steven Jackson',type:'Follow-Up',typeColor:'#dbeafe',typeText:'#1d4ed8',status:'Scheduled',ai:''},
+    '1:30 PM':{name:'OPEN','open':true},
+    '2:00 PM':{name:'Nancy White',type:'Tele-Visit',typeColor:'#ede9fe',typeText:'#5b21b6',status:'Scheduled',ai:''},
+    '2:30 PM':{name:'OPEN','open':true},
+    '3:00 PM':{name:'OPEN','open':true},
+    '3:30 PM':{name:'OPEN','open':true}
+  },
+  p3:{
+    '8:30 AM':{name:'Carol Brown',type:'RPM F2F',typeColor:'#ede9fe',typeText:'#5b21b6',status:'Checked In',ai:'Weight ↑ 4lb in 3 days'},
+    '9:00 AM':{name:'Robert Davis',type:'CHF Review',typeColor:'#fee2e2',typeText:'#991b1b',status:'Waiting',ai:'⚡ BNP 890 last draw — elevated'},
+    '9:30 AM':{name:'OPEN','open':true},
+    '10:00 AM':{name:'Jennifer Martinez',type:'Follow-Up',typeColor:'#dbeafe',typeText:'#1d4ed8',status:'Scheduled',ai:''},
+    '10:30 AM':{name:'OPEN','open':true},
+    '11:00 AM':{name:'OPEN','open':true},
+    '12:00 PM':{name:'LUNCH','blocked':true},
+    '1:00 PM':{name:'Michael Johnson',type:'New Consult',typeColor:'#fce7f3',typeText:'#9d174d',status:'Scheduled',ai:''},
+    '1:30 PM':{name:'OPEN','open':true},
+    '2:00 PM':{name:'Lisa Anderson',type:'CCM Monthly',typeColor:'#dcfce7',typeText:'#15803d',status:'Scheduled',ai:''},
+    '2:30 PM':{name:'OPEN','open':true},
+    '3:00 PM':{name:'OPEN','open':true}
+  },
+  tele:{
+    '8:00 AM':{name:'OPEN','open':true},
+    '9:00 AM':{name:'Alice Nguyen',type:'Tele-Visit',typeColor:'#ede9fe',typeText:'#5b21b6',status:'In Session',ai:'⚡ Live now'},
+    '10:00 AM':{name:'OPEN','open':true},
+    '11:00 AM':{name:'Peter Chen',type:'Tele-Follow-Up',typeColor:'#dbeafe',typeText:'#1d4ed8',status:'Scheduled',ai:''},
+    '1:00 PM':{name:'OPEN','open':true},
+    '2:00 PM':{name:'Sarah Kim',type:'Tele-AWV',typeColor:'#fef3c7',typeText:'#92400e',status:'Scheduled',ai:''},
+    '3:00 PM':{name:'OPEN','open':true}
+  }
+};
+
+var DIAG_SLOTS = {
+  echo:{'8:00 AM':{name:'Dorothy Martinez',type:'TTE',ai:''},'9:00 AM':{name:'OPEN',open:true},'10:00 AM':{name:'William Harris',type:'Stress Echo',ai:''},'11:00 AM':{name:'OPEN',open:true},'1:00 PM':{name:'Carol Brown',type:'TEE',ai:'Pre-sedation check needed'},'2:00 PM':{name:'OPEN',open:true},'3:00 PM':{name:'James Wilson',type:'TTE',ai:''}},
+  stress:{'9:00 AM':{name:'Crystal Villarral',type:'Exercise Stress',ai:'⚡ Last stress 2021'},'10:30 AM':{name:'BLOCKED',blocked:true},'1:00 PM':{name:'Michael Johnson',type:'Chemical Stress',ai:'Contrast allergy noted'},'2:30 PM':{name:'OPEN',open:true}},
+  nuclear:{'8:00 AM':{name:'Thomas Liu',type:'Myocardial Perfusion',ai:'Auth approved'},'10:00 AM':{name:'Nancy White',type:'Gated SPECT',ai:''},'1:00 PM':{name:'OPEN',open:true},'2:30 PM':{name:'Robert Davis',type:'Myocardial Perfusion',ai:'Auth pending — call payer'}},
+  pet:{'9:00 AM':{name:'Steven Jackson',type:'Rb-82 PET',ai:'Auth approved'},'1:00 PM':{name:'OPEN',open:true}},
+  vascular:{'8:30 AM':{name:'Patricia Moore',type:'Carotid Doppler',ai:''},'10:00 AM':{name:'OPEN',open:true},'1:30 PM':{name:'George Anderson',type:'ABI',ai:''},'3:00 PM':{name:'OPEN',open:true}},
+  device:{'9:00 AM':{name:'Barbara Anderson',type:'PPM Check',ai:'Battery 78% — 4yr est'},'11:00 AM':{name:'Linda Jackson',type:'ICD Check',ai:''},'1:00 PM':{name:'OPEN',open:true},'2:00 PM':{name:'Richard Kim',type:'Loop Recorder DL',ai:''}},
+  blood:{'8:00 AM':{name:'Maria Garcia',type:'BMP + Lipid',ai:''},'8:30 AM':{name:'Thomas Liu',type:'BMP + CBC',ai:''},'9:00 AM':{name:'Alice Nguyen',type:'BNP + Troponin',ai:'⚡ STAT'},'9:30 AM':{name:'OPEN',open:true},'10:00 AM':{name:'Jennifer Martinez',type:'HbA1c + CMP',ai:''},'10:30 AM':{name:'OPEN',open:true},'11:00 AM':{name:'OPEN',open:true},'1:00 PM':{name:'Sarah Kim',type:'CBC + CRP',ai:''},'1:30 PM':{name:'OPEN',open:true},'2:00 PM':{name:'OPEN',open:true}}
+};
+
+function calSetTab(tab) {
+  calTab = tab;
+  document.getElementById('tab-exam').className = tab==='exam' ? 'btn btn-sm btn-pri' : 'btn btn-sm';
+  document.getElementById('tab-diag').className = tab==='diagnostic' ? 'btn btn-sm btn-pri' : 'btn btn-sm';
+  calRender();
+}
+
+function calRender() {
+  var el = document.getElementById('cal-content');
+  if(!el) return;
+  if(calTab==='exam') renderExamGrid(el);
+  else renderDiagGrid(el);
+}
+
+function renderExamGrid(el) {
+  var cols = PROVIDERS;
+  var html = '<div style="overflow-x:auto;padding:14px">';
+  // Header row
+  html += '<div style="display:flex;gap:0;margin-bottom:4px">';
+  html += '<div style="width:72px;flex-shrink:0"></div>';
+  cols.forEach(function(c){
+    html += '<div style="flex:1;min-width:130px;text-align:center;padding:8px 6px;font-size:12px;font-weight:700;color:'+c.color+';border-bottom:3px solid '+c.color+'">'+c.name+'</div>';
+  });
+  html += '</div>';
+  // Time rows
+  TIMES.forEach(function(t){
+    html += '<div style="display:flex;gap:0;min-height:58px;border-bottom:1px solid #f3f4f6">';
+    html += '<div style="width:72px;flex-shrink:0;font-size:11px;color:var(--gray4);font-family:var(--mono);font-weight:600;padding:6px 4px;padding-top:10px">'+t+'</div>';
+    cols.forEach(function(c){
+      var slot = EXAM_SLOTS[c.id] && EXAM_SLOTS[c.id][t];
+      html += '<div style="flex:1;min-width:130px;padding:3px 4px">';
+      if(!slot) {
+        html += '<div class="sched-slot open" onclick="toast(\'+ Book: '+t+' with '+c.name+'\')" style="height:52px;opacity:.5;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gray4)">+ Open</div>';
+      } else if(slot.blocked) {
+        html += '<div class="sched-slot blocked" style="height:52px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--gray4)">'+slot.name+'</div>';
+      } else if(slot.open) {
+        html += '<div class="sched-slot open" onclick="toast(\'+ Book: '+t+' with '+c.name+'\')" style="height:52px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gray4);border:1.5px dashed var(--gray3)">+ Open slot</div>';
+      } else {
+        var urgentStyle = slot.type==='Urgent'||slot.status==='Walk-In' ? 'sched-slot urgent' : (slot.type&&slot.type.includes('Tele') ? 'sched-slot booked-tele' : 'sched-slot booked');
+        html += '<div class="'+urgentStyle+'" onclick="showSlotDetail(\''+slot.name+'\',\''+t+'\',\''+c.name+'\')" style="height:52px">';
+        html += '<div class="sched-slot-name">'+slot.name+'</div>';
+        html += '<div class="sched-slot-type">'+t+' · '+(slot.type||'')+'</div>';
+        if(slot.ai) html += '<div class="sched-slot-ai">🤖 '+slot.ai+'</div>';
+        if(slot.status) html += '<span class="pill '+(slot.status==='Checked In'?'pill-g':slot.status==='In Session'?'pill-p':slot.status==='Walk-In'?'pill-a':'pill-gray')+'" style="font-size:10px;margin-top:2px">'+slot.status+'</span>';
+        html += '</div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function renderDiagGrid(el) {
+  var cols = DIAG_ROOMS;
+  var html = '<div style="overflow-x:auto;padding:14px">';
+  // Header
+  html += '<div style="display:flex;gap:0;margin-bottom:4px">';
+  html += '<div style="width:72px;flex-shrink:0"></div>';
+  cols.forEach(function(c){
+    html += '<div style="flex:1;min-width:110px;text-align:center;padding:8px 4px;font-size:11px;font-weight:700;color:'+c.color+';border-bottom:3px solid '+c.color+'">'+c.name+'</div>';
+  });
+  html += '</div>';
+  TIMES.forEach(function(t){
+    html += '<div style="display:flex;gap:0;min-height:58px;border-bottom:1px solid #f3f4f6">';
+    html += '<div style="width:72px;flex-shrink:0;font-size:11px;color:var(--gray4);font-family:var(--mono);font-weight:600;padding:6px 4px;padding-top:10px">'+t+'</div>';
+    cols.forEach(function(c){
+      var slot = DIAG_SLOTS[c.id] && DIAG_SLOTS[c.id][t];
+      html += '<div style="flex:1;min-width:110px;padding:3px 4px">';
+      if(!slot){
+        html += '<div class="sched-slot open" onclick="toast(\'+ Book diagnostic: '+t+' · '+c.name+'\')" style="height:52px;opacity:.4;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gray4)">+ Open</div>';
+      } else if(slot.blocked){
+        html += '<div class="sched-slot blocked" style="height:52px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gray4)">Blocked</div>';
+      } else if(slot.open){
+        html += '<div class="sched-slot open" onclick="toast(\'+ Book: '+t+' · '+c.name+'\')" style="height:52px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gray4);border:1.5px dashed var(--gray3)">+ Open</div>';
+      } else {
+        var cls = 'sched-slot booked';
+        if(c.id==='echo') cls='sched-slot echo';
+        else if(c.id==='stress') cls='sched-slot stress';
+        else if(c.id==='nuclear') cls='sched-slot nuclear';
+        html += '<div class="'+cls+'" onclick="toast(\''+slot.name+' · '+slot.type+' · '+t+'\')" style="height:52px">';
+        html += '<div class="sched-slot-name" style="font-size:11px">'+slot.name+'</div>';
+        html += '<div class="sched-slot-type">'+slot.type+'</div>';
+        if(slot.ai) html += '<div class="sched-slot-ai">🤖 '+slot.ai+'</div>';
+        html += '</div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function showSlotDetail(name,time,provider){
+  toast('📋 '+name+' · '+time+' · '+provider+' — click to open full chart');
+}
+
+function calRenderPlaceholder(el) { el.innerHTML = '<div style="padding:40px;text-align:center;color:var(--gray4)">Loading...</div>'; }
+
+// ═══════════════════════════════════════════════════════
+// CHECK-IN DATA & RENDER
+// ═══════════════════════════════════════════════════════
+var CI_PATIENTS = [
+  {name:'Crystal Villarral',mrn:'10827',dob:'02/21/1983',age:42,provider:'Dr. Patel',time:'9:00 AM',type:'RPM F2F',status:'waiting',insurance:'BCBS TX PPO',copay:'$30',elig:'Verified',ai:'BP avg 158/94 · 3 HCC gaps open',init:'CV'},
+  {name:'Thomas Liu',mrn:'10831',dob:'07/14/1955',age:70,provider:'Dr. Patel',time:'8:30 AM',type:'BP Check',status:'waiting',insurance:'Medicare Part B',copay:'$0',elig:'Verified',ai:'BP trending ↑ · 3 readings >150 mmHg',init:'TL'},
+  {name:'Robert Davis',mrn:'10842',dob:'03/28/1949',age:77,provider:'NP Chen',time:'9:00 AM',type:'CHF Review',status:'waiting',insurance:'Medicare + Medicaid',copay:'$0',elig:'Verified',ai:'⚡ BNP 890 — elevated · weight ↑ 3lb',init:'RD'},
+  {name:'Carol Brown',mrn:'10835',dob:'11/05/1961',age:64,provider:'NP Chen',time:'8:30 AM',type:'RPM F2F',status:'checked-in',insurance:'Aetna PPO',copay:'$40',elig:'Verified',ai:'Weight ↑ 4lb in 3 days',init:'CB'},
+  {name:'Maria Garcia',mrn:'10820',dob:'06/22/1970',age:55,provider:'Dr. Patel',time:'8:00 AM',type:'CCM Monthly',status:'checked-in',insurance:'Community Health Choice',copay:'$10',elig:'Verified',ai:'',init:'MG'},
+  {name:'Patricia Moore',mrn:'10856',dob:'09/10/1958',age:67,provider:'Dr. Holloway',time:'9:30 AM',type:'Follow-Up',status:'checked-in',insurance:'UnitedHealthcare',copay:'$30',elig:'Verified',ai:'',init:'PM'},
+  {name:'Dorothy Martinez',mrn:'10829',dob:'01/17/1945',age:81,provider:'Dr. Patel',time:'9:30 AM',type:'AWV',status:'waiting',insurance:'Medicare Part B',copay:'$0',elig:'Pending — call required',ai:'3 HEDIS gaps · flu shot due · DM A1c overdue',init:'DM'},
+  {name:'James Wilson',mrn:'10863',dob:'04/03/1967',age:59,provider:'Dr. Holloway',time:'9:00 AM',type:'EP Consult',status:'waiting',insurance:'BCBS TX PPO',copay:'$60',elig:'Verified',ai:'',init:'JW'}
+];
+
+function ciRender() {
+  // KPIs
+  var kpis = document.getElementById('ci-kpis');
+  if(kpis) kpis.innerHTML = [
+    {val:'8',lbl:'Scheduled Today',cls:''},
+    {val:'3',lbl:'Checked In',cls:'kpi-up'},
+    {val:'5',lbl:'Still Waiting',cls:'kpi-eq'},
+    {val:'1',lbl:'Auth Pending',cls:'kpi-dn'}
+  ].map(function(k){return '<div class="kpi-tile"><div class="kpi-val">'+k.val+'</div><div class="kpi-lbl">'+k.lbl+'</div><div class="kpi-delta '+k.cls+'">Today · May 23</div></div>';}).join('');
+
+  var search = (document.getElementById('ci-search')||{}).value||'';
+  var provF = (document.getElementById('ci-prov-filter')||{}).value||'All Providers';
+  var statF = (document.getElementById('ci-status-filter')||{}).value||'All';
+
+  var filtered = CI_PATIENTS.filter(function(p){
+    var matchSearch = !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.mrn.includes(search);
+    var matchProv = provF==='All Providers' || p.provider.includes(provF.replace('Dr. ','').replace('NP ',''));
+    var matchStat = statF==='All' || (statF==='Waiting' && p.status==='waiting') || (statF==='Checked In' && p.status==='checked-in') || (statF==='In Progress' && p.status==='inprogress');
+    return matchSearch && matchProv && matchStat;
+  });
+
+  var queue = document.getElementById('ci-queue');
+  if(!queue) return;
+
+  if(!filtered.length){queue.innerHTML='<div style="padding:40px;text-align:center;color:var(--gray4)">No patients match filter</div>';return;}
+
+  queue.innerHTML = filtered.map(function(p,i){
+    var statusPill = p.status==='checked-in' ? '<span class="pill pill-g">Checked In</span>' : p.status==='inprogress' ? '<span class="pill pill-p">In Progress</span>' : '<span class="pill pill-a">Waiting</span>';
+    var eligColor = p.elig==='Verified' ? 'color:var(--green)' : 'color:var(--amber)';
+    return '<div class="ci-row" onclick="ciOpenDetail('+i+')">' +
+      '<div class="ci-av" style="background:'+(p.status==='checked-in'?'var(--green-lt)':'var(--blue-lt)')+';color:'+(p.status==='checked-in'?'var(--green)':'var(--blue)')+'">'+p.init+'</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div class="ci-name">'+p.name+'</div>' +
+        '<div class="ci-meta">MRN '+p.mrn+' · DOB '+p.dob+' · Age '+p.age+' · '+p.provider+'</div>' +
+        '<div class="ci-meta">'+p.type+' · '+p.insurance+(p.ai?' · <span style="color:var(--purple);font-weight:600">🤖 '+p.ai+'</span>':'')+'</div>' +
+      '</div>' +
+      '<div class="ci-status">' +
+        '<div class="ci-time">'+p.time+'</div>' +
+        statusPill + '<br>' +
+        '<div style="font-size:11px;'+eligColor+';font-weight:600;margin-top:3px">'+p.elig+'</div>' +
+        '<div style="font-size:11px;color:var(--gray5)">Copay: '+p.copay+'</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function ciOpenDetail(idx) {
+  var p = CI_PATIENTS[idx];
+  if(!p) return;
+  document.getElementById('ci-modal-title').textContent = 'Check-In: '+p.name;
+  document.getElementById('ci-modal-body').innerHTML = `
+    <div class="g2" style="gap:10px;margin-bottom:14px">
+      <div class="mc"><div style="font-size:11px;color:var(--gray5);font-weight:600">Patient</div><div style="font-size:14px;font-weight:700;color:var(--navy)">${p.name}</div><div style="font-size:12px;color:var(--gray5)">MRN ${p.mrn} · DOB ${p.dob} · Age ${p.age}</div></div>
+      <div class="mc"><div style="font-size:11px;color:var(--gray5);font-weight:600">Appointment</div><div style="font-size:14px;font-weight:700;color:var(--navy)">${p.time} · ${p.type}</div><div style="font-size:12px;color:var(--gray5)">${p.provider}</div></div>
+      <div class="mc"><div style="font-size:11px;color:var(--gray5);font-weight:600">Insurance</div><div style="font-size:13px;font-weight:700;color:var(--navy)">${p.insurance}</div><div style="font-size:12px;color:${p.elig==='Verified'?'var(--green)':'var(--amber)'};font-weight:600">Eligibility: ${p.elig}</div></div>
+      <div class="mc"><div style="font-size:11px;color:var(--gray5);font-weight:600">Copay Due</div><div style="font-size:22px;font-weight:700;color:var(--navy)">${p.copay}</div><div style="font-size:12px;color:var(--gray5)">Collect at check-in</div></div>
+    </div>
+    ${p.ai?'<div class="al al-a"><div class="al-ic">🤖</div><div><div class="al-t">AI Alert</div><div class="al-s">'+p.ai+'</div></div></div>':''}
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-green" onclick="toast('✅ ${p.name} checked in · ${p.time}');closeModal('checkin-detail-modal')">✅ Complete Check-In</button>
+      <button class="btn btn-pri" onclick="toast('💳 Collect copay: ${p.copay}')">💳 Collect Copay</button>
+      <button class="btn btn-sm" onclick="toast('📋 Opening chart for ${p.name}')">Open Chart</button>
+      <button class="btn btn-sm" onclick="toast('🔄 Reverifying eligibility...')">Re-verify Eligibility</button>
+    </div>`;
+  document.getElementById('checkin-detail-modal').classList.add('open');
+}
+
+function ciFiltered(){return CI_PATIENTS;}
+
+// ═══════════════════════════════════════════════════════
+// CHECKOUT DATA & RENDER
+// ═══════════════════════════════════════════════════════
+var CO_PATIENTS = [
+  {name:'Maria Garcia',mrn:'10820',provider:'Dr. Patel',time:'8:00 AM',type:'CCM Monthly',cpt:'99490',icd:'E11.9, I10',charge:'$180',balance:'$10',status:'ready',ai:'AI Superbill: 99490 + G2058 generated',init:'MG'},
+  {name:'Carol Brown',mrn:'10835',provider:'NP Chen',time:'8:30 AM',type:'RPM F2F',cpt:'99457',icd:'I50.9, J96.0',charge:'$165',balance:'$40',status:'ready',ai:'AI Superbill: 99457 + 99458 generated',init:'CB'},
+  {name:'Patricia Moore',mrn:'10856',provider:'Dr. Holloway',time:'9:30 AM',type:'Follow-Up',cpt:'99214',icd:'I49.9, I10',charge:'$220',balance:'$30',status:'superbill-review',ai:'AI flagged: MDM complexity may qualify for 99215',init:'PM'},
+  {name:'Thomas Liu',mrn:'10831',provider:'Dr. Patel',time:'8:30 AM',type:'BP Check',cpt:'99213',icd:'I10',charge:'$145',balance:'$0',status:'ready',ai:'',init:'TL'},
+  {name:'William Harris',mrn:'10879',provider:'Dr. Patel',time:'10:00 AM',type:'Follow-Up',cpt:'99214',icd:'I25.10, E78.5',charge:'$220',balance:'$30',status:'pending-sign',ai:'Note pending MD e-sign',init:'WH'}
+];
+
+function coRender() {
+  var kpis = document.getElementById('co-kpis');
+  if(kpis) kpis.innerHTML = [
+    {val:'5',lbl:'Ready for Checkout',cls:''},
+    {val:'$930',lbl:'Today Revenue (est)',cls:'kpi-up'},
+    {val:'1',lbl:'MD Sign Pending',cls:'kpi-dn'},
+    {val:'$80',lbl:'Copays Collected',cls:'kpi-up'}
+  ].map(function(k){return '<div class="kpi-tile"><div class="kpi-val">'+k.val+'</div><div class="kpi-lbl">'+k.lbl+'</div><div class="kpi-delta '+k.cls+'">Today · May 23</div></div>';}).join('');
+
+  var queue = document.getElementById('co-queue');
+  if(!queue) return;
+  queue.innerHTML = CO_PATIENTS.map(function(p,i){
+    var statusPill = p.status==='ready'?'<span class="pill pill-g">Ready</span>':p.status==='superbill-review'?'<span class="pill pill-a">Review Superbill</span>':'<span class="pill pill-r">Pending Sign</span>';
+    return '<div class="ci-row" onclick="coOpenDetail('+i+')">' +
+      '<div class="ci-av" style="background:var(--green-lt);color:var(--green)">'+p.init+'</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div class="ci-name">'+p.name+'</div>' +
+        '<div class="ci-meta">MRN '+p.mrn+' · '+p.time+' · '+p.type+'</div>' +
+        '<div class="ci-meta">CPT: '+p.cpt+' · ICD-10: '+p.icd+(p.ai?' · <span style="color:var(--purple);font-weight:600">🤖 '+p.ai+'</span>':'')+'</div>' +
+      '</div>' +
+      '<div class="ci-status">' +
+        statusPill +
+        '<div style="font-size:13px;font-weight:700;color:var(--navy);margin-top:4px">'+p.charge+'</div>' +
+        '<div style="font-size:11px;color:var(--gray5)">Balance: '+p.balance+'</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function coOpenDetail(idx) {
+  var p = CO_PATIENTS[idx];
+  if(!p) return;
+  document.getElementById('co-modal-title').textContent = 'Checkout: '+p.name;
+  document.getElementById('co-modal-body').innerHTML = `
+    <div class="g2" style="gap:10px;margin-bottom:12px">
+      <div class="mc"><div style="font-size:11px;color:var(--gray5);font-weight:600">Patient</div><div style="font-size:14px;font-weight:700;color:var(--navy)">${p.name}</div><div style="font-size:12px;color:var(--gray5)">MRN ${p.mrn} · ${p.time}</div></div>
+      <div class="mc"><div style="font-size:11px;color:var(--gray5);font-weight:600">Charge Today</div><div style="font-size:22px;font-weight:700;color:var(--navy)">${p.charge}</div><div style="font-size:12px;color:var(--gray5)">Patient balance: ${p.balance}</div></div>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px">AI-Generated Superbill</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <div><div style="font-size:11px;color:var(--gray5);font-weight:600;margin-bottom:3px">CPT Code(s)</div><code style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--blue)">${p.cpt}</code></div>
+        <div style="width:1px;background:var(--gray2)"></div>
+        <div><div style="font-size:11px;color:var(--gray5);font-weight:600;margin-bottom:3px">ICD-10</div><code style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--navy)">${p.icd}</code></div>
+        <div style="width:1px;background:var(--gray2)"></div>
+        <div><div style="font-size:11px;color:var(--gray5);font-weight:600;margin-bottom:3px">Provider</div><div style="font-size:13px;font-weight:700;color:var(--navy)">${p.provider}</div></div>
+      </div>
+      ${p.ai?'<div style="padding:8px 12px;background:var(--purple-lt);border-radius:var(--r);font-size:12px;color:var(--purple);font-weight:600">🤖 '+p.ai+'</div>':''}
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px">Follow-Up Scheduling</div>
+      <div class="g2" style="gap:8px">
+        <div><label class="lbl">Follow-Up Visit</label><select class="fld"><option>4 weeks</option><option>6 weeks</option><option>8 weeks</option><option>3 months</option><option>6 months</option><option>PRN (as needed)</option></select></div>
+        <div><label class="lbl">Provider</label><select class="fld"><option>${p.provider}</option><option>Any available</option></select></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-green" onclick="toast('✅ ${p.name} checked out · Claim queued for submission');closeModal('checkout-detail-modal')">✅ Complete Checkout</button>
+      <button class="btn btn-pri" onclick="toast('💳 Collecting balance: ${p.balance}')">💳 Collect Balance</button>
+      <button class="btn btn-sm" onclick="toast('📄 Printing visit summary...')">Print Visit Summary</button>
+      <button class="btn btn-sm" onclick="toast('📠 Submit 837P claim...')">Submit Claim</button>
+    </div>`;
+  document.getElementById('checkout-detail-modal').classList.add('open');
+}
+
+// ═══════════════════════════════════════════════════════
+// PERMISSIONS
+// ═══════════════════════════════════════════════════════
+function permRender() {
+  var modules = ['Dashboard','Schedule View','Schedule Setup','Book Appointments','Cancel/Reschedule','Walk-In Add','Check-In','Copay Collection','Checkout','Superbill Review','Submit Claims','Follow-Up Schedule','Room Board','Waitlist Mgmt','AI Triage','Reports','Permissions'];
+  var roles = [
+    {label:'Super Admin',icon:'👑',color:'var(--amber)',tier:1,access:17},
+    {label:'Practice Admin',icon:'🛡️',color:'var(--blue)',tier:1,access:15},
+    {label:'AI Receptionist',icon:'🤖',color:'var(--purple)',tier:2,access:5},
+    {label:'Call Center',icon:'📞',color:'var(--teal)',tier:2,access:5},
+    {label:'Front Desk — Check-In',icon:'✅',color:'var(--green)',tier:3,access:8},
+    {label:'Front Desk — Checkout',icon:'💳',color:'var(--amber)',tier:3,access:9},
+    {label:'MA / LVN',icon:'🩺',color:'var(--teal)',tier:3,access:6},
+    {label:'Provider / MD',icon:'👨‍⚕️',color:'var(--red)',tier:3,access:5}
+  ];
+  document.getElementById('perm-content').innerHTML = roles.map(function(r){
+    return '<div class="card" style="border-left:4px solid '+r.color+';margin-bottom:10px">'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'+
+        '<span style="font-size:22px">'+r.icon+'</span>'+
+        '<div><div style="font-size:15px;font-weight:700;color:'+r.color+'">'+r.label+'</div><div style="font-size:11px;color:var(--gray5)">Tier '+r.tier+' · '+r.access+' of '+modules.length+' modules enabled</div></div>'+
+        '<button class="btn btn-sm" style="margin-left:auto" onclick="toast(\'Edit role: '+r.label+'\')">Edit Role</button>'+
+      '</div>'+
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:5px">'+
+      modules.map(function(mod,i){
+        var isOn = i < r.access;
+        return '<div class="tog" style="padding:6px 10px" onclick="this.querySelector(\'.tog-sw\').classList.toggle(\'on\');toast(\''+r.label+': '+mod+' toggled\')">'+
+          '<div style="font-size:12px;font-weight:600;color:var(--gray7)">'+mod+'</div>'+
+          '<div class="tog-sw'+(isOn?' on':'')+'"></div>'+
+        '</div>';
+      }).join('')+
+      '</div></div>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// FOLLOW-UP PERIOD LOGIC
+// ═══════════════════════════════════════════════════════
+function toggleFollowupNote(val) {
+  var specialWrap = document.getElementById('book-special-wrap');
+  var dateEl = document.getElementById('book-followup-date');
+  var baseDateEl = document.getElementById('book-modal') ? document.querySelector('#book-modal input[type="date"]') : null;
+  var baseDate = baseDateEl ? new Date(baseDateEl.value) : new Date('2026-05-23');
+
+  // Show/hide special need textarea
+  if(specialWrap) specialWrap.style.display = val==='special' ? 'block' : 'none';
+
+  // Calculate suggested follow-up date
+  if(!dateEl) return;
+  if(!val || val==='' || val==='prn' || val==='special') {
+    dateEl.value = val==='prn' ? 'PRN — schedule when needed' : val==='special' ? 'See special need description' : '';
+    return;
+  }
+
+  var d = new Date(baseDate);
+  var map = {'1w':7,'2w':14,'3w':21,'4w':28,'6w':42,'2m':60,'3m':90,'6m':180,'1y':365};
+  if(map[val]) {
+    d.setDate(d.getDate() + map[val]);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    dateEl.value = days[d.getDay()]+', '+months[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  wizRender();
+});
+</script>
+</body>
+</html>
