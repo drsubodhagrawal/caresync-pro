@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOF Clinical AI Suite | CareSync Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mp:#1a6eb5;--mpdk:#144f85;--mplt:#dbeafe;--mp2:#2563eb;
+  --bg:#f0f4f8;--bg2:#e2eaf3;--wh:#fff;
+  --tx:#1a2332;--tx2:#374151;--tx3:#6b7280;
+  --ok:#2e7d32;--oklt:#e8f5e9;
+  --er:#c62828;--erlt:#ffebee;
+  --am:#b45309;--amlt:#fffbeb;
+  --tl:#00897b;--tllt:#e0f2f1;
+  --pu:#5c35a8;--pult:#ede9fe;
+  --pi:#c2185b;--pilt:#fce4ec;
+  --brd:#c8d5e5;
+  --sh:0 1px 3px rgba(26,46,70,.10);
+  --shm:0 4px 12px rgba(26,46,70,.12);
+  --shl:0 8px 24px rgba(26,46,70,.15);
+  --r:10px;--rs:6px;--rl:14px;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{background:linear-gradient(135deg,#0f2744 0%,#1a3a6b 55%,#1a6eb5 100%);color:#fff;display:flex;align-items:center;height:54px;flex-shrink:0;box-shadow:0 2px 8px rgba(15,39,68,.35);position:sticky;top:0;z-index:100}
+.topbar-brand{display:flex;align-items:center;gap:10px;padding:0 18px;height:100%;border-right:1px solid rgba(255,255,255,.12);cursor:pointer;text-decoration:none}
+.topbar-logo{width:30px;height:30px;background:linear-gradient(135deg,#3b9aff,#7c3aed);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.topbar-name{font-size:15px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.topbar-name span{color:#a78bfa}
+.topbar-nav{display:flex;align-items:center;height:100%;padding:0 6px;flex:1;gap:1px;overflow-x:auto}
+.tn-btn{padding:5px 11px;border-radius:6px;cursor:pointer;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.75);border:none;background:transparent;transition:all .15s;display:flex;align-items:center;gap:5px;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.tn-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+.tn-btn.on{background:rgba(255,255,255,.15);color:#fff;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:10px;padding:0 16px;border-left:1px solid rgba(255,255,255,.12);flex-shrink:0}
+.ai-badge{display:flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer}
+.ai-badge.mock{background:rgba(180,83,9,.25);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
+.ai-badge.live{background:rgba(46,125,50,.25);color:#86efac;border:1px solid rgba(134,239,172,.3)}
+.ai-dot{width:8px;height:8px;border-radius:50%;animation:pulse 2s infinite}
+.ai-badge.mock .ai-dot{background:#fbbf24}
+.ai-badge.live .ai-dot{background:#86efac}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.tb-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#3b9aff);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;border:2px solid rgba(255,255,255,.25)}
+
+/* PATIENT BAR */
+.pt-bar{background:#1e3a5f;border-bottom:2px solid rgba(255,255,255,.12);padding:8px 18px;display:flex;align-items:center;gap:14px;flex-shrink:0;overflow-x:auto}
+.pt-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#ef4444);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;border:2px solid rgba(255,255,255,.3)}
+.pt-name{font-size:15px;font-weight:700;color:#fff}
+.pt-sub{font-size:11px;color:rgba(255,255,255,.6)}
+.pt-sep{width:1px;height:26px;background:rgba(255,255,255,.2);flex-shrink:0}
+.pt-chip{padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.chip-er{background:rgba(198,40,40,.35);color:#fca5a5;border:1px solid rgba(198,40,40,.4)}
+.chip-pu{background:rgba(92,53,168,.35);color:#c4b5fd;border:1px solid rgba(92,53,168,.4)}
+.chip-bl{background:rgba(26,110,181,.35);color:#93c5fd;border:1px solid rgba(26,110,181,.4)}
+.chip-ok{background:rgba(46,125,50,.35);color:#86efac;border:1px solid rgba(46,125,50,.4)}
+.pt-field{font-size:12px;color:rgba(255,255,255,.6);white-space:nowrap}
+.pt-field b{color:#fff;font-weight:600}
+.pt-actions{margin-left:auto;display:flex;gap:8px;flex-shrink:0}
+.pt-btn{padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.pt-btn:hover{background:rgba(255,255,255,.18)}
+.pt-btn.pri{background:var(--mp);border-color:var(--mp)}
+
+/* LAYOUT */
+.app{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:218px;background:var(--wh);border-right:1px solid var(--brd);overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column}
+.sb-hdr{padding:10px 14px 5px;font-size:10px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase}
+.sb-item{display:flex;align-items:center;gap:8px;padding:9px 14px;font-size:13px;color:var(--tx2);cursor:pointer;border-left:3px solid transparent;transition:all .12s}
+.sb-item:hover{background:var(--bg);color:var(--mp)}
+.sb-item.on{background:var(--mplt);color:var(--mp);border-left-color:var(--mp);font-weight:600}
+.sb-ic{font-size:14px;width:20px;text-align:center;flex-shrink:0}
+.sb-badge{margin-left:auto;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700}
+.sb-badge.ai{background:var(--mplt);color:var(--mp)}
+.sb-badge.ok{background:var(--oklt);color:var(--ok)}
+.sb-badge.am{background:var(--amlt);color:var(--am)}
+.sb-badge.pu{background:var(--pult);color:var(--pu)}
+.sb-sec{border-bottom:1px solid var(--brd)}
+.sb-prog{padding:14px;margin-top:auto;border-top:1px solid var(--brd)}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:22px 24px;display:flex;flex-direction:column;gap:20px}
+.pg{display:none}
+.pg.on{display:flex;flex-direction:column;gap:20px}
+
+/* CARDS */
+.card{background:var(--wh);border:1px solid var(--brd);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--brd);background:#fafbfd}
+.card-title{font-size:15px;font-weight:700;color:var(--tx)}
+.card-sub{font-size:12px;color:var(--tx3);margin-top:1px}
+.card-body{padding:18px}
+.card-body.sm{padding:12px}
+
+/* AI PANEL */
+.ai-panel{background:linear-gradient(135deg,#eff6ff,#f5f0ff);border:1.5px solid #bfdbfe;border-radius:var(--r);overflow:hidden;box-shadow:0 0 0 2px rgba(26,110,181,.1),0 4px 16px rgba(26,110,181,.07)}
+.ai-phdr{display:flex;align-items:center;gap:10px;padding:12px 16px;background:linear-gradient(135deg,#1a6eb5,#5c35a8);color:#fff}
+.ai-pic{width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:14px}
+.ai-ptitle{font-size:13px;font-weight:700}
+.ai-psub{font-size:11px;color:rgba(255,255,255,.75);margin-top:1px}
+.ai-pbody{padding:16px}
+.ai-out{background:var(--wh);border:1px solid #bfdbfe;border-radius:var(--rs);padding:14px;font-size:14px;line-height:1.65;color:var(--tx);min-height:80px;white-space:pre-line}
+.ai-src{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;color:var(--tx3);padding-top:8px;border-top:1px solid #e0ebff}
+.ai-sbadge{padding:1px 8px;border-radius:10px;font-size:10px;font-weight:700}
+.ai-sbadge.mock{background:#fef3c7;color:#92400e}
+.ai-sbadge.live{background:#d1fae5;color:#065f46}
+
+/* BUTTONS */
+.btn{padding:9px 18px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:7px;font-family:'DM Sans',sans-serif;line-height:1;min-height:40px}
+.btn-pri{background:var(--mp);color:#fff}
+.btn-pri:hover{background:var(--mpdk)}
+.btn-sec{background:var(--bg);color:var(--tx);border:1px solid var(--brd)}
+.btn-sec:hover{background:var(--bg2)}
+.btn-ok{background:var(--ok);color:#fff}
+.btn-ok:hover{background:#1b5e20}
+.btn-am{background:var(--am);color:#fff}
+.btn-pi{background:var(--pi);color:#fff}
+.btn-sm{padding:6px 12px;font-size:13px;min-height:32px}
+.btn-ai{background:linear-gradient(135deg,#1a6eb5,#5c35a8);color:#fff;box-shadow:0 2px 8px rgba(26,110,181,.25)}
+.btn-ai:hover{box-shadow:0 4px 14px rgba(26,110,181,.35);transform:translateY(-1px)}
+.btn-ai:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* FORMS */
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-label{font-size:13px;font-weight:600;color:var(--tx2)}
+.form-input,.form-select,.form-textarea{padding:9px 12px;border:1.5px solid var(--brd);border-radius:7px;font-size:14px;color:var(--tx);background:var(--wh);font-family:'DM Sans',sans-serif;transition:border-color .15s;width:100%}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--mp);box-shadow:0 0 0 3px rgba(26,110,181,.1)}
+.form-textarea{resize:vertical;min-height:80px;line-height:1.5}
+.form-hint{font-size:12px;color:var(--tx3)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+
+/* KPI */
+.kpi{background:var(--wh);border:1px solid var(--brd);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh)}
+.kpi-lbl{font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em}
+.kpi-val{font-size:30px;font-weight:700;line-height:1.1;margin:5px 0 3px}
+.kpi-sub{font-size:12px;color:var(--tx3)}
+.kpi.pri .kpi-val{color:var(--mp)}
+.kpi.ok .kpi-val{color:var(--ok)}
+.kpi.am .kpi-val{color:var(--am)}
+.kpi.er .kpi-val{color:var(--er)}
+.kpi.pu .kpi-val{color:var(--pu)}
+.kpi.pi .kpi-val{color:var(--pi)}
+.kpi.tl .kpi-val{color:var(--tl)}
+
+/* TAGS */
+.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600}
+.tag-bl{background:var(--mplt);color:var(--mp)}
+.tag-gn{background:var(--oklt);color:var(--ok)}
+.tag-am{background:var(--amlt);color:var(--am)}
+.tag-rd{background:var(--erlt);color:var(--er)}
+.tag-pu{background:var(--pult);color:var(--pu)}
+.tag-tl{background:var(--tllt);color:var(--tl)}
+.tag-pi{background:var(--pilt);color:var(--pi)}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;padding:10px 14px;font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em;background:#f8fafc;border-bottom:1.5px solid var(--brd)}
+.tbl td{padding:11px 14px;border-bottom:1px solid #f0f4f8;color:var(--tx);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#f8fafc}
+
+/* ALERTS */
+.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:8px;font-size:14px}
+.alert-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.alert-title{font-weight:700;margin-bottom:2px}
+.alert-bl{background:var(--mplt);color:var(--mp);border:1px solid #bfdbfe}
+.alert-gn{background:var(--oklt);color:var(--ok);border:1px solid #c8e6c9}
+.alert-am{background:var(--amlt);color:var(--am);border:1px solid #fde68a}
+.alert-rd{background:var(--erlt);color:var(--er);border:1px solid #ffcdd2}
+.alert-pu{background:var(--pult);color:var(--pu);border:1px solid #d8b4fe}
+
+/* AI LOADING */
+.ai-thinking{display:flex;align-items:center;gap:8px;padding:16px;font-size:14px;color:var(--mp);font-weight:500}
+.ai-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--pu);animation:bounce 1.2s infinite}
+.ai-dots span:nth-child(2){animation-delay:.2s}
+.ai-dots span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+
+/* SECTION HDR */
+.sec-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.sec-title{font-size:20px;font-weight:700;color:var(--tx);letter-spacing:-.3px}
+.sec-sub{font-size:13px;color:var(--tx3);margin-top:2px}
+
+/* STEPPER */
+.stepper{display:flex;align-items:center;margin-bottom:20px}
+.step{display:flex;align-items:center;gap:7px;flex:1;position:relative}
+.step:not(:last-child)::after{content:'';position:absolute;left:calc(50% + 18px);right:calc(-50% + 18px);top:15px;height:2px;background:var(--brd);z-index:0}
+.step.done:not(:last-child)::after{background:var(--ok)}
+.step.active:not(:last-child)::after{background:var(--brd)}
+.step-circle{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:2px solid var(--brd);background:var(--wh);color:var(--tx3);z-index:1;flex-shrink:0;transition:all .2s}
+.step.done .step-circle{background:var(--ok);border-color:var(--ok);color:#fff}
+.step.active .step-circle{background:var(--mp);border-color:var(--mp);color:#fff;box-shadow:0 0 0 4px rgba(26,110,181,.18)}
+.step-name{font-size:11px;font-weight:600;color:var(--tx2)}
+.step.active .step-name{color:var(--mp)}
+
+/* PROGRESS BAR */
+.progress{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;transition:width .4s ease}
+.pf-ok{background:var(--ok)}
+.pf-am{background:var(--am)}
+.pf-er{background:var(--er)}
+.pf-bl{background:var(--mp)}
+.pf-pu{background:var(--pu)}
+
+/* SCORE CIRCLE */
+.score-circle{width:80px;height:80px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;border:4px solid;font-weight:700}
+.sc-val{font-size:22px;line-height:1}
+.sc-lbl{font-size:10px;font-weight:600;opacity:.7}
+
+/* TIMER */
+.timer-block{background:linear-gradient(135deg,#0f2744,#1a3a6b);color:#fff;border-radius:var(--r);padding:18px;text-align:center}
+.timer-val{font-family:'JetBrains Mono',monospace;font-size:42px;font-weight:700;color:#7dd3fc;letter-spacing:2px}
+.timer-lbl{font-size:12px;color:rgba(255,255,255,.6);margin-top:4px}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,39,68,.5);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(3px)}
+.modal-overlay.hidden{display:none}
+.modal{background:var(--wh);border-radius:var(--rl);box-shadow:var(--shl);width:90%;max-width:540px;max-height:82vh;overflow-y:auto}
+.modal-hdr{padding:18px 22px;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:17px;font-weight:700}
+.modal-close{width:30px;height:30px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;color:var(--tx)}
+.modal-body{padding:22px}
+
+/* UTILS */
+.flex{display:flex}.ic{align-items:center}.jb{justify-content:space-between}.fc{flex-direction:column}
+.g8{gap:8px}.g12{gap:12px}.g16{gap:16px}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
+.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}
+.mono{font-family:'JetBrains Mono',monospace;font-size:13px}
+.bold{font-weight:700}.semi{font-weight:600}.sm{font-size:13px}.xs{font-size:12px}.muted{color:var(--tx3)}
+.divider{border:none;border-top:1px solid var(--brd);margin:16px 0}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#c8d5e5;border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-brand" onclick="window.location.href='index.html'">
+    <div class="topbar-logo">&#x2695;&#xFE0F;</div>
+    <div class="topbar-name">MOF <span>Clinical AI</span></div>
+  </div>
+  <div class="topbar-nav">
+    <button class="tn-btn on" onclick="showPage('awv')" id="nav-awv">&#x1F4CB; AWV</button>
+    <button class="tn-btn" onclick="showPage('tele')" id="nav-tele">&#x1F4F9; Telemedicine</button>
+    <button class="tn-btn" onclick="showPage('tcm')" id="nav-tcm">&#x1F3E5; TCM</button>
+    <button class="tn-btn" onclick="showPage('bhi')" id="nav-bhi">&#x1F9E0; BHI</button>
+    <button class="tn-btn" onclick="showPage('apcm')" id="nav-apcm">&#x1F4CA; APCM</button>
+    <button class="tn-btn" onclick="showPage('hub')" id="nav-hub">&#x1F916; AI Command Hub</button>
+  </div>
+  <div class="topbar-right">
+    <div class="ai-badge mock" id="aiBadge" onclick="toggleApiModal()">
+      <div class="ai-dot"></div>
+      <span id="aiText">Mock AI</span>
+    </div>
+    <div class="tb-av">SA</div>
+  </div>
+</div>
+
+<!-- PATIENT BAR -->
+<div class="pt-bar">
+  <div class="pt-av">EW</div>
+  <div>
+    <div class="pt-name">Eleanor Whitfield</div>
+    <div class="pt-sub">MRN: MOF-00427 &bull; DOB: 03/14/1949 (76F) &bull; AHC Cardiology &bull; Dr. Holloway</div>
+  </div>
+  <div class="pt-sep"></div>
+  <div class="pt-chip chip-er">&#x26A0; High Risk</div>
+  <div class="pt-chip chip-pu">RAF 1.838</div>
+  <div class="pt-chip chip-bl">Medicare Advantage</div>
+  <div class="pt-chip chip-ok">AWV Due</div>
+  <div class="pt-sep"></div>
+  <div class="pt-field">PHQ-9: <b style="color:#fca5a5">14</b></div>
+  <div class="pt-field">GAD-7: <b style="color:#fcd34d">9</b></div>
+  <div class="pt-field">A1c: <b style="color:#fcd34d">8.4%</b></div>
+  <div class="pt-field">eGFR: <b style="color:#fca5a5">42</b></div>
+  <div class="pt-actions">
+    <button class="pt-btn" onclick="showPage('hub')">&#x1F916; AI Hub</button>
+    <button class="pt-btn pri" onclick="showPage('tele')">&#x1F4F9; Start Telehealth</button>
+  </div>
+</div>
+
+<!-- APP BODY -->
+<div class="app">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-sec">
+    <div class="sb-hdr">Clinical Programs</div>
+    <div class="sb-item on" id="sb-awv" onclick="showPage('awv')"><span class="sb-ic">&#x1F4CB;</span>Annual Wellness Visit<span class="sb-badge ok">Due</span></div>
+    <div class="sb-item" id="sb-tele" onclick="showPage('tele')"><span class="sb-ic">&#x1F4F9;</span>Telemedicine AI<span class="sb-badge ai">Live</span></div>
+    <div class="sb-item" id="sb-tcm" onclick="showPage('tcm')"><span class="sb-ic">&#x1F3E5;</span>TCM<span class="sb-badge am">7 days</span></div>
+    <div class="sb-item" id="sb-bhi" onclick="showPage('bhi')"><span class="sb-ic">&#x1F9E0;</span>BHI<span class="sb-badge pu">PHQ 14</span></div>
+    <div class="sb-item" id="sb-apcm" onclick="showPage('apcm')"><span class="sb-ic">&#x1F4CA;</span>APCM<span class="sb-badge ai">Tier 2</span></div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-hdr">AI Command</div>
+    <div class="sb-item" id="sb-hub" onclick="showPage('hub')"><span class="sb-ic">&#x1F916;</span>AI Command Hub</div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-hdr">Navigate</div>
+    <div class="sb-item" onclick="window.location.href='mof-ai-emr.html'"><span class="sb-ic">&#x1F4DD;</span>AI EMR / Scribe</div>
+    <div class="sb-item" onclick="window.location.href='index.html'"><span class="sb-ic">&#x1F3E5;</span>CareSync Pro</div>
+  </div>
+  <div class="sb-prog">
+    <div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Today's Clinical AI</div>
+    <div style="font-size:13px;color:var(--tx2);margin-bottom:5px">AWV plans drafted: <b>3</b></div>
+    <div style="font-size:13px;color:var(--tx2);margin-bottom:5px">Tele visits: <b>8</b></div>
+    <div style="font-size:13px;color:var(--tx2);margin-bottom:5px">TCM calls logged: <b>4</b></div>
+    <div style="font-size:13px;color:var(--tx2);margin-bottom:5px">BHI screenings: <b>6</b></div>
+    <div style="font-size:13px;color:var(--tx2)">APCM tasks closed: <b>11</b></div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main" id="mainContent">
+
+<!-- ═══════════════════════════════════════
+     PAGE 1: AWV — ANNUAL WELLNESS VISIT
+     ═══════════════════════════════════════ -->
+<div class="pg on" id="pg-awv">
+  <div class="sec-hdr">
+    <div>
+      <div class="sec-title">&#x1F4CB; Annual Wellness Visit — AI-Assisted</div>
+      <div class="sec-sub">CPT 99387/99397 &bull; Medicare Annual Wellness Visit &bull; AI drafts all sections &bull; Physician reviews and signs</div>
+    </div>
+    <button class="btn btn-ai" onclick="runAwvAi()">&#x1F916; AI Generate Full AWV Plan</button>
+  </div>
+
+  <div class="g4">
+    <div class="kpi ok"><div class="kpi-lbl">AWV Status</div><div class="kpi-val">Due</div><div class="kpi-sub">Last: Never in 2026</div></div>
+    <div class="kpi pri"><div class="kpi-lbl">CPT Code</div><div class="kpi-val">G0439</div><div class="kpi-sub">Subsequent AWV</div></div>
+    <div class="kpi am"><div class="kpi-lbl">Risk Score</div><div class="kpi-val">8.4</div><div class="kpi-sub">High — top 15%</div></div>
+    <div class="kpi pu"><div class="kpi-lbl">Care Gaps</div><div class="kpi-val">8</div><div class="kpi-sub">Closable today: 4</div></div>
+  </div>
+
+  <div class="g2">
+    <!-- AWV FORM -->
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card">
+        <div class="card-hdr"><div><div class="card-title">&#x1F9D3; Health Risk Assessment</div><div class="card-sub">AI pre-filled from chart — physician reviews</div></div></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+          <div class="g2">
+            <div class="form-group"><label class="form-label">Fall Risk Assessment</label>
+              <select class="form-select" id="awvFall"><option>High Risk — 2 falls in past 12 months</option><option>Moderate Risk</option><option>Low Risk</option></select></div>
+            <div class="form-group"><label class="form-label">Cognitive Screen (Mini-Cog)</label>
+              <select class="form-select" id="awvCog"><option>3/5 — Borderline (needs follow-up)</option><option>4/5 — Normal</option><option>5/5 — Normal</option><option>0-2/5 — Abnormal</option></select></div>
+          </div>
+          <div class="g2">
+            <div class="form-group"><label class="form-label">Depression Screen (PHQ-9)</label>
+              <select class="form-select" id="awvPhq"><option>Score 14 — Moderate depression</option><option>Score 0-4 — Minimal</option><option>Score 5-9 — Mild</option><option>Score 20-27 — Severe</option></select></div>
+            <div class="form-group"><label class="form-label">Functional Status</label>
+              <select class="form-select" id="awvFunc"><option>Needs assistance with 2 ADLs</option><option>Independent — all ADLs</option><option>Dependent — most ADLs</option></select></div>
+          </div>
+          <div class="form-group"><label class="form-label">Advance Directive Status</label>
+            <select class="form-select" id="awvAd"><option>Has advance directive — copy on file</option><option>Does not have — counseling provided</option><option>Declined to discuss</option></select></div>
+          <div class="form-group"><label class="form-label">Additional HRA Notes</label>
+            <textarea class="form-textarea" id="awvNotes" style="min-height:60px">Patient reports progressive functional decline. Caregiver (daughter) present. Nutrition adequate but limited cooking ability. Social isolation noted.</textarea></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><div><div class="card-title">&#x1F4CA; Preventive Services Due</div></div></div>
+        <div class="card-body sm">
+          <table class="tbl">
+            <thead><tr><th>Service</th><th>Due</th><th>AI Action</th></tr></thead>
+            <tbody>
+              <tr><td>Pneumococcal vaccine (PCV20)</td><td><span class="tag tag-rd">Overdue</span></td><td><button class="btn btn-sm btn-ai" onclick="aiOrder('Pneumococcal PCV20')">&#x1F916; Order</button></td></tr>
+              <tr><td>Shingrix (Zoster) Dose 2</td><td><span class="tag tag-rd">Overdue</span></td><td><button class="btn btn-sm btn-ai" onclick="aiOrder('Shingrix dose 2')">&#x1F916; Order</button></td></tr>
+              <tr><td>Colorectal cancer screen</td><td><span class="tag tag-am">Due 2026</span></td><td><button class="btn btn-sm btn-ai" onclick="aiOrder('Cologuard stool DNA test')">&#x1F916; Order</button></td></tr>
+              <tr><td>Bone density (DEXA scan)</td><td><span class="tag tag-am">Due 2026</span></td><td><button class="btn btn-sm btn-ai" onclick="aiOrder('DEXA scan — osteoporosis screening')">&#x1F916; Refer</button></td></tr>
+              <tr><td>Mammography</td><td><span class="tag tag-gn">Done 01/2026</span></td><td><span class="tag tag-gn">&#x2713; Complete</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- AWV AI OUTPUT -->
+    <div class="ai-panel">
+      <div class="ai-phdr">
+        <div class="ai-pic">&#x1F916;</div>
+        <div><div class="ai-ptitle">AI-Generated AWV Personalized Prevention Plan</div><div class="ai-psub">Draft only &mdash; physician must review and sign</div></div>
+      </div>
+      <div class="ai-pbody">
+        <div id="awvAiOut">
+          <div class="alert alert-bl"><span class="alert-icon">&#x1F4A1;</span><div><div class="alert-title">AI Ready</div>Click "AI Generate Full AWV Plan" to create a personalized Medicare AWV prevention plan, care gap recommendations, and advance care planning summary for Eleanor Whitfield.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body flex ic g12" style="flex-wrap:wrap">
+      <button class="btn btn-ai" onclick="runAwvAi()">&#x1F916; AI Generate Full AWV Plan</button>
+      <button class="btn btn-sec" onclick="alert('AWV saved as draft')">&#x1F4BE; Save Draft</button>
+      <div style="margin-left:auto;display:flex;gap:10px">
+        <button class="btn btn-sec" onclick="alert('Printed AWV summary for patient')">&#x1F5A8; Print Patient Summary</button>
+        <button class="btn btn-ok" onclick="alert('AWV signed and submitted. CPT G0439 sent to billing.')">&#x270D; Sign &amp; Bill G0439</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE 2: TELEMEDICINE AI
+     ═══════════════════════════════════════ -->
+<div class="pg" id="pg-tele">
+  <div class="sec-hdr">
+    <div>
+      <div class="sec-title">&#x1F4F9; Telemedicine AI — Live Visit Assistant</div>
+      <div class="sec-sub">AI pre-charts, live transcription, SOAP generation, post-visit coding &bull; HIPAA-encrypted video &bull; 95 modifier ready</div>
+    </div>
+    <div class="flex ic g8">
+      <div id="teleStatus" style="display:flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;background:rgba(46,125,50,.15);color:var(--ok);border:1px solid rgba(46,125,50,.3);font-size:12px;font-weight:700">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--ok);animation:pulse 1.5s infinite"></div>Waiting Room: 3
+      </div>
+      <button class="btn btn-ai" onclick="runTeleAi()">&#x1F916; AI Pre-Chart This Visit</button>
+    </div>
+  </div>
+
+  <div class="g4">
+    <div class="kpi ok"><div class="kpi-lbl">Today's Tele Visits</div><div class="kpi-val">8</div><div class="kpi-sub">3 waiting &bull; 5 complete</div></div>
+    <div class="kpi pri"><div class="kpi-lbl">Avg AI Pre-Chart</div><div class="kpi-val">42s</div><div class="kpi-sub">Per visit</div></div>
+    <div class="kpi am"><div class="kpi-lbl">Avg Visit Time</div><div class="kpi-val">14 min</div><div class="kpi-sub">Down from 22 min</div></div>
+    <div class="kpi tl"><div class="kpi-lbl">95 Modifier Ready</div><div class="kpi-val">100%</div><div class="kpi-sub">All claims compliant</div></div>
+  </div>
+
+  <div class="g2">
+    <!-- WAITING ROOM -->
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">&#x1F6AA; Waiting Room — Active Patients</div></div>
+      <div class="card-body sm">
+        <table class="tbl">
+          <thead><tr><th>Patient</th><th>Wait</th><th>Risk</th><th>AI Pre-Chart</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr style="background:#fff8f0">
+              <td><b>Eleanor Whitfield</b><br><span class="xs muted">CHF &bull; DM2 &bull; CKD3</span></td>
+              <td><span style="color:var(--er);font-weight:700">14 min</span></td>
+              <td><span class="tag tag-rd">High</span></td>
+              <td><span class="tag tag-gn">&#x2713; Ready</span></td>
+              <td><button class="btn btn-sm btn-ok" onclick="startTeleVisit()">&#x25B6; Start</button></td>
+            </tr>
+            <tr>
+              <td><b>Robert Martinez</b><br><span class="xs muted">HTN &bull; T2DM</span></td>
+              <td>8 min</td>
+              <td><span class="tag tag-am">Medium</span></td>
+              <td><span class="tag tag-am">Pending</span></td>
+              <td><button class="btn btn-sm btn-ai" onclick="alert('AI pre-chart running for Robert Martinez...')">&#x1F916; Pre-Chart</button></td>
+            </tr>
+            <tr>
+              <td><b>Linda Chen</b><br><span class="xs muted">Anxiety &bull; Insomnia</span></td>
+              <td>3 min</td>
+              <td><span class="tag tag-gn">Low</span></td>
+              <td><span class="tag tag-am">Pending</span></td>
+              <td><button class="btn btn-sm btn-ai" onclick="alert('AI pre-chart running for Linda Chen...')">&#x1F916; Pre-Chart</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ACTIVE VISIT PANEL -->
+    <div class="ai-panel">
+      <div class="ai-phdr">
+        <div class="ai-pic">&#x1F916;</div>
+        <div><div class="ai-ptitle">AI Pre-Chart &mdash; Eleanor Whitfield</div><div class="ai-psub">Auto-generated from chart &bull; Updates live during visit</div></div>
+        <button class="btn btn-sm" style="margin-left:auto;background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);font-family:'DM Sans',sans-serif" onclick="runTeleAi()">&#x26A1; Generate</button>
+      </div>
+      <div class="ai-pbody">
+        <div id="teleAiOut">
+          <div class="alert alert-bl"><span class="alert-icon">&#x1F4A1;</span><div>Click "AI Pre-Chart This Visit" to generate a real-time pre-visit brief for Eleanor Whitfield — chief complaints predicted, labs flagged, HCC gaps highlighted, and suggested talking points for this visit.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIDEO VISIT UI -->
+  <div class="card" id="teleVisitCard" style="display:none">
+    <div class="card-hdr"><div class="card-title">&#x1F4F9; Live Telehealth Visit &mdash; Eleanor Whitfield</div><div><span class="tag tag-rd" style="animation:pulse 1s infinite">&#x25CF; LIVE</span></div></div>
+    <div class="card-body">
+      <div class="g2">
+        <div style="background:#0f2744;border-radius:8px;padding:24px;text-align:center;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div style="font-size:50px;margin-bottom:12px">&#x1F469;&#x200D;&#x2695;&#xFE0F;</div>
+          <div style="font-size:16px;font-weight:700;color:#fff">Dr. Holloway</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.6)">Host &bull; AHC Cardiology</div>
+          <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
+            <button class="btn btn-sm" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.25);font-family:'DM Sans',sans-serif">&#x1F4AC; Chat</button>
+            <button class="btn btn-sm" style="background:rgba(198,40,40,.8);color:#fff;font-family:'DM Sans',sans-serif" onclick="endVisit()">&#x23F9; End</button>
+          </div>
+        </div>
+        <div style="background:#1a2332;border-radius:8px;padding:24px;text-align:center;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div style="font-size:50px;margin-bottom:12px">&#x1F475;</div>
+          <div style="font-size:16px;font-weight:700;color:#fff">Eleanor Whitfield</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.6)">Patient &bull; MOF-00427</div>
+          <div style="margin-top:12px">
+            <div style="font-size:12px;color:#7dd3fc">SpO2: 98% &bull; HR: 78 &bull; BP: 148/92</div>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-gn mt12">
+        <span class="alert-icon">&#x1F916;</span>
+        <div><div class="alert-title">AI Live Scribe Active</div>Transcribing visit in real-time. SOAP note will auto-generate when visit ends. 95 modifier will be added automatically for telehealth billing.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE 3: TCM — TRANSITIONAL CARE MGMT
+     ═══════════════════════════════════════ -->
+<div class="pg" id="pg-tcm">
+  <div class="sec-hdr">
+    <div>
+      <div class="sec-title">&#x1F3E5; Transitional Care Management — AI-Guided</div>
+      <div class="sec-sub">CPT 99495 (moderate complexity, 14 days) / 99496 (high complexity, 7 days) &bull; AI generates all required documentation</div>
+    </div>
+    <button class="btn btn-ai" onclick="runTcmAi()">&#x1F916; AI Generate TCM Plan</button>
+  </div>
+
+  <div class="g4">
+    <div class="kpi er"><div class="kpi-lbl">Days Since Discharge</div><div class="kpi-val">5</div><div class="kpi-sub">Contact required by Day 2 &#x2713;</div></div>
+    <div class="kpi am"><div class="kpi-lbl">TCM CPT</div><div class="kpi-val">99496</div><div class="kpi-sub">High complexity &bull; 7-day visit</div></div>
+    <div class="kpi pri"><div class="kpi-lbl">Visit Deadline</div><div class="kpi-val">Day 7</div><div class="kpi-sub">May 28, 2026 &mdash; 2 days left</div></div>
+    <div class="kpi ok"><div class="kpi-lbl">Day 2 Contact</div><div class="kpi-val">Done</div><div class="kpi-sub">Call logged 05/25 by RN Lopez</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-hdr"><div><div class="card-title">&#x1F4CB; TCM Discharge Summary</div><div class="card-sub">Hospital: St. Mary&apos;s Medical Center &bull; Discharge: 05/23/2026</div></div></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+        <div class="g2">
+          <div class="form-group"><label class="form-label">Discharge Diagnosis</label><input class="form-input" value="CHF exacerbation (I50.9) — acute decompensation"></div>
+          <div class="form-group"><label class="form-label">Hospital LOS</label><input class="form-input" value="4 days (05/19 — 05/23/2026)"></div>
+        </div>
+        <div class="g2">
+          <div class="form-group"><label class="form-label">Discharge Disposition</label><select class="form-select"><option>Home with family caregiver</option><option>SNF</option><option>Home Health</option></select></div>
+          <div class="form-group"><label class="form-label">Complexity Level</label><select class="form-select"><option>High (MDM) — 99496</option><option>Moderate (MDM) — 99495</option></select></div>
+        </div>
+        <div class="form-group"><label class="form-label">New/Changed Medications</label>
+          <textarea class="form-textarea" style="min-height:60px">Furosemide increased 40mg → 80mg QD; Potassium chloride 20mEq QD added; Metformin held during hospitalization — restarted at 1000mg BID</textarea></div>
+        <div class="form-group"><label class="form-label">Pending Follow-up Items</label>
+          <textarea class="form-textarea" style="min-height:60px">BMP in 5 days; Cardiology follow-up scheduled 06/02; Echo ordered; BNP trending down (1,240 → 680)</textarea></div>
+
+        <!-- Day 2 Contact Log -->
+        <div class="alert alert-gn">
+          <span class="alert-icon">&#x2713;</span>
+          <div><div class="alert-title">Day 2 Contact — Logged 05/25/2026 at 2:14 PM</div>RN Maria Lopez called patient. Medication changes reviewed, adherence confirmed. Patient tolerating new Furosemide dose. No adverse symptoms. Daughter (caregiver) present and engaged. Next contact: in-person visit by 05/30.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-panel">
+      <div class="ai-phdr">
+        <div class="ai-pic">&#x1F916;</div>
+        <div><div class="ai-ptitle">AI TCM Care Transition Plan</div><div class="ai-psub">Medication reconciliation &bull; Safety net &bull; Follow-up orders</div></div>
+      </div>
+      <div class="ai-pbody">
+        <div id="tcmAiOut">
+          <div class="alert alert-bl"><span class="alert-icon">&#x1F4A1;</span><div>Click "AI Generate TCM Plan" to create a complete care transition plan — medication reconciliation, red flag symptom education, follow-up coordination, and 99496 documentation for billing.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TCM Checklist -->
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">&#x2705; TCM Required Elements Checklist</div></div>
+    <div class="card-body sm">
+      <table class="tbl">
+        <thead><tr><th>Required Element</th><th>99495</th><th>99496</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>Interactive contact within 2 business days</td><td>&#x2713;</td><td>&#x2713;</td><td><span class="tag tag-gn">&#x2713; Done 05/25</span></td><td>&mdash;</td></tr>
+          <tr><td>Face-to-face visit within 14 days</td><td>&#x2713;</td><td>&mdash;</td><td><span class="tag tag-am">Scheduled 05/30</span></td><td>&mdash;</td></tr>
+          <tr><td>Face-to-face visit within 7 days</td><td>&mdash;</td><td>&#x2713;</td><td><span class="tag tag-rd">Due by 05/30 (2 days)</span></td><td><button class="btn btn-sm btn-ai" onclick="alert('Appointment confirmed: 05/28 at 10am with Dr. Holloway')">&#x1F916; Confirm Appt</button></td></tr>
+          <tr><td>Medication reconciliation</td><td>&#x2713;</td><td>&#x2713;</td><td><span class="tag tag-am">AI Pending</span></td><td><button class="btn btn-sm btn-ai" onclick="runTcmAi()">&#x1F916; AI Reconcile</button></td></tr>
+          <tr><td>MDM complexity documentation</td><td>Moderate</td><td>High</td><td><span class="tag tag-am">AI Pending</span></td><td><button class="btn btn-sm btn-ai" onclick="runTcmAi()">&#x1F916; AI Document</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE 4: BHI — BEHAVIORAL HEALTH
+     ═══════════════════════════════════════ -->
+<div class="pg" id="pg-bhi">
+  <div class="sec-hdr">
+    <div>
+      <div class="sec-title">&#x1F9E0; Behavioral Health Integration — AI-Guided</div>
+      <div class="sec-sub">CPT 99484 (monthly) / 99492 initial / 99493 subsequent &bull; AI screens, scores, and drafts care plans &bull; PCP + BH consultant collaboration</div>
+    </div>
+    <button class="btn btn-ai" onclick="runBhiAi()">&#x1F916; AI BHI Assessment</button>
+  </div>
+
+  <div class="g4">
+    <div class="kpi er"><div class="kpi-lbl">PHQ-9 Score</div><div class="kpi-val">14</div><div class="kpi-sub">Moderate depression</div></div>
+    <div class="kpi am"><div class="kpi-lbl">GAD-7 Score</div><div class="kpi-val">9</div><div class="kpi-sub">Moderate anxiety</div></div>
+    <div class="kpi pu"><div class="kpi-lbl">BHI Status</div><div class="kpi-val">Month 2</div><div class="kpi-sub">CPT 99493 billable</div></div>
+    <div class="kpi pi"><div class="kpi-lbl">Crisis Flag</div><div class="kpi-val">None</div><div class="kpi-sub">PHQ-9 Q9 = 0</div></div>
+  </div>
+
+  <div class="g2">
+    <!-- PHQ & GAD SCORES -->
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">&#x1F4CA; Current Screening Scores</div></div>
+        <div class="card-body">
+          <div class="g2" style="margin-bottom:16px">
+            <div style="text-align:center">
+              <div class="score-circle" style="border-color:var(--er);margin:0 auto 8px">
+                <div class="sc-val" style="color:var(--er)">14</div>
+                <div class="sc-lbl">PHQ-9</div>
+              </div>
+              <div style="font-weight:700;color:var(--er);font-size:14px">Moderate Depression</div>
+              <div class="xs muted">Scored 05/23/2026</div>
+            </div>
+            <div style="text-align:center">
+              <div class="score-circle" style="border-color:var(--am);margin:0 auto 8px">
+                <div class="sc-val" style="color:var(--am)">9</div>
+                <div class="sc-lbl">GAD-7</div>
+              </div>
+              <div style="font-weight:700;color:var(--am);font-size:14px">Moderate Anxiety</div>
+              <div class="xs muted">Scored 05/23/2026</div>
+            </div>
+          </div>
+          <div class="alert alert-am">
+            <span class="alert-icon">&#x26A0;</span>
+            <div><div class="alert-title">PHQ-9 Trend: Worsening</div>PHQ-9 was 10 (mild) in February, now 14 (moderate). Correlated with CHF hospitalization and functional decline. Consider medication adjustment or therapy referral.</div>
+          </div>
+          <div class="mt12">
+            <div class="form-group"><label class="form-label">PHQ-9 Q9 — Suicidal Ideation</label>
+              <select class="form-select"><option>0 — Not at all (no crisis)</option><option>1 — Several days</option><option>2 — More than half the days</option><option>3 — Nearly every day</option></select></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">&#x1F4DD; BHI Care Plan</div></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:10px">
+          <div class="form-group"><label class="form-label">Behavioral Health Goals</label>
+            <textarea class="form-textarea" style="min-height:60px">1. Reduce PHQ-9 score to &lt;10 within 60 days&#10;2. Improve functional independence in 2 ADLs&#10;3. Establish regular sleep schedule&#10;4. Engage daughter in weekly wellness check-in</textarea></div>
+          <div class="g2">
+            <div class="form-group"><label class="form-label">Treatment Modality</label>
+              <select class="form-select"><option>Sertraline 50mg + CBT referral</option><option>CBT only</option><option>Medication only</option><option>Watchful waiting</option></select></div>
+            <div class="form-group"><label class="form-label">BH Consultant</label>
+              <select class="form-select"><option>Dr. Sandra Park, Psychiatry</option><option>Sarah Kim, LCSW</option><option>None assigned</option></select></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-panel">
+      <div class="ai-phdr">
+        <div class="ai-pic">&#x1F916;</div>
+        <div><div class="ai-ptitle">AI BHI Assessment &amp; Care Plan</div><div class="ai-psub">PHQ-9/GAD-7 interpretation &bull; Treatment recommendations &bull; 99493 documentation</div></div>
+      </div>
+      <div class="ai-pbody">
+        <div id="bhiAiOut">
+          <div class="alert alert-bl"><span class="alert-icon">&#x1F4A1;</span><div>Click "AI BHI Assessment" to generate a complete behavioral health integration assessment — PHQ/GAD interpretation, evidence-based treatment recommendations, BH consultant referral criteria, crisis safety plan, and 99493 billing documentation.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BHI Monthly Time Log -->
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">&#x23F1; BHI Monthly Time Log &mdash; May 2026</div><div><span class="tag tag-gn">99493 Billable (&gt;70 min logged)</span></div></div>
+    <div class="card-body sm">
+      <table class="tbl">
+        <thead><tr><th>Date</th><th>Staff</th><th>Activity</th><th>Minutes</th><th>AI Assist</th></tr></thead>
+        <tbody>
+          <tr><td>05/05</td><td>RN Lopez</td><td>Initial BHI enrollment call, PHQ/GAD administered</td><td><b>25</b></td><td><span class="tag tag-gn">AI scored</span></td></tr>
+          <tr><td>05/12</td><td>Dr. Park</td><td>Psychiatric consultant review, Sertraline initiated</td><td><b>20</b></td><td><span class="tag tag-gn">AI documented</span></td></tr>
+          <tr><td>05/19</td><td>RN Lopez</td><td>Follow-up call, medication side effects reviewed</td><td><b>15</b></td><td><span class="tag tag-gn">AI summarized</span></td></tr>
+          <tr><td>05/23</td><td>Dr. Holloway</td><td>PHQ-9 rescreening, care plan update</td><td><b>15</b></td><td><span class="tag tag-am">Pending</span></td></tr>
+          <tr style="font-weight:700;background:#f8fafc"><td colspan="3">Total logged this month</td><td><b style="color:var(--ok)">75 min</b></td><td><span class="tag tag-gn">&#x2713; 99493 Met</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE 5: APCM — ADVANCED PRIMARY CARE
+     ═══════════════════════════════════════ -->
+<div class="pg" id="pg-apcm">
+  <div class="sec-hdr">
+    <div>
+      <div class="sec-title">&#x1F4CA; Advanced Primary Care Management — AI-Directed</div>
+      <div class="sec-sub">CPT 99491 (Tier 1) / 99487 (Tier 2) / 99489 (Tier 3) &bull; AI manages care plans, access, coordination &bull; Monthly recurring revenue</div>
+    </div>
+    <button class="btn btn-ai" onclick="runApcmAi()">&#x1F916; AI APCM Assessment</button>
+  </div>
+
+  <div class="g4">
+    <div class="kpi pu"><div class="kpi-lbl">APCM Tier</div><div class="kpi-val">Tier 2</div><div class="kpi-sub">CPT 99487 &bull; 2+ chronic conditions</div></div>
+    <div class="kpi ok"><div class="kpi-lbl">Enrolled Since</div><div class="kpi-val">Jan 2026</div><div class="kpi-sub">Month 5 of enrollment</div></div>
+    <div class="kpi pri"><div class="kpi-lbl">Monthly Revenue</div><div class="kpi-val">$94</div><div class="kpi-sub">Per patient per month</div></div>
+    <div class="kpi am"><div class="kpi-lbl">Open Tasks</div><div class="kpi-val">6</div><div class="kpi-sub">AI prioritized</div></div>
+  </div>
+
+  <div class="g2">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">&#x1F4CB; APCM Eligibility &mdash; Tier 2</div></div>
+        <div class="card-body sm">
+          <table class="tbl">
+            <thead><tr><th>Requirement</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>2+ chronic conditions expected to last 12+ months</td><td><span class="tag tag-gn">&#x2713; CHF, DM2, CKD3, HTN</span></td></tr>
+              <tr><td>Patient consent obtained</td><td><span class="tag tag-gn">&#x2713; Signed 01/15/2026</span></td></tr>
+              <tr><td>24/7 access to care team</td><td><span class="tag tag-gn">&#x2713; MOF secure message</span></td></tr>
+              <tr><td>Comprehensive care plan</td><td><span class="tag tag-am">&#x26A0; Update needed</span></td></tr>
+              <tr><td>Care coordination with specialists</td><td><span class="tag tag-gn">&#x2713; Cardiology + Nephrology</span></td></tr>
+              <tr><td>Monthly time &ge;60 min (Tier 2)</td><td><span class="tag tag-am">42/60 min logged</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">&#x1F916; AI-Directed APCM Tasks &mdash; May 2026</div></div>
+        <div class="card-body sm">
+          <table class="tbl">
+            <thead><tr><th>Task</th><th>Priority</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td>Update comprehensive care plan</td><td><span class="tag tag-rd">Critical</span></td><td><button class="btn btn-sm btn-ai" onclick="runApcmAi()">&#x1F916; AI Update</button></td></tr>
+              <tr><td>Log 18 more minutes to meet Tier 2</td><td><span class="tag tag-rd">Revenue</span></td><td><button class="btn btn-sm btn-sec" onclick="alert('Time log entry added: 18 min care coordination')">+ Log Time</button></td></tr>
+              <tr><td>Medication adherence check — Furosemide</td><td><span class="tag tag-am">High</span></td><td><button class="btn btn-sm btn-ai" onclick="alert('AI: Sending adherence check SMS to patient')">&#x1F916; Outreach</button></td></tr>
+              <tr><td>Nephrology referral follow-up</td><td><span class="tag tag-am">High</span></td><td><button class="btn btn-sm btn-sec" onclick="alert('Follow-up message sent to nephrology')">&#x1F4E7; Follow Up</button></td></tr>
+              <tr><td>BP monitoring — home readings review</td><td><span class="tag tag-gn">Routine</span></td><td><button class="btn btn-sm btn-ai" onclick="alert('AI: Reviewed 14 days of home BP readings — avg 146/90, trending stable')">&#x1F916; Review</button></td></tr>
+              <tr><td>Insurance prior auth — Entresto</td><td><span class="tag tag-gn">Routine</span></td><td><button class="btn btn-sm btn-sec" onclick="alert('Prior auth request submitted to Medicare Advantage')">&#x1F4E4; Submit PA</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-panel">
+      <div class="ai-phdr">
+        <div class="ai-pic">&#x1F916;</div>
+        <div><div class="ai-ptitle">AI APCM Comprehensive Care Plan</div><div class="ai-psub">Auto-updated monthly &bull; All chronic conditions &bull; 99487 documentation</div></div>
+      </div>
+      <div class="ai-pbody">
+        <div id="apcmAiOut">
+          <div class="alert alert-bl"><span class="alert-icon">&#x1F4A1;</span><div>Click "AI APCM Assessment" to generate an updated comprehensive care plan — all chronic conditions addressed, care coordination documented, access confirmation, and 99487 billing documentation for Tier 2 APCM.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE 6: AI COMMAND HUB
+     ═══════════════════════════════════════ -->
+<div class="pg" id="pg-hub">
+  <div class="sec-hdr">
+    <div>
+      <div class="sec-title">&#x1F916; AI Clinical Command Hub</div>
+      <div class="sec-sub">AI takes charge across all clinical programs &bull; One click &bull; Full patient summary &bull; All programs updated simultaneously</div>
+    </div>
+    <button class="btn btn-ai" onclick="runHubAi()" id="hubBtn">&#x1F916; AI Take Full Charge &mdash; All Programs</button>
+  </div>
+
+  <div class="alert alert-pu" style="font-size:15px">
+    <span class="alert-icon" style="font-size:24px">&#x1F916;</span>
+    <div><div class="alert-title" style="font-size:16px">AI is in control of this patient's clinical programs</div>AI monitors all 5 programs simultaneously, prioritizes tasks, generates documentation, flags gaps, and updates billing readiness. Every AI output requires physician review before finalization. AI never signs, prescribes, or submits claims.</div>
+  </div>
+
+  <div class="g4">
+    <div class="kpi ok"><div class="kpi-lbl">AWV</div><div class="kpi-val">Due</div><div class="kpi-sub">AI plan ready</div></div>
+    <div class="kpi pri"><div class="kpi-lbl">Telehealth</div><div class="kpi-val">3 waiting</div><div class="kpi-sub">Pre-charts ready</div></div>
+    <div class="kpi er"><div class="kpi-lbl">TCM</div><div class="kpi-val">2 days left</div><div class="kpi-sub">99496 at risk</div></div>
+    <div class="kpi am"><div class="kpi-lbl">BHI</div><div class="kpi-val">PHQ 14</div><div class="kpi-sub">Escalation needed</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">&#x26A1; AI Program Status Board</div></div>
+      <div class="card-body sm">
+        <table class="tbl">
+          <thead><tr><th>Program</th><th>CPT</th><th>AI Status</th><th>Revenue</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td><b>AWV</b></td><td class="mono">G0439</td><td><span class="tag tag-am">AI Draft Ready</span></td><td style="color:var(--ok);font-weight:700">$162</td><td><button class="btn btn-sm btn-ai" onclick="showPage('awv');runAwvAi()">&#x1F916; Go</button></td></tr>
+            <tr><td><b>Telehealth</b></td><td class="mono">99215-95</td><td><span class="tag tag-gn">3 Pre-charted</span></td><td style="color:var(--ok);font-weight:700">$168/visit</td><td><button class="btn btn-sm btn-ai" onclick="showPage('tele');runTeleAi()">&#x1F916; Go</button></td></tr>
+            <tr><td><b>TCM 99496</b></td><td class="mono">99496</td><td><span class="tag tag-rd">&#x26A0; 2 days left</span></td><td style="color:var(--ok);font-weight:700">$237</td><td><button class="btn btn-sm btn-ai" onclick="showPage('tcm');runTcmAi()">&#x1F916; Go</button></td></tr>
+            <tr><td><b>BHI Month 2</b></td><td class="mono">99493</td><td><span class="tag tag-ok">75 min logged</span></td><td style="color:var(--ok);font-weight:700">$142</td><td><button class="btn btn-sm btn-ai" onclick="showPage('bhi');runBhiAi()">&#x1F916; Go</button></td></tr>
+            <tr><td><b>APCM Tier 2</b></td><td class="mono">99487</td><td><span class="tag tag-am">18 min short</span></td><td style="color:var(--ok);font-weight:700">$94/mo</td><td><button class="btn btn-sm btn-ai" onclick="showPage('apcm');runApcmAi()">&#x1F916; Go</button></td></tr>
+            <tr style="background:#f0fdf4;font-weight:700"><td colspan="3">Total AI-captured revenue (Eleanor Whitfield)</td><td style="color:var(--ok);font-size:18px;font-weight:800">$803</td><td><button class="btn btn-sm btn-ok" onclick="alert('All programs submitted to billing queue')">&#x1F4B0; Bill All</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="ai-panel">
+      <div class="ai-phdr">
+        <div class="ai-pic">&#x1F916;</div>
+        <div><div class="ai-ptitle">AI Full Clinical Intelligence Report</div><div class="ai-psub">All 5 programs &bull; Eleanor Whitfield &bull; AI priority ranking</div></div>
+      </div>
+      <div class="ai-pbody">
+        <div id="hubAiOut">
+          <div class="alert alert-pu"><span class="alert-icon">&#x1F916;</span><div><div class="alert-title">AI Command Ready</div>Click "AI Take Full Charge" to generate a comprehensive clinical intelligence report across all 5 programs — prioritized by urgency, revenue impact, and quality gaps. AI will tell you exactly what to do, in what order, today.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- API KEY MODAL -->
+<div class="modal-overlay hidden" id="apiModal">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-title">&#x1F511; Configure AI Mode</div><button class="modal-close" onclick="toggleApiModal()">&#x2715;</button></div>
+    <div class="modal-body">
+      <div class="alert alert-bl mb12"><span class="alert-icon">&#x2139;</span><div><b>Mock Mode</b> — instant realistic responses, perfect for demos.<br><b>Live Mode</b> — real Claude API calls using your Anthropic key.</div></div>
+      <div class="form-group mb12">
+        <label class="form-label">Anthropic API Key</label>
+        <input class="form-input mono" id="apiKeyInput" type="password" placeholder="sk-ant-...">
+        <div class="form-hint">Stored in sessionStorage only — sent only to api.anthropic.com</div>
+      </div>
+      <div class="flex g8 mt16">
+        <button class="btn btn-sec" onclick="setMockMode()">Use Mock Mode</button>
+        <button class="btn btn-ai" onclick="setLiveMode()">Activate Live AI</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// MOF Clinical AI Suite — JavaScript Engine
+// claude-sonnet-4-20250514 | All AI output requires physician review
+
+var AI_MODE='mock', ANTHROPIC_KEY='';
+
+function showPage(id){
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on')});
+  document.querySelectorAll('.tn-btn').forEach(function(b){b.classList.remove('on')});
+  document.querySelectorAll('.sb-item').forEach(function(s){s.classList.remove('on')});
+  var pg=document.getElementById('pg-'+id); if(pg)pg.classList.add('on');
+  var nb=document.getElementById('nav-'+id); if(nb)nb.classList.add('on');
+  var sb=document.getElementById('sb-'+id); if(sb)sb.classList.add('on');
+}
+
+function toggleApiModal(){document.getElementById('apiModal').classList.toggle('hidden')}
+function setMockMode(){AI_MODE='mock';ANTHROPIC_KEY='';updateBadge();toggleApiModal()}
+function setLiveMode(){
+  var k=document.getElementById('apiKeyInput').value.trim();
+  if(!k.startsWith('sk-ant-')){alert('Please enter a valid Anthropic API key (sk-ant-...)');return}
+  ANTHROPIC_KEY=k;sessionStorage.setItem('mof_cli_key',k);AI_MODE='live';updateBadge();toggleApiModal()
+}
+function updateBadge(){
+  var b=document.getElementById('aiBadge');var t=document.getElementById('aiText');
+  b.className='ai-badge '+AI_MODE;t.textContent=AI_MODE==='live'?'Live AI':'Mock AI'
+}
+
+async function callClaude(prompt,sys){
+  if(AI_MODE==='mock')return null;
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,
+        system:sys||'You are an AI clinical assistant for MOF EMR. Generate structured clinical documentation. Be concise and accurate. All output requires physician review.',
+        messages:[{role:'user',content:prompt}]})
+    });
+    var d=await r.json();return d.content&&d.content[0]?d.content[0].text:null
+  }catch(e){console.error('Claude API error:',e);return null}
+}
+
+function setLoading(elId){document.getElementById(elId).innerHTML='<div class="ai-thinking"><div class="ai-dots"><span></span><span></span><span></span></div>AI analyzing patient data...</div>'}
+function setAiOut(elId,text,isLive){
+  document.getElementById(elId).innerHTML='<div class="ai-out">'+text+'</div><div class="ai-src"><span class="ai-sbadge '+(isLive?'live':'mock')+'">'+(isLive?'Live AI \u00B7 claude-sonnet-4-20250514':'Mock AI \u00B7 Demo')+'</span>Advisory only \u2014 physician must review before finalizing</div>'
+}
+
+// ── AWV AI ──
+async function runAwvAi(){
+  setLoading('awvAiOut');
+  var prompt='Generate a Medicare Annual Wellness Visit (G0439) personalized prevention plan for Eleanor Whitfield, 76F. Conditions: CHF, DM2 (A1c 8.4%), CKD Stage 3a (eGFR 42), HTN (BP 148/92), Obesity (BMI 30.2). PHQ-9 score 14 (moderate depression). Fall risk: high (2 falls). Cognitive screen: 3/5 Mini-Cog (borderline). Functional decline in 2 ADLs. Caregiver daughter present. Include: 1) Personalized prevention plan with specific interventions 2) Advance care planning recommendations 3) Cognitive/fall/depression plan 4) Preventive services due today 5) G0439 documentation elements. Be specific and actionable.';
+  var ai=await callClaude(prompt); var live=ai!==null;
+  if(!live)ai='ANNUAL WELLNESS VISIT — Eleanor Whitfield (G0439)\nDate: May 23, 2026 | Physician: Dr. Holloway | AHC Cardiology\n\nPERSONALIZED PREVENTION PLAN:\n\n1. FALL PREVENTION (HIGH RISK)\n- Refer to physical therapy for balance/strength training\n- Home safety assessment ordered (OT referral)\n- Medication review: discontinue any sedating agents\n- Vitamin D 1000 IU daily + calcium carbonate 500mg BID\n- Non-slip footwear counseling provided\n\n2. COGNITIVE HEALTH (BORDERLINE MINI-COG 3/5)\n- Rescreen with full MoCA at next visit\n- Caregiver education on early dementia warning signs\n- Driving safety discussion initiated\n- Neurology referral if MoCA declines\n\n3. DEPRESSION MANAGEMENT (PHQ-9: 14 — MODERATE)\n- Sertraline 50mg QD initiated (via BHI program)\n- CBT referral placed — 8-session program\n- PHQ-9 rescreening in 4 weeks\n- 24/7 crisis line number provided: 988\n\n4. PREVENTIVE SERVICES ORDERED TODAY:\n- Pneumococcal PCV20 vaccine (overdue)\n- Shingrix dose 2 (overdue)\n- Cologuard stool DNA test (colorectal screening)\n- DEXA scan referral (osteoporosis screening)\n\n5. ADVANCE CARE PLANNING:\n- Advance directive on file — reviewed and confirmed current\n- Healthcare proxy: Sarah Whitfield (daughter) — phone confirmed\n- POLST form discussed — patient defers to daughter for decisions\n\n6. G0439 DOCUMENTATION:\n- HRA completed with caregiver present\n- Cognitive, depression, fall risk, and functional assessments documented\n- Personalized prevention plan provided to patient in writing\n- Estimated CPT time: 45 minutes | Complexity: Moderate-High';
+  setAiOut('awvAiOut',ai,live)
+}
+
+// ── TELE AI ──
+async function runTeleAi(){
+  setLoading('teleAiOut');
+  var prompt='Generate a telemedicine pre-visit brief for Eleanor Whitfield, 76F presenting via video visit. Conditions: CHF (recently hospitalized 5 days ago), DM2 A1c 8.4%, CKD3a eGFR 42, HTN BP 148/92, PHQ-9 14. Meds changed at discharge: Furosemide 40→80mg, Metformin restarted 1000mg BID. Format: 1) Predicted chief complaints 2) Urgent flags requiring same-day action 3) Suggested physician talking points 4) Labs to review 5) HCC gaps to capture today 6) CPT code with 95 modifier documentation. Keep concise — physician reads this while waiting room loads.';
+  var ai=await callClaude(prompt); var live=ai!==null;
+  if(!live)ai='TELEHEALTH PRE-CHART BRIEF — Eleanor Whitfield\nVisit Date: 05/23/2026 | CPT: 99215-95\n\nPREDICTED CHIEF COMPLAINTS:\n\u25cf Volume status / edema check (Day 5 post-CHF discharge)\n\u25cf Blood sugar control (Metformin restarted at discharge)\n\u25cf Blood pressure concern (148/92 at last check)\n\nURGENT FLAGS:\n\u2757 TCM 99496 window closes in 2 days — confirm face-to-face scheduled\n\u2757 BMP not yet resulted — ordered at discharge, check today\n\u2757 PHQ-9 14 — depression worsening, Sertraline started, follow up\n\u2757 eGFR 42 — hold NSAIDS, recheck Cr with new diuretic dose\n\nSUGGESTED TALKING POINTS:\n1. "How is your breathing compared to last week?"\n2. "Are you weighing yourself daily? Any weight gain?"\n3. "Tell me about the new water pill dose — any dizziness?"\n4. "How has your mood been since the hospital?"\n5. "Are you checking your blood sugar in the mornings?"\n\nHCC GAPS TO CAPTURE TODAY:\n\u2192 HCC 85 (CHF I50.9) — recapture with MEAT documentation\n\u2192 HCC 18 (DM+CKD E11.65) — not documented in 2026\n\nCPT DOCUMENTATION:\n99215-95: High complexity MDM, telehealth with interactive audio-video\nModifier 95 required. Place of service: 02 (Telehealth). Patient consent for telehealth on file.';
+  setAiOut('teleAiOut',ai,live)
+}
+
+function startTeleVisit(){document.getElementById('teleVisitCard').style.display='block';document.getElementById('teleVisitCard').scrollIntoView({behavior:'smooth'})}
+function endVisit(){document.getElementById('teleVisitCard').style.display='none';alert('Visit ended. AI SOAP note generated and sent to AI EMR for physician review. 99215-95 queued for billing.')}
+
+// ── TCM AI ──
+async function runTcmAi(){
+  setLoading('tcmAiOut');
+  var prompt='Generate a Transitional Care Management (TCM 99496) care plan for Eleanor Whitfield, 76F discharged from St. Mary\'s Medical Center on 05/23/2026 after 4-day hospitalization for CHF exacerbation. Discharge meds: Furosemide increased to 80mg, Potassium chloride 20mEq added, Metformin restarted 1000mg BID. Follow-up items: BMP in 5 days, cardiology 06/02, Echo ordered. Day 2 contact completed 05/25. Face-to-face visit must occur by 05/30. Include: 1) Complete medication reconciliation 2) Red flag symptoms to watch 3) Patient/caregiver education points 4) Pending follow-up coordination 5) 99496 MDM documentation (high complexity). Specific and actionable.';
+  var ai=await callClaude(prompt); var live=ai!==null;
+  if(!live)ai='TCM CARE TRANSITION PLAN — Eleanor Whitfield (99496)\nDischarge: 05/23/2026 | Admitting DX: CHF Exacerbation (I50.9)\n\nMEDICATION RECONCILIATION:\n\u2192 CHANGED: Furosemide 40mg \u2192 80mg QD (increased diuresis for volume overload)\n\u2192 NEW: Potassium Chloride 20mEq QD (repleting from diuresis)\n\u2192 CHANGED: Metformin HELD during hospitalization \u2192 RESTARTED 1000mg BID\n\u2192 CONTINUED: Lisinopril 10mg QD, Atorvastatin 40mg QHS, ASA 81mg QD\n\u2192 PENDING: Entresto (sacubitril/valsartan) — prior auth submitted\n\nRED FLAG SYMPTOMS — RETURN TO ED IF:\n\u26a0 Weight gain >3 lbs in 24 hours or >5 lbs in 1 week\n\u26a0 Worsening shortness of breath at rest\n\u26a0 New or worsening ankle/leg swelling\n\u26a0 Dizziness, lightheadedness, or syncope (from new diuretic dose)\n\u26a0 Urine output significantly decreased\n\nPATIENT/CAREGIVER EDUCATION:\n1. Daily weights every morning before eating — log in app\n2. Sodium restriction <2g/day — reviewed with daughter\n3. Fluid restriction 1.5L/day — discussed\n4. Take Furosemide in the morning (not evening)\n5. Potassium-rich foods (bananas, oranges, potatoes) encouraged\n\nFOLLOW-UP COORDINATION:\n\u25cf BMP: ordered, results expected 05/28 — AI will flag if K+ or Cr abnormal\n\u25cf Cardiology: Dr. Patel — 06/02/2026 at 2pm — transport arranged\n\u25cf Echo: scheduled 06/05 at St. Mary\'s Imaging\n\u25cf Face-to-face TCM visit: REQUIRED by 05/30 — currently scheduled 05/28 10am\n\n99496 MDM DOCUMENTATION:\nProblems: Multiple chronic + acute (CHF hospitalization) = HIGH complexity\nData: Review hospital records, BMP results, echo report = HIGH\nRisk: New medication (Furosemide dose change, Potassium) = HIGH\nE/M Level: 99215 during TCM face-to-face visit\nTCM billing: 99496 (high complexity, face-to-face within 7 days)';
+  setAiOut('tcmAiOut',ai,live)
+}
+
+// ── BHI AI ──
+async function runBhiAi(){
+  setLoading('bhiAiOut');
+  var prompt='Generate a Behavioral Health Integration (BHI 99493) assessment and care plan for Eleanor Whitfield, 76F. PHQ-9 score 14 (moderate depression — worsened from 10 in February). GAD-7 score 9 (moderate anxiety). PHQ-9 Q9 = 0 (no suicidal ideation). Context: Recent CHF hospitalization, functional decline, caregiver daughter present, social isolation noted. Sertraline 50mg QD recently started. Psychiatric consultant: Dr. Sandra Park. Include: 1) Clinical interpretation of PHQ-9/GAD-7 2) Evidence-based treatment recommendations 3) Safety assessment 4) Behavioral activation plan 5) Care plan goals 6) 99493 billing documentation (75 minutes logged). Compassionate and clinically precise.';
+  var ai=await callClaude(prompt); var live=ai!==null;
+  if(!live)ai='BHI ASSESSMENT & CARE PLAN — Eleanor Whitfield (99493)\nAssessment Date: 05/23/2026 | Care Manager: RN Lopez | Consultant: Dr. Park\n\nCLINICAL INTERPRETATION:\nPHQ-9: 14 (Moderate Depression) — worsened from 10 (Feb 2026). Correlated temporally with CHF hospitalization (05/19), functional decline in 2 ADLs, and increased caregiver dependency. Somatic items (fatigue, sleep, concentration) heavily endorsed, consistent with cardiac disease overlap.\n\nGAD-7: 9 (Moderate Anxiety) — health anxiety likely driving elevated score (fear of rehospitalization, medication changes, death anxiety). Items 1, 2, 7 most prominent.\n\nSAFETY ASSESSMENT:\n\u2713 PHQ-9 Question 9 = 0 — No passive or active suicidal ideation\n\u2713 No history of suicide attempts\n\u2713 Strong protective factors: engaged daughter, religious faith, desire to improve\n\u2713 Crisis plan reviewed: 988 Lifeline provided, daughter aware\n\nTREATMENT RECOMMENDATIONS:\n1. MEDICATION: Continue Sertraline 50mg QD (started 05/19). Reassess in 4 weeks — titrate to 100mg if partial response and tolerating. Monitor for SNS activation in CHF patient.\n2. THERAPY: CBT referral placed — 8 sessions. Focus: health anxiety, functional adaptation, caregiver relationship.\n3. BEHAVIORAL ACTIVATION: 10-minute gentle walks 3x/week, social phone call to friend daily, rejoin church community virtually.\n4. CAREGIVER SUPPORT: Daughter enrolled in caregiver support group — MOF care team will follow monthly.\n\nCARE PLAN GOALS (60-day):\n\u25cf PHQ-9 score <10 by 07/23/2026\n\u25cf GAD-7 score <7 by 07/23/2026\n\u25cf 2 behavioral activation activities per week\n\u25cf Maintain medication adherence >90%\n\n99493 DOCUMENTATION:\n75 total minutes logged this month (eligible 99493)\nInitial psychiatric consult included. Care manager coordinated with PCP and BH consultant. Monthly care plan reviewed and updated. Patient consent on file. Monthly billing: 99493 = $142.';
+  setAiOut('bhiAiOut',ai,live)
+}
+
+// ── APCM AI ──
+async function runApcmAi(){
+  setLoading('apcmAiOut');
+  var prompt='Generate an Advanced Primary Care Management (APCM 99487 Tier 2) comprehensive care plan for Eleanor Whitfield, 76F. Active chronic conditions: CHF (I50.9), DM2 with hyperglycemia (E11.65), CKD Stage 3a (N18.3), HTN (I10), Obesity (E66.09), Moderate Depression (F33.1). Enrolled in APCM since January 2026. 42 minutes logged so far this month (need 60+ for Tier 2). Care team: Dr. Holloway (PCP), Dr. Patel (Cardiology), RN Lopez (Care Manager). Include: 1) Updated comprehensive care plan for all conditions 2) Documented 24/7 access confirmation 3) Care coordination activities this month 4) Remaining tasks to reach Tier 2 threshold 5) 99487 billing documentation. Organized by condition.';
+  var ai=await callClaude(prompt); var live=ai!==null;
+  if(!live)ai='APCM COMPREHENSIVE CARE PLAN — Eleanor Whitfield (99487 Tier 2)\nPlan Date: 05/23/2026 | Care Manager: RN Lopez | PCP: Dr. Holloway\n\nACTIVE CHRONIC CONDITIONS & MANAGEMENT PLAN:\n\n1. CONGESTIVE HEART FAILURE (I50.9, HCC 85)\nGoal: Prevent rehospitalization, maintain dry weight, LVEF monitoring\nPlan: Furosemide 80mg QD, daily weights, sodium <2g/day, Cardiology 06/02\nStatus: Recently hospitalized — high priority monitoring\n\n2. DIABETES TYPE 2 (E11.65, HCC 18)\nGoal: A1c <8.0% by next quarter\nPlan: Metformin 1000mg BID, fasting glucose daily, Endocrinology referral\nStatus: A1c 8.4% — trending in right direction with dose increase\n\n3. CHRONIC KIDNEY DISEASE STAGE 3a (N18.3, HCC 137)\nGoal: Slow progression, avoid nephrotoxins, preserve eGFR\nPlan: Avoid NSAIDs/contrast, BMP Q3 months, Nephrology referral if eGFR <40\nStatus: eGFR 42 — declining (was 45 in Feb), monitoring closely\n\n4. HYPERTENSION (I10)\nGoal: BP <130/80 (ACC/AHA) or <140/90 (JNC8 elderly)\nPlan: Lisinopril 10mg QD, home BP monitoring daily\nStatus: BP 148/92 — above goal, may need medication adjustment\n\n5. DEPRESSION (F33.1)\nGoal: PHQ-9 <10, functional improvement in ADLs\nPlan: Sertraline 50mg QD, CBT referral, BHI program enrolled\nStatus: PHQ-9 14 — moderate, improving plan in place\n\n24/7 ACCESS CONFIRMATION:\n\u2713 MOF secure patient portal — 24/7 message access\n\u2713 After-hours nurse line: (770) 555-CARE\n\u2713 Patient and daughter confirmed access at today\'s visit\n\nCARE COORDINATION THIS MONTH:\n\u25cf Cardiology referral coordinated — Dr. Patel 06/02\n\u25cf TCM day 2 contact completed\n\u25cf BHI psychiatric consultant engaged\n\u25cf Home health aide evaluated (daughter primary caregiver)\n\u25cf Prior auth submitted for Entresto\nTotal: 42 minutes logged\n\nTO REACH TIER 2 (99487) — LOG 18 MORE MINUTES:\n+ 10 min: Medication adherence phone check (RN Lopez today)\n+ 8 min: BP monitoring data review and care plan update\n= 18 min additional = 60 total = Tier 2 threshold met\n\n99487 BILLING: $94/month. Tier 2 requires 2+ chronic conditions + 60 min. All elements met once 18 min added.';
+  setAiOut('apcmAiOut',ai,live)
+}
+
+// ── HUB AI ──
+async function runHubAi(){
+  var btn=document.getElementById('hubBtn');btn.disabled=true;btn.textContent='AI analyzing...';
+  setLoading('hubAiOut');
+  var prompt='You are the AI Clinical Director for Eleanor Whitfield, 76F at AHC Cardiology. Generate a complete AI Clinical Intelligence Report across all 5 active programs. Programs: AWV (G0439, due, not yet completed), Telehealth (99215-95, 3 patients waiting, pre-charts needed), TCM 99496 (Day 5 post-CHF discharge, face-to-face REQUIRED by 05/30 — only 2 days remaining), BHI 99493 (PHQ-9 14 moderate depression, 75 min logged this month, billable), APCM 99487 Tier 2 (42/60 min logged, 18 min short). Patient complexity: CHF recent hospitalization, DM2, CKD3a, HTN, Moderate Depression. Generate: 1) URGENT priority ranking (what must be done TODAY in exact order) 2) Revenue at risk 3) Quality metrics at stake 4) AI-directed action plan with time estimates 5) One physician decision required. Be the AI in charge — direct, specific, and clinically precise.';
+  var ai=await callClaude(prompt); var live=ai!==null;
+  if(!live)ai='AI CLINICAL INTELLIGENCE REPORT\nEleanor Whitfield | MOF-00427 | Generated: 05/23/2026 09:00 AM\n\nURGENT PRIORITY RANKING — DO THESE TODAY IN ORDER:\n\n#1 CRITICAL: TCM 99496 DEADLINE (Revenue at Risk: $237)\nFace-to-face visit MUST occur by 05/30 — 2 business days remaining.\nAction: Confirm appointment 05/28 10am with Dr. Holloway. If not confirmed, call patient NOW.\nTime needed: 5 minutes\n\n#2 HIGH: APCM Tier 2 Threshold (18 minutes short)\nRN Lopez needs 18 more minutes today to hit 99487 billing threshold.\nAction: Schedule 10-min adherence call + 8-min chart update = Tier 2 unlocked = $94.\nTime needed: 18 minutes\n\n#3 HIGH: AWV — Complete Today (Revenue: $162)\nMedicare AWV (G0439) not yet completed for 2026. Patient is here today.\nAction: Add AWV to today\'s encounter. AI plan already drafted. Takes 20 extra minutes.\nTime needed: 20 minutes\n\n#4 MEDIUM: BHI — Bill 99493 (Revenue: $142, DONE)\n75 minutes logged — 99493 threshold met. Submit to billing today.\nAction: Physician co-sign BHI monthly summary. 5-minute task.\nTime needed: 5 minutes\n\n#5 ROUTINE: Telehealth Pre-Charts (3 Waiting)\nEleanor\'s pre-chart is ready. Robert and Linda need 90 seconds each.\nAction: AI auto-generates in background.\nTime needed: Automated\n\nTOTAL REVENUE TODAY IF AI ACTIONS EXECUTED: $803\nWithout action: $472 (TCM and AWV missed = $399 lost)\n\nQUALITY METRICS AT STAKE:\n- HEDIS: HCC 85 and HCC 18 recapture (RAF 1.069 \u2192 1.838)\n- MIPS: PHQ-9 follow-up, fall risk documentation\n- CMS Stars: BP control and medication adherence\n\nONE PHYSICIAN DECISION REQUIRED:\nTCM 99496 vs 99495: Patient is high complexity (CHF hospitalization + multiple chronic conditions). I recommend 99496 (7-day, high complexity). Please confirm before billing.\n\nAI GUARDRAIL: All plans above are advisory. AI has not signed, prescribed, or submitted any claim. Physician review required for all.';
+  setAiOut('hubAiOut',ai,live);
+  btn.disabled=false;btn.innerHTML='&#x1F916; AI Take Full Charge &mdash; All Programs'
+}
+
+// ── UTILITIES ──
+function aiOrder(item){alert('AI Order placed: '+item+'\nAdded to today\'s orders. Physician approval required before sending to lab/pharmacy.')}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded',function(){
+  var k=sessionStorage.getItem('mof_cli_key');
+  if(k){ANTHROPIC_KEY=k;AI_MODE='live';updateBadge()}
+  showPage('awv')
+})
+</script>
+</body>
+</html>
