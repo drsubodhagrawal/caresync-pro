@@ -378,6 +378,7 @@ function App() {
               h("div", {style:{fontSize:10,color:"var(--txM)",fontFamily:"var(--fm)"}}, user ? user.email : "")
             )
           ),
+          h("a", {href:"schedule.html", target:"_blank", className:"btn-sm", style:{background:"#1a6ef5",color:"#fff",border:"1.5px solid #1a6ef5",textDecoration:"none",display:"inline-flex",alignItems:"center",gap:"4px"}}, "\uD83D\uDCC5 Schedule Engine"),
           h("button", {className:"btn-sm btn-so", onClick:doSignout}, "Sign Out")
         )
       ),
