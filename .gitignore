@@ -1,0 +1,9 @@
+# MOF / CareSync Pro - keep internal tooling and staging files out of the public Vercel site
+mof-deploy.ps1
+*.gz.b64
+*.b64
+_pb*
+_gz_*
+_c1*
+payload.b64
+decode_*.ps1
