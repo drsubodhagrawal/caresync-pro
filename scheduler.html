@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>MOF AI Scheduling Engine — CareSync Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#1a6eb5; --primary-dk:#0f4d82; --primary-lt:#e8f1fa;
+  --bg:#f0f4f8; --border:#d6e4f0; --line:#c7d6e6;
+  --text:#1a2332; --sub:#41566e;
+  --success:#2e7d32; --success-lt:#e6f4ea;
+  --danger:#c62828; --danger-lt:#fdecea;
+  --amber:#b45309; --amber-lt:#fef3e2;
+  --teal:#00897b; --teal-lt:#dff1ef;
+  --purple:#5c35a8; --purple-lt:#efe9f8;
+  --white:#fff; --gray0:#f7fafc;
+  --font:'DM Sans',system-ui,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --r:9px; --r2:13px;
+  --shadow:0 1px 3px rgba(26,35,50,.07);
+  --shadow2:0 6px 22px rgba(26,35,50,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);font-size:15px;line-height:1.5;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+button{font-family:var(--font);cursor:pointer}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:#b7c8da;border-radius:5px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ===== APP SHELL ===== */
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.topbar{display:flex;align-items:center;gap:14px;background:var(--white);border-bottom:2px solid var(--border);padding:10px 18px;flex-shrink:0;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary-dk));color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700}
+.brand-txt b{font-size:17px;font-weight:700;color:var(--text);display:block;line-height:1.1}
+.brand-txt span{font-size:12px;color:var(--sub)}
+.topbar-spacer{flex:1}
+.tz-badge{display:flex;align-items:center;gap:7px;background:var(--primary-lt);border:1.5px solid #bcd9f0;color:var(--primary-dk);border-radius:20px;padding:7px 14px;font-size:13px;font-weight:600}
+.tz-badge select{border:none;background:transparent;font-family:var(--font);font-size:13px;font-weight:700;color:var(--primary-dk);cursor:pointer;outline:none}
+.role-chip{display:flex;align-items:center;gap:7px;background:var(--gray0);border:1.5px solid var(--border);border-radius:20px;padding:6px 8px 6px 13px}
+.role-chip select{border:none;background:transparent;font-size:13px;font-weight:700;color:var(--text);outline:none;cursor:pointer;font-family:var(--font)}
+
+.body{flex:1;display:flex;overflow:hidden;min-height:0}
+
+/* ===== SIDEBAR ===== */
+.side{width:236px;background:var(--white);border-right:2px solid var(--border);flex-shrink:0;overflow-y:auto;padding:12px 0}
+.side-sec{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--sub);padding:14px 18px 6px}
+.nav{display:flex;align-items:center;gap:11px;padding:11px 18px;font-size:15px;font-weight:600;color:var(--text);cursor:pointer;border-left:4px solid transparent;transition:.13s}
+.nav:hover{background:var(--primary-lt)}
+.nav.on{background:var(--primary-lt);border-left-color:var(--primary);color:var(--primary-dk)}
+.nav .ic{font-size:19px;width:24px;text-align:center}
+.nav .badge{margin-left:auto;background:var(--danger);color:#fff;font-size:11px;font-weight:700;border-radius:11px;padding:1px 8px;min-width:21px;text-align:center}
+.nav .badge.amber{background:var(--amber)}
+.nav .badge.teal{background:var(--teal)}
+
+/* ===== MAIN ===== */
+.main{flex:1;overflow-y:auto;min-width:0;padding:16px}
+.page{display:none}
+.page.on{display:block;animation:fade .18s ease}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.page-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.page-hd h1{font-size:23px;font-weight:700;letter-spacing:-.4px}
+.page-hd .sub{font-size:14px;color:var(--sub);margin-top:3px}
+.hd-actions{display:flex;gap:9px;flex-wrap:wrap}
+
+/* ===== BUTTONS ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 18px;border-radius:var(--r);border:1.5px solid var(--line);background:var(--white);color:var(--text);font-size:14px;font-weight:600;transition:.13s;white-space:nowrap}
+.btn:hover{border-color:var(--primary);color:var(--primary-dk);background:var(--primary-lt)}
+.btn.pri{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn.pri:hover{background:var(--primary-dk);border-color:var(--primary-dk);color:#fff}
+.btn.tealb{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn.tealb:hover{filter:brightness(.92);background:var(--teal);color:#fff}
+.btn.purpb{background:var(--purple);border-color:var(--purple);color:#fff}
+.btn.purpb:hover{filter:brightness(.93);background:var(--purple);color:#fff}
+.btn.dangerb{background:var(--white);border-color:var(--danger);color:var(--danger)}
+.btn.dangerb:hover{background:var(--danger-lt);color:var(--danger)}
+.btn.successb{background:var(--success);border-color:var(--success);color:#fff}
+.btn.successb:hover{filter:brightness(.93);background:var(--success);color:#fff}
+.btn.sm{min-height:36px;padding:0 13px;font-size:13px}
+.btn.icon{min-height:42px;width:42px;padding:0;font-size:18px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* ===== KPI STRIP ===== */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r2);padding:14px 16px;box-shadow:var(--shadow);border-left:5px solid var(--primary)}
+.kpi.tl{border-left-color:var(--purple)}
+.kpi.pr{border-left-color:var(--teal)}
+.kpi.ns{border-left-color:var(--danger)}
+.kpi.op{border-left-color:var(--success)}
+.kpi .v{font-size:30px;font-weight:700;font-family:var(--mono);line-height:1}
+.kpi .l{font-size:13px;color:var(--sub);font-weight:600;margin-top:5px}
+
+/* ===== FILTER BAR ===== */
+.filters{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;background:var(--white);border:1.5px solid var(--border);border-radius:var(--r2);padding:13px 16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld label{font-size:13px;font-weight:700;color:var(--sub)}
+.fld select,.fld input{min-height:42px;padding:0 12px;border:1.5px solid var(--line);border-radius:var(--r);font-size:15px;font-family:var(--font);color:var(--text);background:#fff;outline:none}
+.fld select:focus,.fld input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,110,181,.12)}
+.fld textarea{padding:10px 12px;border:1.5px solid var(--line);border-radius:var(--r);font-size:15px;font-family:var(--font);color:var(--text);min-height:62px;resize:vertical;outline:none}
+.fld textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,110,181,.12)}
+.datenav{display:flex;align-items:center;gap:8px}
+.datenav .d{font-size:16px;font-weight:700;min-width:230px;text-align:center}
+
+/* ===== LEGEND ===== */
+.legend{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:12px;font-size:13px;font-weight:600;color:var(--sub)}
+.legend .it{display:flex;align-items:center;gap:6px}
+.swatch{width:15px;height:15px;border-radius:4px;border:1.5px solid rgba(0,0,0,.12)}
+
+/* ===== CALENDAR GRID ===== */
+.calwrap{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r2);box-shadow:var(--shadow);overflow:auto}
+table.cal{border-collapse:collapse;width:100%;min-width:760px}
+table.cal th{position:sticky;top:0;z-index:5;background:var(--gray0);border-bottom:2px solid var(--line);border-right:1px solid var(--border);padding:10px 8px;text-align:center;font-size:14px;font-weight:700}
+table.cal th.timecol{width:78px;min-width:78px;left:0;z-index:6;background:var(--gray0)}
+.colhead{display:flex;flex-direction:column;align-items:center;gap:3px}
+.colhead .nm{font-size:15px;font-weight:700}
+.colhead .sp{font-size:12px;font-weight:600;padding:1px 9px;border-radius:11px;color:#fff}
+.colhead .ld{font-size:11px;color:var(--sub);font-weight:600}
+table.cal td{border-bottom:1px solid #eef3f8;border-right:1px solid var(--border);height:34px;vertical-align:top;padding:0}
+td.timecell{position:sticky;left:0;z-index:4;background:var(--gray0);font-family:var(--mono);font-size:12px;font-weight:600;color:var(--sub);text-align:right;padding:2px 8px 0 0;white-space:nowrap}
+td.timecell.hour{border-top:2px solid var(--line);font-size:13px;color:var(--text)}
+.slot{height:100%;min-height:34px;cursor:pointer;transition:.1s;border-radius:4px;margin:1px}
+.slot.open:hover{background:var(--primary-lt);outline:2px dashed #9cc4e6;outline-offset:-3px}
+.slot.blocked{background:repeating-linear-gradient(45deg,#eef2f6,#eef2f6 6px,#e3eaf1 6px,#e3eaf1 12px);cursor:not-allowed}
+.appt{position:relative;border-radius:6px;padding:5px 8px;margin:1px;cursor:pointer;overflow:hidden;color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.15);transition:.1s}
+.appt:hover{filter:brightness(1.06);box-shadow:var(--shadow2);z-index:3}
+.appt .nm{font-size:13.5px;font-weight:700;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appt .ty{font-size:12px;font-weight:600;opacity:.95;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appt .mt{display:flex;gap:5px;align-items:center;margin-top:2px;flex-wrap:wrap}
+.appt .tag{font-size:10.5px;font-weight:700;background:rgba(255,255,255,.26);padding:1px 6px;border-radius:8px}
+.appt.m-inperson{background:var(--primary)}
+.appt.m-tele{background:var(--purple)}
+.appt.m-procedure{background:var(--teal)}
+.appt.st-cancelled{opacity:.5;text-decoration:line-through}
+.appt.st-noshow{background:var(--danger)!important}
+.appt.st-completed{background:var(--success)!important}
+.appt .riskdot{position:absolute;top:5px;right:6px;width:11px;height:11px;border-radius:50%;border:2px solid #fff}
+.risk-high{background:var(--danger)}.risk-med{background:var(--amber)}.risk-low{background:#7fc97f}
+
+/* ===== AGENDA (mobile) ===== */
+.agenda{display:none}
+.ag-card{background:var(--white);border:1.5px solid var(--border);border-left:6px solid var(--primary);border-radius:var(--r2);padding:13px 15px;margin-bottom:10px;box-shadow:var(--shadow);cursor:pointer}
+.ag-card.m-tele{border-left-color:var(--purple)}
+.ag-card.m-procedure{border-left-color:var(--teal)}
+.ag-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ag-time{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--primary-dk)}
+.ag-nm{font-size:17px;font-weight:700;margin-top:2px}
+.ag-meta{font-size:14px;color:var(--sub);margin-top:3px}
+
+/* ===== CARDS ===== */
+.card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r2);box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+.card-bar{background:var(--primary);color:#fff;padding:11px 17px;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+.card-bar.purp{background:var(--purple)}.card-bar.teal{background:var(--teal)}.card-bar.amber{background:var(--amber)}
+.card-bd{padding:16px 18px}
+
+/* ===== AI PANEL ===== */
+.ai-banner{background:linear-gradient(135deg,#efe9f8,#f6f2fc);border:1.5px solid #d8c9f0;border-radius:var(--r2);padding:14px 16px;margin-bottom:14px;display:flex;gap:13px;align-items:flex-start}
+.ai-banner .ai-ic{width:38px;height:38px;border-radius:10px;background:var(--purple);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ai-banner b{color:var(--purple);font-size:15px}
+.ai-banner p{font-size:14px;color:var(--text);margin-top:3px}
+.suggest{border:1.5px solid #d8c9f0;border-radius:var(--r);padding:13px 15px;margin-bottom:11px;background:#fbf9fe;cursor:pointer;transition:.12s}
+.suggest:hover{border-color:var(--purple);box-shadow:var(--shadow2)}
+.suggest .sg-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.suggest .sg-time{font-size:17px;font-weight:700;color:var(--purple);font-family:var(--mono)}
+.suggest .sg-score{font-size:13px;font-weight:700;background:var(--purple);color:#fff;border-radius:11px;padding:2px 11px}
+.suggest .sg-why{font-size:13.5px;color:var(--sub);margin-top:6px;line-height:1.5}
+.insight{display:flex;gap:11px;padding:12px 14px;border-radius:var(--r);border:1.5px solid var(--border);margin-bottom:10px;align-items:flex-start}
+.insight.warn{background:var(--amber-lt);border-color:#f0d8b0}
+.insight.good{background:var(--success-lt);border-color:#bfe3c5}
+.insight.info{background:var(--primary-lt);border-color:#bcd9f0}
+.insight .i-ic{font-size:20px;flex-shrink:0}
+.insight .i-t{font-size:14.5px;font-weight:700}
+.insight .i-s{font-size:13.5px;color:var(--sub);margin-top:2px}
+
+/* ===== TABLE ===== */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:13px;font-weight:700;color:var(--sub);padding:9px 12px;border-bottom:2px solid var(--line);background:var(--gray0)}
+.tbl td{padding:11px 12px;border-bottom:1px solid #eef3f8;font-size:14.5px}
+.tbl tr:hover td{background:var(--gray0)}
+
+/* ===== PILLS / STATUS ===== */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;padding:3px 11px;border-radius:20px;white-space:nowrap}
+.pl-scheduled{background:var(--primary-lt);color:var(--primary-dk)}
+.pl-confirmed{background:#dcebfa;color:#3d2a6b}
+.pl-checked-in{background:var(--teal-lt);color:#00665b}
+.pl-roomed{background:var(--amber-lt);color:#8a4008}
+.pl-in-progress{background:#e7dcfb;color:var(--purple)}
+.pl-completed{background:var(--success-lt);color:#1b5e20}
+.pl-no-show{background:var(--danger-lt);color:#9b1c1c}
+.pl-cancelled{background:#eceff2;color:#62748a}
+
+/* ===== MODAL ===== */
+.ov{position:fixed;inset:0;background:rgba(15,31,61,.5);backdrop-filter:blur(2px);z-index:100;display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto}
+.ov.on{display:flex}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:560px;box-shadow:0 24px 60px rgba(0,0,0,.3);animation:pop .2s ease;margin:auto}
+.modal.wide{max-width:680px}
+@keyframes pop{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:scale(1)}}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1.5px solid var(--border)}
+.modal-hd h2{font-size:19px;font-weight:700}
+.modal-hd .x{width:36px;height:36px;border-radius:9px;border:1.5px solid var(--line);background:#fff;font-size:19px;color:var(--sub);display:flex;align-items:center;justify-content:center}
+.modal-hd .x:hover{background:var(--danger-lt);border-color:var(--danger);color:var(--danger)}
+.modal-bd{padding:18px 20px;max-height:66vh;overflow-y:auto}
+.modal-ft{display:flex;gap:10px;justify-content:flex-end;padding:15px 20px;border-top:1.5px solid var(--border);flex-wrap:wrap}
+.frow{display:grid;gap:13px;margin-bottom:13px}
+.frow.two{grid-template-columns:1fr 1fr}
+.note{background:var(--primary-lt);border:1.5px solid #bcd9f0;border-radius:var(--r);padding:11px 13px;font-size:13.5px;color:var(--primary-dk);display:flex;gap:9px;align-items:flex-start}
+.note.warn{background:var(--danger-lt);border-color:#f0bcbc;color:#9b1c1c}
+.note.ok{background:var(--success-lt);border-color:#bfe3c5;color:#1b5e20}
+.detail-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #eef3f8;font-size:15px}
+.detail-row .k{color:var(--sub);font-weight:600}
+.detail-row .v{font-weight:700;text-align:right}
+
+/* ===== TOAST ===== */
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(24px);background:var(--text);color:#fff;padding:13px 26px;border-radius:24px;font-size:15px;font-weight:600;z-index:9999;opacity:0;transition:.3s;pointer-events:none;box-shadow:var(--shadow2)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.ok{background:var(--success)}#toast.err{background:var(--danger)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:860px){
+  .side{position:fixed;left:0;top:0;bottom:0;z-index:60;transform:translateX(-100%);transition:.22s;box-shadow:var(--shadow2)}
+  .side.open{transform:translateX(0)}
+  .menu-btn{display:flex!important}
+  .calwrap{display:none}
+  .agenda{display:block}
+  .kpis{grid-template-columns:1fr 1fr}
+  .page-hd h1{font-size:20px}
+}
+.menu-btn{display:none;align-items:center;justify-content:center}
+@media(max-width:560px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .frow.two{grid-template-columns:1fr}
+  .topbar{padding:8px 12px;gap:9px}
+  .brand-txt span{display:none}
+}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:55;display:none}
+.scrim.on{display:block}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- ===== TOP BAR ===== -->
+  <div class="topbar">
+    <button class="btn icon menu-btn" onclick="toggleSide()">☰</button>
+    <div class="brand">
+      <div class="brand-logo">M</div>
+      <div class="brand-txt"><b>MOF Scheduling Engine</b><span>AI-assisted · Multi-specialty · CareSync Pro</span></div>
+    </div>
+    <div class="topbar-spacer"></div>
+    <div class="tz-badge">🌐 View in
+      <select id="viewTz" onchange="setViewTz(this.value)">
+        <option value="America/New_York">Eastern (ET)</option>
+        <option value="America/Chicago">Central (CT)</option>
+        <option value="America/Denver">Mountain (MT)</option>
+        <option value="America/Los_Angeles">Pacific (PT)</option>
+      </select>
+    </div>
+    <div class="role-chip">👤
+      <select id="roleSel" onchange="setRole(this.value)">
+        <option value="scheduler">Scheduler / Front Desk</option>
+        <option value="ma">MA / Nurse</option>
+        <option value="provider">Provider</option>
+        <option value="admin">Practice Admin</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="scrim" id="scrim" onclick="toggleSide()"></div>
+    <!-- ===== SIDEBAR ===== -->
+    <nav class="side" id="side">
+      <div class="side-sec">Scheduling</div>
+      <div class="nav on" data-pg="calendar" onclick="go('calendar')"><span class="ic">📅</span> Practice Schedule</div>
+      <div class="nav" data-pg="rooms" onclick="go('rooms')"><span class="ic">🔬</span> Procedure Rooms</div>
+      <div class="nav" data-pg="checkin" onclick="go('checkin')"><span class="ic">✅</span> Check-In Board <span class="badge teal" id="nav-ci">0</span></div>
+      <div class="side-sec">AI Assist</div>
+      <div class="nav" data-pg="smart" onclick="go('smart')"><span class="ic">🤖</span> Smart Schedule</div>
+      <div class="nav" data-pg="insights" onclick="go('insights')"><span class="ic">💡</span> Daily Insights <span class="badge amber" id="nav-ins">0</span></div>
+      <div class="nav" data-pg="waitlist" onclick="go('waitlist')"><span class="ic">⏳</span> Waitlist <span class="badge" id="nav-wl">0</span></div>
+      <div class="side-sec">Setup</div>
+      <div class="nav" data-pg="providers" onclick="go('providers')"><span class="ic">👨‍⚕️</span> Providers</div>
+      <div class="nav" data-pg="visittypes" onclick="go('visittypes')"><span class="ic">📋</span> Visit Types</div>
+      <div class="side-sec">Connected</div>
+      <div class="nav" onclick="openEmr()"><span class="ic">🩺</span> CareSync EMR ↗</div>
+    </nav>
+
+    <!-- ===== MAIN ===== -->
+    <main class="main">
+
+      <!-- PAGE: CALENDAR -->
+      <section class="page on" id="pg-calendar">
+        <div class="page-hd">
+          <div>
+            <h1>Practice Schedule</h1>
+            <div class="sub" id="cal-sub">—</div>
+          </div>
+          <div class="hd-actions">
+            <button class="btn" onclick="go('smart')">🤖 AI Smart Schedule</button>
+            <button class="btn pri" onclick="openBook()">＋ New Appointment</button>
+          </div>
+        </div>
+        <div class="kpis" id="cal-kpis"></div>
+        <div class="filters">
+          <div class="datenav">
+            <button class="btn icon" onclick="shiftDay(-1)" title="Previous day">◀</button>
+            <div class="d" id="cal-date">—</div>
+            <button class="btn icon" onclick="shiftDay(1)" title="Next day">▶</button>
+            <button class="btn sm" onclick="goToday()">Today</button>
+          </div>
+          <div class="fld"><label>Specialty</label>
+            <select id="f-spec" onchange="renderCalendar()"><option value="all">All specialties</option></select>
+          </div>
+          <div class="fld"><label>Location</label>
+            <select id="f-loc" onchange="renderCalendar()"><option value="all">All locations</option></select>
+          </div>
+          <div class="fld"><label>Modality</label>
+            <select id="f-mod" onchange="renderCalendar()">
+              <option value="all">All</option>
+              <option value="in-person">In-Person</option>
+              <option value="tele">Telemedicine</option>
+              <option value="procedure">Procedure</option>
+            </select>
+          </div>
+        </div>
+        <div class="legend">
+          <span class="it"><span class="swatch" style="background:var(--primary)"></span> In-Person</span>
+          <span class="it"><span class="swatch" style="background:var(--purple)"></span> Telemedicine</span>
+          <span class="it"><span class="swatch" style="background:var(--teal)"></span> Procedure</span>
+          <span class="it"><span class="riskdot risk-high" style="position:static"></span> No-show risk</span>
+          <span class="it">Click an <b>open slot</b> to book · click an appointment to manage</span>
+        </div>
+        <div class="calwrap" id="cal-grid"></div>
+        <div class="agenda" id="cal-agenda"></div>
+      </section>
+
+      <!-- PAGE: ROOMS -->
+      <section class="page" id="pg-rooms">
+        <div class="page-hd">
+          <div><h1>Procedure & Diagnostic Rooms</h1><div class="sub">Resource-based scheduling — one column per room/equipment</div></div>
+          <div class="hd-actions"><button class="btn pri" onclick="openBook('procedure')">＋ Book Procedure</button></div>
+        </div>
+        <div class="filters">
+          <div class="datenav">
+            <button class="btn icon" onclick="shiftDay(-1)">◀</button>
+            <div class="d" id="room-date">—</div>
+            <button class="btn icon" onclick="shiftDay(1)">▶</button>
+            <button class="btn sm" onclick="goToday()">Today</button>
+          </div>
+          <div class="fld"><label>Specialty</label><select id="rf-spec" onchange="renderRooms()"><option value="all">All specialties</option></select></div>
+        </div>
+        <div class="legend"><span class="it">Procedures require a room. The engine blocks double-booking of any room.</span></div>
+        <div class="calwrap" id="room-grid"></div>
+        <div class="agenda" id="room-agenda"></div>
+      </section>
+
+      <!-- PAGE: CHECK-IN -->
+      <section class="page" id="pg-checkin">
+        <div class="page-hd"><div><h1>Check-In Board</h1><div class="sub" id="ci-sub">Live patient flow for today</div></div></div>
+        <div class="kpis" id="ci-kpis"></div>
+        <div class="card"><div class="card-bar teal">Today's Patients</div><div class="card-bd" style="padding:0"><div id="ci-list"></div></div></div>
+      </section>
+
+      <!-- PAGE: SMART SCHEDULE -->
+      <section class="page" id="pg-smart">
+        <div class="page-hd"><div><h1>AI Smart Schedule</h1><div class="sub">Tell the engine who needs to be seen — it ranks the best open slots</div></div></div>
+        <div class="ai-banner"><div class="ai-ic">🤖</div><div><b>How this works</b><p>The AI ranks open slots by provider match, schedule balance, patient travel/timezone, gap-filling, and no-show risk. <b>It never books on its own</b> — you review and confirm every suggestion.</p></div></div>
+        <div class="card"><div class="card-bar purp">Find the best slot</div><div class="card-bd">
+          <div class="frow two">
+            <div class="fld"><label>Patient</label><select id="sm-pt"></select></div>
+            <div class="fld"><label>Specialty</label><select id="sm-spec"></select></div>
+          </div>
+          <div class="frow two">
+            <div class="fld"><label>Visit type</label><select id="sm-vt"></select></div>
+            <div class="fld"><label>Preferred provider</label><select id="sm-prov"><option value="any">Any available</option></select></div>
+          </div>
+          <div class="frow two">
+            <div class="fld"><label>Earliest date</label><input type="date" id="sm-date"></div>
+            <div class="fld"><label>Time preference</label><select id="sm-pref"><option value="any">Any time</option><option value="am">Morning</option><option value="pm">Afternoon</option></select></div>
+          </div>
+          <button class="btn purpb" style="width:100%" onclick="runSmart()">🤖 Find Best Slots</button>
+        </div></div>
+        <div id="sm-results"></div>
+      </section>
+
+      <!-- PAGE: INSIGHTS -->
+      <section class="page" id="pg-insights">
+        <div class="page-hd"><div><h1>Daily Insights</h1><div class="sub" id="ins-sub">AI review of today's schedule</div></div>
+          <div class="hd-actions"><button class="btn" onclick="renderInsights()">↻ Refresh</button></div></div>
+        <div id="ins-list"></div>
+      </section>
+
+      <!-- PAGE: WAITLIST -->
+      <section class="page" id="pg-waitlist">
+        <div class="page-hd"><div><h1>Waitlist</h1><div class="sub">Patients waiting for an earlier slot — AI auto-matches when openings appear</div></div>
+          <div class="hd-actions"><button class="btn pri" onclick="openWaitlist()">＋ Add to Waitlist</button></div></div>
+        <div class="card"><div class="card-bar amber">Waiting Patients</div><div class="card-bd" style="padding:0"><div id="wl-list"></div></div></div>
+      </section>
+
+      <!-- PAGE: PROVIDERS -->
+      <section class="page" id="pg-providers">
+        <div class="page-hd"><div><h1>Providers</h1><div class="sub">3 physicians · 2 mid-levels · 4 specialties</div></div></div>
+        <div id="prov-list"></div>
+      </section>
+
+      <!-- PAGE: VISIT TYPES -->
+      <section class="page" id="pg-visittypes">
+        <div class="page-hd"><div><h1>Visit Types</h1><div class="sub">Per-specialty appointment templates with duration, modality & CPT</div></div></div>
+        <div class="card"><div class="card-bar">Configured Visit Types</div><div class="card-bd" style="padding:0;overflow:auto"><table class="tbl" id="vt-tbl"></table></div></div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ===== MODAL HOST ===== -->
+<div class="ov" id="ov"><div class="modal" id="modal"></div></div>
+<div id="toast"></div>
+<script>
+/* ============================================================
+   MOF SCHEDULER — DATA LAYER ("BACKEND")
+   In-memory store + localStorage persistence (graceful fallback).
+   Async-style API so it can later swap to a real REST/FHIR backend
+   without touching the UI.
+============================================================ */
+var DB = {
+  _state:null,
+  _KEY:'mof_scheduler_v1',
+  _save:function(){
+    try{ localStorage.setItem(this._KEY, JSON.stringify(this._state)); }
+    catch(e){ /* artifact sandbox blocks storage — in-memory still works */ }
+  },
+  load:function(){
+    try{
+      var raw=localStorage.getItem(this._KEY);
+      if(raw){ this._state=JSON.parse(raw); return; }
+    }catch(e){}
+    this._state=SEED();        // first run → seed demo data
+    this._save();
+  },
+  reset:function(){ this._state=SEED(); this._save(); },
+  get providers(){return this._state.providers;},
+  get specialties(){return this._state.specialties;},
+  get locations(){return this._state.locations;},
+  get rooms(){return this._state.rooms;},
+  get visitTypes(){return this._state.visitTypes;},
+  get patients(){return this._state.patients;},
+  get appts(){return this._state.appointments;},
+  get waitlist(){return this._state.waitlist;},
+  provider:function(id){return this._state.providers.find(p=>p.id===id);},
+  patient:function(id){return this._state.patients.find(p=>p.id===id);},
+  room:function(id){return this._state.rooms.find(r=>r.id===id);},
+  vtype:function(id){return this._state.visitTypes.find(v=>v.id===id);},
+  addAppt:function(a){ a.id='ap'+(Date.now()).toString(36); this._state.appointments.push(a); this._save(); return a; },
+  updateAppt:function(id,patch){ var a=this._state.appointments.find(x=>x.id===id); if(a){Object.assign(a,patch); this._save();} return a; },
+  removeWaitlist:function(id){ this._state.waitlist=this._state.waitlist.filter(w=>w.id!==id); this._save(); },
+  addWaitlist:function(w){ w.id='wl'+(Date.now()).toString(36); this._state.waitlist.push(w); this._save(); return w; }
+};
+
+/* ---- DEMO DATA SEED ---- */
+function SEED(){
+  var SPEC=[
+    {id:'primary-care', name:'Primary Care', icon:'🩺'},
+    {id:'sleep',        name:'Sleep Medicine', icon:'😴'},
+    {id:'pain',         name:'Pain Management', icon:'💉'},
+    {id:'cardiology',   name:'Cardiology', icon:'🫀'}
+  ];
+  var LOC=[
+    {id:'main',  name:'Main Campus — Athens, GA', tz:'America/New_York'},
+    {id:'sat',   name:'Watkinsville Satellite, GA', tz:'America/New_York'}
+  ];
+  // 3 physicians + 2 mid-levels across 4 specialties
+  var PROV=[
+    {id:'pr1', name:'Dr. Raj Patel',     cred:'MD', type:'physician', specialty:'cardiology',   color:'#1a6eb5', loc:'main', tz:'America/New_York', hours:[480,1020]},
+    {id:'pr2', name:'Dr. Kim Holloway',  cred:'MD', type:'physician', specialty:'primary-care', color:'#00897b', loc:'main', tz:'America/New_York', hours:[480,1020]},
+    {id:'pr3', name:'Dr. Anita Rao',     cred:'MD', type:'physician', specialty:'sleep',        color:'#5c35a8', loc:'main', tz:'America/New_York', hours:[510,990]},
+    {id:'pr4', name:'Lisa Chen',         cred:'NP', type:'midlevel',  specialty:'pain',         color:'#b45309', loc:'main', tz:'America/New_York', hours:[480,990], supervisor:'pr1'},
+    {id:'pr5', name:'Marcus Webb',       cred:'PA', type:'midlevel',  specialty:'primary-care', color:'#2e7d32', loc:'sat',  tz:'America/New_York', hours:[480,1020], supervisor:'pr2'}
+  ];
+  // Rooms / resources for procedures
+  var ROOMS=[
+    {id:'rm-echo',   name:'Echo Lab',        icon:'🫀', specialty:'cardiology', equip:'GE Vivid E95'},
+    {id:'rm-stress', name:'Stress Lab',      icon:'🏃', specialty:'cardiology', equip:'GE CASE Treadmill'},
+    {id:'rm-sleep',  name:'Sleep Lab',       icon:'😴', specialty:'sleep',      equip:'Polysomnography Suite'},
+    {id:'rm-pain',   name:'Procedure Suite', icon:'💉', specialty:'pain',       equip:'C-arm Fluoroscopy'},
+    {id:'rm-proc',   name:'Minor Procedure', icon:'🩹', specialty:'primary-care', equip:'Standard procedure room'}
+  ];
+  // Visit types per specialty + modality
+  var VT=[
+    // primary care
+    {id:'vt-pc-new', spec:'primary-care', name:'New Patient',      dur:40, modality:'in-person', color:'#1a6eb5', cpt:'99204', room:false},
+    {id:'vt-pc-fu',  spec:'primary-care', name:'Follow-Up',        dur:20, modality:'in-person', color:'#1a6eb5', cpt:'99214', room:false},
+    {id:'vt-pc-awv', spec:'primary-care', name:'Annual Wellness',  dur:30, modality:'in-person', color:'#1a6eb5', cpt:'G0439', room:false},
+    {id:'vt-pc-tel', spec:'primary-care', name:'Telehealth Visit', dur:20, modality:'tele',      color:'#5c35a8', cpt:'99214', room:false},
+    {id:'vt-pc-skin',spec:'primary-care', name:'Skin Biopsy',      dur:30, modality:'procedure', color:'#00897b', cpt:'11102', room:true},
+    // sleep
+    {id:'vt-sl-new', spec:'sleep', name:'New Consult',          dur:45, modality:'in-person', color:'#1a6eb5', cpt:'99204', room:false},
+    {id:'vt-sl-fu',  spec:'sleep', name:'CPAP Follow-Up',       dur:20, modality:'in-person', color:'#1a6eb5', cpt:'99213', room:false},
+    {id:'vt-sl-tel', spec:'sleep', name:'Telehealth Review',    dur:20, modality:'tele',      color:'#5c35a8', cpt:'99214', room:false},
+    {id:'vt-sl-psg', spec:'sleep', name:'Sleep Study (PSG)',    dur:120,modality:'procedure', color:'#00897b', cpt:'95810', room:true},
+    // pain
+    {id:'vt-pn-new', spec:'pain', name:'New Pain Consult',      dur:40, modality:'in-person', color:'#1a6eb5', cpt:'99204', room:false},
+    {id:'vt-pn-fu',  spec:'pain', name:'Med Follow-Up',         dur:20, modality:'in-person', color:'#1a6eb5', cpt:'99214', room:false},
+    {id:'vt-pn-tel', spec:'pain', name:'Telehealth Check-In',   dur:15, modality:'tele',      color:'#5c35a8', cpt:'99213', room:false},
+    {id:'vt-pn-esi', spec:'pain', name:'Epidural Injection',    dur:45, modality:'procedure', color:'#00897b', cpt:'62323', room:true},
+    // cardiology
+    {id:'vt-cd-new', spec:'cardiology', name:'New Consult',     dur:45, modality:'in-person', color:'#1a6eb5', cpt:'99205', room:false},
+    {id:'vt-cd-fu',  spec:'cardiology', name:'Follow-Up',       dur:20, modality:'in-person', color:'#1a6eb5', cpt:'99214', room:false},
+    {id:'vt-cd-tel', spec:'cardiology', name:'Telehealth Visit',dur:20, modality:'tele',      color:'#5c35a8', cpt:'99214', room:false},
+    {id:'vt-cd-echo',spec:'cardiology', name:'Echocardiogram',  dur:45, modality:'procedure', color:'#00897b', cpt:'93306', room:true},
+    {id:'vt-cd-str', spec:'cardiology', name:'Stress Test',     dur:60, modality:'procedure', color:'#00897b', cpt:'93015', room:true}
+  ];
+  var PT=[
+    {id:'pt1', name:'Eleanor Whitfield', mrn:'MOF-00427', dob:'1949-03-12', phone:'(706) 555-0112', ins:'Medicare', isNew:false, noShow:0,  tz:'America/New_York'},
+    {id:'pt2', name:'Robert Hayes',      mrn:'MOF-00501', dob:'1951-08-30', phone:'(706) 555-0143', ins:'Medicare Adv', isNew:false, noShow:1, tz:'America/New_York'},
+    {id:'pt3', name:'Margaret Liu',      mrn:'MOF-00421', dob:'1956-01-19', phone:'(706) 555-0188', ins:'BCBS', isNew:false, noShow:0, tz:'America/New_York'},
+    {id:'pt4', name:'Carlos Rivera',     mrn:'MOF-00398', dob:'1968-11-02', phone:'(404) 555-0177', ins:'Aetna', isNew:false, noShow:2, tz:'America/New_York'},
+    {id:'pt5', name:'Dorothy Payne',     mrn:'MOF-00512', dob:'1944-06-25', phone:'(706) 555-0210', ins:'Medicare', isNew:false, noShow:0, tz:'America/New_York'},
+    {id:'pt6', name:'James Coleman',     mrn:'MOF-00533', dob:'1972-04-14', phone:'(213) 555-0190', ins:'United', isNew:true,  noShow:0, tz:'America/Los_Angeles'},
+    {id:'pt7', name:'Sandra Brooks',     mrn:'MOF-00540', dob:'1960-09-08', phone:'(706) 555-0233', ins:'Cigna', isNew:true,  noShow:0, tz:'America/New_York'},
+    {id:'pt8', name:'Frank Delgado',     mrn:'MOF-00548', dob:'1955-12-01', phone:'(312) 555-0166', ins:'Medicare', isNew:false, noShow:1, tz:'America/Chicago'},
+    {id:'pt9', name:'Nancy Powell',      mrn:'MOF-00552', dob:'1947-07-21', phone:'(706) 555-0299', ins:'Medicare', isNew:false, noShow:0, tz:'America/New_York'},
+    {id:'pt10',name:'Anthony Russo',     mrn:'MOF-00561', dob:'1981-02-17', phone:'(706) 555-0301', ins:'BCBS', isNew:true,  noShow:0, tz:'America/New_York'}
+  ];
+  // Build today's appointments dynamically so the demo is always "today"
+  var d=todayStr();
+  function A(pt,pr,vt,start,status,room){var v=VT.find(x=>x.id===vt);return{
+    id:'ap'+Math.random().toString(36).slice(2,8), patientId:pt, providerId:pr, visitTypeId:vt,
+    date:d, start:start, dur:v.dur, modality:v.modality, roomId:room||null,
+    status:status||'scheduled', reason:'', createdBy:'seed', aiSuggested:false };}
+  var APPT=[
+    A('pt1','pr1','vt-cd-fu',  540,'confirmed'),
+    A('pt2','pr1','vt-cd-new', 600,'scheduled'),
+    A('pt3','pr1','vt-cd-tel', 660,'confirmed'),
+    A('pt4','pr2','vt-pc-new', 510,'checked-in'),
+    A('pt5','pr2','vt-pc-awv', 570,'scheduled'),
+    A('pt9','pr2','vt-pc-fu',  630,'scheduled'),
+    A('pt6','pr3','vt-sl-tel', 600,'scheduled'),
+    A('pt7','pr3','vt-sl-new', 660,'scheduled'),
+    A('pt8','pr4','vt-pn-fu',  540,'confirmed'),
+    A('pt10','pr4','vt-pn-new',600,'scheduled'),
+    A('pt2','pr1','vt-cd-echo',780,'scheduled','rm-echo'),
+    A('pt4','pr4','vt-pn-esi', 840,'scheduled','rm-pain'),
+    A('pt1','pr3','vt-sl-psg', 1140,'scheduled','rm-sleep')
+  ];
+  var WL=[
+    {id:'wl1', patientId:'pt5', spec:'cardiology', providerId:'pr1', modality:'in-person', priority:'routine', reason:'Wants earlier echo if available'},
+    {id:'wl2', patientId:'pt10',spec:'pain', providerId:'any', modality:'in-person', priority:'urgent', reason:'Pain flare — any opening this week'}
+  ];
+  return {specialties:SPEC, locations:LOC, providers:PROV, rooms:ROOMS, visitTypes:VT, patients:PT, appointments:APPT, waitlist:WL};
+}
+/* ============================================================
+   BUSINESS LOGIC
+============================================================ */
+var STATE={ date:todayStr(), viewTz:'America/New_York', role:'scheduler' };
+
+function todayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function pad(n){return String(n).padStart(2,'0');}
+/* minutes-from-midnight -> "9:30 AM" */
+function fmtTime(min){var h=Math.floor(min/60),m=min%60,ap=h<12?'AM':'PM',h12=h%12;if(h12===0)h12=12;return h12+':'+pad(m)+' '+ap;}
+function fmtDateLong(s){var p=s.split('-');var d=new Date(+p[0],+p[1]-1,+p[2]);return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});}
+
+/* DST-correct timezone offset (minutes) for a given IANA tz on a given date */
+function tzOffset(tz,dateStr){
+  var p=dateStr.split('-');
+  var d=new Date(Date.UTC(+p[0],+p[1]-1,+p[2],12,0,0));
+  var s=d.toLocaleString('en-US',{timeZone:tz,timeZoneName:'shortOffset'});
+  var m=s.match(/GMT([+-]\d+)(?::(\d+))?/);
+  if(!m)return 0;
+  return (parseInt(m[1],10)*60)+(m[1].startsWith('-')?-1:1)*(parseInt(m[2]||'0',10));
+}
+/* convert a wall-clock minute in tzFrom to wall-clock minute in tzTo (same calendar day approx) */
+function convertMin(min,tzFrom,tzTo,dateStr){
+  var diff=tzOffset(tzTo,dateStr)-tzOffset(tzFrom,dateStr);
+  var v=min+diff; // for continental US this stays within the day for clinic hours
+  return v;
+}
+function tzAbbr(tz){return ({'America/New_York':'ET','America/Chicago':'CT','America/Denver':'MT','America/Los_Angeles':'PT'})[tz]||tz;}
+
+/* ---- CONFLICT DETECTION ---- */
+function overlaps(s1,d1,s2,d2){return s1 < (s2+d2) && s2 < (s1+d1);}
+function providerConflict(providerId,date,start,dur,excludeId){
+  return DB.appts.find(function(a){
+    if(a.id===excludeId)return false;
+    if(a.providerId!==providerId||a.date!==date)return false;
+    if(a.status==='cancelled'||a.status==='no-show')return false;
+    return overlaps(start,dur,a.start,a.dur);
+  })||null;
+}
+function roomConflict(roomId,date,start,dur,excludeId){
+  if(!roomId)return null;
+  return DB.appts.find(function(a){
+    if(a.id===excludeId)return false;
+    if(a.roomId!==roomId||a.date!==date)return false;
+    if(a.status==='cancelled'||a.status==='no-show')return false;
+    return overlaps(start,dur,a.start,a.dur);
+  })||null;
+}
+
+/* ---- AVAILABILITY ---- */
+function openSlots(providerId,date,dur){
+  var pr=DB.provider(providerId); if(!pr)return [];
+  var out=[]; var step=15;
+  for(var t=pr.hours[0]; t+dur<=pr.hours[1]; t+=step){
+    if(t>=720 && t<780) continue; // lunch 12:00-1:00
+    if(!providerConflict(providerId,date,t,dur)) out.push(t);
+  }
+  return out;
+}
+
+/* ---- AI: NO-SHOW RISK (explainable, rule-based) ---- */
+function noShowRisk(appt){
+  var pt=DB.patient(appt.patientId); var score=8; var why=[];
+  if(pt.noShow>=2){score+=35;why.push('2+ prior no-shows');}
+  else if(pt.noShow===1){score+=18;why.push('1 prior no-show');}
+  if(pt.isNew){score+=14;why.push('New patient (no visit history)');}
+  if(appt.modality==='tele'){score+=8;why.push('Telehealth (higher drop-off)');}
+  if(appt.start<540){score+=6;why.push('Early-morning slot');}
+  if(appt.status==='confirmed'){score-=20;why.push('Patient already confirmed');}
+  if(pt.tz!==DB.provider(appt.providerId).tz){score+=6;why.push('Patient in a different timezone');}
+  score=Math.max(2,Math.min(96,score));
+  var level=score>=45?'high':score>=22?'med':'low';
+  return {score:score,level:level,why:why};
+}
+
+/* ---- AI: SMART SLOT RANKING ---- */
+function rankSlots(opts){
+  // opts: {patientId, specialty, visitTypeId, providerId, date, pref}
+  var vt=DB.vtype(opts.visitTypeId); if(!vt)return [];
+  var provs=DB.providers.filter(function(p){
+    if(p.specialty!==opts.specialty)return false;
+    if(opts.providerId&&opts.providerId!=='any'&&p.id!==opts.providerId)return false;
+    return true;
+  });
+  var pt=DB.patient(opts.patientId);
+  var results=[];
+  provs.forEach(function(pr){
+    var slots=openSlots(pr.id,opts.date,vt.dur);
+    // current load = booked minutes today
+    var load=DB.appts.filter(a=>a.providerId===pr.id&&a.date===opts.date&&a.status!=='cancelled').reduce((s,a)=>s+a.dur,0);
+    slots.forEach(function(t){
+      if(opts.pref==='am'&&t>=720)return;
+      if(opts.pref==='pm'&&t<720)return;
+      var sc=50, why=[];
+      // gap-fill: prefer slots adjacent to existing appts (less fragmentation)
+      var adj=DB.appts.some(a=>a.providerId===pr.id&&a.date===opts.date&&(a.start+a.dur===t||t+vt.dur===a.start));
+      if(adj){sc+=18;why.push('Fills a gap — keeps schedule tight');}
+      // balance: prefer lighter-loaded providers
+      if(load<180){sc+=12;why.push('Provider has open capacity');}
+      else if(load>300){sc-=10;why.push('Provider already busy');}
+      // earlier is better
+      sc+= Math.max(0,16-Math.floor((t-pr.hours[0])/30));
+      // timezone friendliness for tele
+      if(vt.modality==='tele'&&pt.tz!==pr.tz){
+        var ptMin=convertMin(t,pr.tz,pt.tz,opts.date);
+        if(ptMin<480){sc-=14;why.push('Too early for patient ('+fmtTime(ptMin)+' '+tzAbbr(pt.tz)+')');}
+        else{why.push('Good time for patient ('+fmtTime(ptMin)+' '+tzAbbr(pt.tz)+')');}
+      }
+      results.push({providerId:pr.id, start:t, dur:vt.dur, score:Math.min(99,sc), why:why});
+    });
+  });
+  results.sort((a,b)=>b.score-a.score);
+  return results.slice(0,3);
+}
+
+/* ---- AI: DAILY INSIGHTS ---- */
+function dailyInsights(date){
+  var out=[];
+  // gaps per provider
+  DB.providers.forEach(function(pr){
+    var todays=DB.appts.filter(a=>a.providerId===pr.id&&a.date===date&&a.status!=='cancelled').sort((a,b)=>a.start-b.start);
+    if(todays.length===0){
+      out.push({type:'info',icon:'📭',t:pr.name+' has no appointments today',s:'Consider pulling from the waitlist or opening tele slots.'});
+      return;
+    }
+    for(var i=0;i<todays.length-1;i++){
+      var gap=todays[i+1].start-(todays[i].start+todays[i].dur);
+      if(gap>=45){out.push({type:'warn',icon:'🕳️',t:pr.name+': '+gap+'-min gap at '+fmtTime(todays[i].start+todays[i].dur),s:'Offer this slot to a waitlisted patient to recover revenue.'});}
+    }
+  });
+  // high no-show risk
+  DB.appts.filter(a=>a.date===date&&['scheduled','confirmed'].includes(a.status)).forEach(function(a){
+    var r=noShowRisk(a);
+    if(r.level==='high'){var pt=DB.patient(a.patientId);out.push({type:'warn',icon:'⚠️',t:'High no-show risk: '+pt.name+' at '+fmtTime(a.start),s:r.why.join(' · ')+'. Suggest a confirmation call/text.'});}
+  });
+  // waitlist matches
+  DB.waitlist.forEach(function(w){
+    var pt=DB.patient(w.patientId);
+    var slots=DB.providers.filter(p=>p.specialty===w.spec).some(p=>openSlots(p.id,date,30).length>0);
+    if(slots){out.push({type:'good',icon:'✨',t:'Waitlist match available for '+pt.name,s:w.spec+' has open slots today. Open the waitlist to schedule.'});}
+  });
+  if(out.length===0)out.push({type:'good',icon:'✅',t:'Schedule looks healthy',s:'No large gaps, no high-risk no-shows flagged.'});
+  return out;
+}
+/* ============================================================
+   NAVIGATION + SHELL
+============================================================ */
+function go(pg){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  var el=document.getElementById('pg-'+pg); if(el)el.classList.add('on');
+  document.querySelectorAll('.nav[data-pg]').forEach(n=>n.classList.toggle('on',n.dataset.pg===pg));
+  if(window.innerWidth<=860){document.getElementById('side').classList.remove('open');document.getElementById('scrim').classList.remove('on');}
+  var R={calendar:renderCalendar,rooms:renderRooms,checkin:renderCheckin,smart:initSmart,insights:renderInsights,waitlist:renderWaitlist,providers:renderProviders,visittypes:renderVisitTypes};
+  if(R[pg])R[pg]();
+  document.querySelector('.main').scrollTop=0;
+}
+function toggleSide(){var s=document.getElementById('side'),sc=document.getElementById('scrim');s.classList.toggle('open');sc.classList.toggle('on');}
+function setViewTz(tz){STATE.viewTz=tz;renderCalendar();toast('Viewing times in '+tzAbbr(tz));}
+function setRole(r){STATE.role=r;applyRole();toast('Switched to '+({scheduler:'Scheduler',ma:'MA / Nurse',provider:'Provider',admin:'Practice Admin'})[r]+' view');}
+function applyRole(){
+  // Providers & visit-type setup only for admin; everyone else hides Setup nav items
+  var isAdmin=STATE.role==='admin';
+  document.querySelectorAll('.nav[data-pg="providers"],.nav[data-pg="visittypes"]').forEach(n=>n.style.display=isAdmin?'':'none');
+}
+function openEmr(){toast('Opening CareSync Pro EMR…');window.open('https://caresync-pro.vercel.app','_blank');}
+function shiftDay(n){var p=STATE.date.split('-');var d=new Date(+p[0],+p[1]-1,+p[2]);d.setDate(d.getDate()+n);STATE.date=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());refreshDateViews();}
+function goToday(){STATE.date=todayStr();refreshDateViews();}
+function refreshDateViews(){
+  var active=document.querySelector('.page.on');
+  if(active&&active.id==='pg-rooms')renderRooms();else renderCalendar();
+}
+
+/* ============================================================
+   TIME RANGE FOR GRID
+============================================================ */
+var GRID_START=480, GRID_END=1080, GRID_STEP=15; // 8:00 AM – 6:00 PM
+function timeRows(){var r=[];for(var t=GRID_START;t<GRID_END;t+=GRID_STEP)r.push(t);return r;}
+
+/* ============================================================
+   CALENDAR (provider columns)
+============================================================ */
+function filteredProviders(){
+  var spec=document.getElementById('f-spec').value;
+  var loc=document.getElementById('f-loc').value;
+  return DB.providers.filter(function(p){
+    if(spec!=='all'&&p.specialty!==spec)return false;
+    if(loc!=='all'&&p.loc!==loc)return false;
+    return true;
+  });
+}
+function apptsFor(providerId){
+  var mod=document.getElementById('f-mod').value;
+  return DB.appts.filter(function(a){
+    if(a.providerId!==providerId||a.date!==STATE.date)return false;
+    if(mod==='all')return true;
+    if(mod==='tele')return a.modality==='tele';
+    if(mod==='in-person')return a.modality==='in-person';
+    if(mod==='procedure')return a.modality==='procedure';
+    return true;
+  });
+}
+function renderCalendar(){
+  STATE.date=STATE.date||todayStr();
+  document.getElementById('cal-date').textContent=fmtDateLong(STATE.date);
+  document.getElementById('room-date').textContent=fmtDateLong(STATE.date);
+  var loc=DB.locations.find(l=>l.id!=='x');
+  document.getElementById('cal-sub').textContent='Athens Heart Center · times shown in '+tzAbbr(STATE.viewTz);
+  renderKpis(); renderNavBadges();
+  var provs=filteredProviders();
+  var grid=document.getElementById('cal-grid');
+  if(provs.length===0){grid.innerHTML='<div style="padding:40px;text-align:center;color:var(--sub)">No providers match these filters.</div>';document.getElementById('cal-agenda').innerHTML='';return;}
+
+  // Build grid map: provider -> {startMin -> appt}
+  var rows=timeRows();
+  var html='<table class="cal"><thead><tr><th class="timecol">Time</th>';
+  provs.forEach(function(p){
+    var spec=DB.specialties.find(s=>s.id===p.specialty);
+    var load=DB.appts.filter(a=>a.providerId===p.id&&a.date===STATE.date&&a.status!=='cancelled').length;
+    html+='<th><div class="colhead"><span class="nm">'+p.name+', '+p.cred+'</span>'+
+      '<span class="sp" style="background:'+p.color+'">'+spec.icon+' '+spec.name+'</span>'+
+      '<span class="ld">'+load+' booked</span></div></th>';
+  });
+  html+='</tr></thead><tbody>';
+
+  // For each provider, precompute which rows are covered by an appt (so we render the appt once, spanning)
+  var skip={}; provs.forEach(p=>skip[p.id]={});
+  rows.forEach(function(t){
+    var isHour=(t%60===0);
+    html+='<tr><td class="timecell'+(isHour?' hour':'')+'">'+(isHour?fmtTime(t):fmtTime(t).replace(/:\d+ /,':'+pad(t%60)+' ').replace(/ [AP]M/,''))+'</td>';
+    provs.forEach(function(p){
+      if(skip[p.id][t]){html+='';return;} // covered by rowspan above -> emit nothing (cell already spanned)
+      var appt=apptsFor(p.id).find(a=>a.start===t);
+      // also catch appts starting between grid steps
+      if(!appt){appt=apptsFor(p.id).find(a=>a.start>t-GRID_STEP&&a.start<t&&!skip[p.id][a.start]);}
+      if(appt){
+        var span=Math.max(1,Math.round(appt.dur/GRID_STEP));
+        for(var k=1;k<span;k++){skip[p.id][t+k*GRID_STEP]=true;}
+        html+='<td rowspan="'+span+'">'+apptCell(appt)+'</td>';
+      } else {
+        // blocked lunch
+        if(t>=720&&t<780){html+='<td><div class="slot blocked" title="Lunch"></div></td>';}
+        else {
+          var inHours=t>=p.hours[0]&&t<p.hours[1];
+          if(inHours){html+='<td><div class="slot open" onclick="openBook(null,\''+p.id+'\','+t+')" title="Book '+fmtTime(t)+'"></div></td>';}
+          else{html+='<td><div class="slot blocked" title="Outside hours"></div></td>';}
+        }
+      }
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table>';
+  grid.innerHTML=html;
+  renderAgenda(provs);
+}
+
+function apptCell(a){
+  var pt=DB.patient(a.patientId), vt=DB.vtype(a.visitTypeId), pr=DB.provider(a.providerId);
+  var r=noShowRisk(a);
+  var dispStart=convertMin(a.start,pr.tz,STATE.viewTz,a.date);
+  var tele=a.modality==='tele';
+  var tzExtra='';
+  if(tele&&pt.tz!==pr.tz){var ptm=convertMin(a.start,pr.tz,pt.tz,a.date);tzExtra='<span class="tag">👤 '+fmtTime(ptm)+' '+tzAbbr(pt.tz)+'</span>';}
+  var room=a.roomId?'<span class="tag">'+DB.room(a.roomId).icon+' '+DB.room(a.roomId).name+'</span>':'';
+  var riskShow=(r.level!=='low'&&['scheduled','confirmed'].includes(a.status));
+  return '<div class="appt m-'+(tele?'tele':a.modality==='procedure'?'procedure':'inperson')+' st-'+a.status+'" onclick="openAppt(\''+a.id+'\')">'+
+    (riskShow?'<span class="riskdot risk-'+r.level+'" title="No-show risk '+r.score+'%"></span>':'')+
+    '<div class="nm">'+fmtTime(dispStart)+' · '+pt.name+'</div>'+
+    '<div class="ty">'+vt.name+' · '+a.dur+'m</div>'+
+    '<div class="mt"><span class="tag">'+modIcon(a.modality)+'</span>'+room+tzExtra+'</div></div>';
+}
+function modIcon(m){return m==='tele'?'📹 Tele':m==='procedure'?'🔬 Proc':'🏥 Office';}
+/* ---- KPIs ---- */
+function renderKpis(){
+  var today=DB.appts.filter(a=>a.date===STATE.date&&a.status!=='cancelled');
+  var tele=today.filter(a=>a.modality==='tele').length;
+  var proc=today.filter(a=>a.modality==='procedure').length;
+  var risk=today.filter(a=>['scheduled','confirmed'].includes(a.status)&&noShowRisk(a).level==='high').length;
+  var openCount=0; filteredProviders().forEach(p=>{openCount+=openSlots(p.id,STATE.date,20).length;});
+  document.getElementById('cal-kpis').innerHTML=
+    kpi('','Today\'s Appointments',today.length)+
+    kpi('tl','Telemedicine',tele)+
+    kpi('pr','Procedures',proc)+
+    kpi('ns','High No-Show Risk',risk)+
+    kpi('op','Open 20-min Slots',openCount);
+}
+function kpi(cls,label,val){return '<div class="kpi '+cls+'"><div class="v">'+val+'</div><div class="l">'+label+'</div></div>';}
+function renderNavBadges(){
+  var ci=DB.appts.filter(a=>a.date===todayStr()&&['scheduled','confirmed','checked-in','roomed'].includes(a.status)).length;
+  document.getElementById('nav-ci').textContent=ci;
+  document.getElementById('nav-ins').textContent=dailyInsights(todayStr()).filter(i=>i.type==='warn').length;
+  document.getElementById('nav-wl').textContent=DB.waitlist.length;
+}
+
+/* ---- AGENDA (mobile) ---- */
+function renderAgenda(provs){
+  var list=[];
+  provs.forEach(p=>apptsFor(p.id).forEach(a=>list.push(a)));
+  list.sort((a,b)=>a.start-b.start);
+  var el=document.getElementById('cal-agenda');
+  if(list.length===0){el.innerHTML='<div class="card"><div class="card-bd">No appointments for this day/filter.</div></div>';return;}
+  el.innerHTML=list.map(function(a){
+    var pt=DB.patient(a.patientId),vt=DB.vtype(a.visitTypeId),pr=DB.provider(a.providerId);
+    var disp=convertMin(a.start,pr.tz,STATE.viewTz,a.date);
+    var cls=a.modality==='tele'?'m-tele':a.modality==='procedure'?'m-procedure':'';
+    return '<div class="ag-card '+cls+'" onclick="openAppt(\''+a.id+'\')"><div class="ag-top"><span class="ag-time">'+fmtTime(disp)+'</span><span class="pill pl-'+a.status+'">'+a.status.replace('-',' ')+'</span></div>'+
+      '<div class="ag-nm">'+pt.name+'</div><div class="ag-meta">'+modIcon(a.modality)+' · '+vt.name+' · '+a.dur+'m · '+pr.name+'</div></div>';
+  }).join('');
+}
+
+/* ============================================================
+   ROOMS (resource columns)
+============================================================ */
+function renderRooms(){
+  document.getElementById('room-date').textContent=fmtDateLong(STATE.date);
+  var spec=document.getElementById('rf-spec').value;
+  var rooms=DB.rooms.filter(r=>spec==='all'||r.specialty===spec);
+  var grid=document.getElementById('room-grid');
+  var rows=timeRows();
+  var html='<table class="cal"><thead><tr><th class="timecol">Time</th>';
+  rooms.forEach(function(r){
+    var sp=DB.specialties.find(s=>s.id===r.specialty);
+    html+='<th><div class="colhead"><span class="nm">'+r.icon+' '+r.name+'</span><span class="sp" style="background:var(--teal)">'+sp.name+'</span><span class="ld">'+r.equip+'</span></div></th>';
+  });
+  html+='</tr></thead><tbody>';
+  var skip={}; rooms.forEach(r=>skip[r.id]={});
+  rows.forEach(function(t){
+    var isHour=(t%60===0);
+    html+='<tr><td class="timecell'+(isHour?' hour':'')+'">'+(isHour?fmtTime(t):pad(t%60)===''?'':fmtTime(t).replace(/ [AP]M/,''))+'</td>';
+    rooms.forEach(function(r){
+      if(skip[r.id][t])return;
+      var appt=DB.appts.find(a=>a.roomId===r.id&&a.date===STATE.date&&a.start===t&&a.status!=='cancelled');
+      if(appt){
+        var span=Math.max(1,Math.round(appt.dur/GRID_STEP));
+        for(var k=1;k<span;k++)skip[r.id][t+k*GRID_STEP]=true;
+        var pt=DB.patient(appt.patientId),vt=DB.vtype(appt.visitTypeId),pr=DB.provider(appt.providerId);
+        html+='<td rowspan="'+span+'"><div class="appt m-procedure st-'+appt.status+'" onclick="openAppt(\''+appt.id+'\')"><div class="nm">'+fmtTime(appt.start)+' · '+pt.name+'</div><div class="ty">'+vt.name+' · '+appt.dur+'m</div><div class="mt"><span class="tag">'+pr.name+'</span></div></div></td>';
+      } else {
+        html+='<td><div class="slot open" onclick="openBookRoom(\''+r.id+'\','+t+')" title="Book '+fmtTime(t)+'"></div></td>';
+      }
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table>';
+  grid.innerHTML=html;
+  // agenda
+  var list=DB.appts.filter(a=>a.roomId&&a.date===STATE.date&&(spec==='all'||DB.room(a.roomId).specialty===spec)).sort((a,b)=>a.start-b.start);
+  document.getElementById('room-agenda').innerHTML=list.length?list.map(function(a){var pt=DB.patient(a.patientId),vt=DB.vtype(a.visitTypeId),rm=DB.room(a.roomId);return '<div class="ag-card m-procedure" onclick="openAppt(\''+a.id+'\')"><div class="ag-top"><span class="ag-time">'+fmtTime(a.start)+'</span><span class="pill pl-'+a.status+'">'+a.status+'</span></div><div class="ag-nm">'+pt.name+'</div><div class="ag-meta">'+rm.icon+' '+rm.name+' · '+vt.name+'</div></div>';}).join(''):'<div class="card"><div class="card-bd">No room bookings this day.</div></div>';
+}
+
+/* ============================================================
+   CHECK-IN BOARD
+============================================================ */
+var FLOW=['scheduled','confirmed','checked-in','roomed','in-progress','completed'];
+function renderCheckin(){
+  var d=todayStr();
+  var list=DB.appts.filter(a=>a.date===d&&a.status!=='cancelled').sort((a,b)=>a.start-b.start);
+  document.getElementById('ci-sub').textContent=fmtDateLong(d)+' · '+list.length+' patients';
+  var c=k=>list.filter(a=>a.status===k).length;
+  document.getElementById('ci-kpis').innerHTML=
+    kpi('','Scheduled',c('scheduled')+c('confirmed'))+
+    kpi('pr','Checked In',c('checked-in'))+
+    kpi('tl','Roomed / In Progress',c('roomed')+c('in-progress'))+
+    kpi('op','Completed',c('completed'))+
+    kpi('ns','No-Shows',list.filter(a=>a.status==='no-show').length);
+  var rows=list.map(function(a){
+    var pt=DB.patient(a.patientId),vt=DB.vtype(a.visitTypeId),pr=DB.provider(a.providerId);
+    var next=nextStatus(a.status);
+    return '<div style="display:flex;align-items:center;gap:14px;padding:13px 18px;border-bottom:1px solid #eef3f8">'+
+      '<div style="font-family:var(--mono);font-size:16px;font-weight:700;min-width:80px;color:var(--primary-dk)">'+fmtTime(a.start)+'</div>'+
+      '<div style="flex:1;min-width:140px"><div style="font-size:16px;font-weight:700">'+pt.name+'</div><div style="font-size:13.5px;color:var(--sub)">'+modIcon(a.modality)+' · '+vt.name+' · '+pr.name+'</div></div>'+
+      '<span class="pill pl-'+a.status+'">'+a.status.replace('-',' ')+'</span>'+
+      (next?'<button class="btn sm pri" onclick="advance(\''+a.id+'\')">'+nextLabel(a.status)+' →</button>':'<span style="color:var(--success);font-weight:700">✓ Done</span>')+
+      '<button class="btn sm" onclick="openAppt(\''+a.id+'\')">Open</button>'+
+    '</div>';
+  }).join('');
+  document.getElementById('ci-list').innerHTML=rows||'<div style="padding:24px;text-align:center;color:var(--sub)">No patients today.</div>';
+}
+function nextStatus(s){var i=FLOW.indexOf(s);return i>=0&&i<FLOW.length-1?FLOW[i+1]:null;}
+function nextLabel(s){return ({scheduled:'Confirm',confirmed:'Check In',['checked-in']:'Room',roomed:'Start',['in-progress']:'Complete'})[s]||'Next';}
+function advance(id){var a=DB.appts.find(x=>x.id===id);var n=nextStatus(a.status);if(n){DB.updateAppt(id,{status:n});toast(DB.patient(a.patientId).name+' → '+n.replace('-',' '));renderCheckin();renderNavBadges();}}
+/* ============================================================
+   SMART SCHEDULE
+============================================================ */
+function initSmart(){
+  fillSelect('sm-pt',DB.patients.map(p=>({v:p.id,t:p.name+' · '+p.mrn})));
+  fillSelect('sm-spec',DB.specialties.map(s=>({v:s.id,t:s.icon+' '+s.name})));
+  document.getElementById('sm-date').value=STATE.date;
+  smSpecChange();
+  document.getElementById('sm-spec').onchange=smSpecChange;
+  document.getElementById('sm-results').innerHTML='';
+}
+function smSpecChange(){
+  var spec=document.getElementById('sm-spec').value;
+  fillSelect('sm-vt',DB.visitTypes.filter(v=>v.spec===spec).map(v=>({v:v.id,t:v.name+' ('+v.dur+'m · '+modIcon(v.modality)+')'})));
+  var provs=DB.providers.filter(p=>p.specialty===spec);
+  fillSelect('sm-prov',[{v:'any',t:'Any available'}].concat(provs.map(p=>({v:p.id,t:p.name+', '+p.cred}))));
+}
+function runSmart(){
+  var opts={
+    patientId:document.getElementById('sm-pt').value,
+    specialty:document.getElementById('sm-spec').value,
+    visitTypeId:document.getElementById('sm-vt').value,
+    providerId:document.getElementById('sm-prov').value,
+    date:document.getElementById('sm-date').value||STATE.date,
+    pref:document.getElementById('sm-pref').value
+  };
+  var res=rankSlots(opts);
+  var el=document.getElementById('sm-results');
+  if(res.length===0){el.innerHTML='<div class="card"><div class="card-bd"><div class="note warn">⚠️ No open slots match. Try another provider, date, or add the patient to the waitlist.</div><button class="btn" onclick="go(\'waitlist\')">Go to Waitlist</button></div></div>';return;}
+  var pt=DB.patient(opts.patientId),vt=DB.vtype(opts.visitTypeId);
+  el.innerHTML='<div class="card"><div class="card-bar purp">🤖 Top '+res.length+' AI-Recommended Slots — '+pt.name+' · '+vt.name+'</div><div class="card-bd">'+
+    res.map(function(r,i){var pr=DB.provider(r.providerId);
+      return '<div class="suggest" onclick="bookFromSmart(\''+opts.patientId+'\',\''+opts.visitTypeId+'\',\''+r.providerId+'\','+r.start+',\''+opts.date+'\')">'+
+        '<div class="sg-top"><span class="sg-time">'+(i===0?'⭐ ':'')+fmtTime(r.start)+'</span><span class="sg-score">'+r.score+'% match</span></div>'+
+        '<div style="font-size:14.5px;font-weight:700;margin-top:4px">'+pr.name+', '+pr.cred+' · '+r.dur+' min</div>'+
+        '<div class="sg-why">'+(r.why.length?'• '+r.why.join('<br>• '):'Open slot')+'</div>'+
+        '<div style="margin-top:8px"><span class="btn sm purpb">Book this slot →</span></div></div>';
+    }).join('')+'</div></div>';
+}
+function bookFromSmart(ptId,vtId,prId,start,date){
+  var vt=DB.vtype(vtId);
+  STATE.date=date;
+  openBook(null,prId,start,{patientId:ptId,visitTypeId:vtId,specialty:vt.spec,aiSuggested:true});
+}
+function fillSelect(id,items){var s=document.getElementById(id);if(!s)return;s.innerHTML=items.map(i=>'<option value="'+i.v+'">'+i.t+'</option>').join('');}
+
+/* ============================================================
+   INSIGHTS
+============================================================ */
+function renderInsights(){
+  var ins=dailyInsights(STATE.date);
+  document.getElementById('ins-sub').textContent=fmtDateLong(STATE.date)+' · '+ins.length+' items';
+  document.getElementById('ins-list').innerHTML='<div class="card"><div class="card-bd">'+
+    ins.map(i=>'<div class="insight '+i.type+'"><span class="i-ic">'+i.icon+'</span><div><div class="i-t">'+i.t+'</div><div class="i-s">'+i.s+'</div></div></div>').join('')+'</div></div>';
+  renderNavBadges();
+}
+
+/* ============================================================
+   WAITLIST
+============================================================ */
+function renderWaitlist(){
+  var el=document.getElementById('wl-list');
+  if(DB.waitlist.length===0){el.innerHTML='<div style="padding:24px;text-align:center;color:var(--sub)">Waitlist is empty.</div>';renderNavBadges();return;}
+  el.innerHTML=DB.waitlist.map(function(w){
+    var pt=DB.patient(w.patientId),sp=DB.specialties.find(s=>s.id===w.spec);
+    var prov=w.providerId!=='any'?DB.provider(w.providerId).name:'Any provider';
+    var hasSlot=DB.providers.filter(p=>p.specialty===w.spec).some(p=>openSlots(p.id,STATE.date,30).length>0);
+    return '<div style="display:flex;align-items:center;gap:14px;padding:13px 18px;border-bottom:1px solid #eef3f8">'+
+      '<div style="flex:1"><div style="font-size:16px;font-weight:700">'+pt.name+(w.priority==='urgent'?' <span class="pill pl-no-show">URGENT</span>':'')+'</div>'+
+      '<div style="font-size:13.5px;color:var(--sub)">'+sp.icon+' '+sp.name+' · '+prov+' · '+w.reason+'</div></div>'+
+      (hasSlot?'<span class="pill pl-completed">Slot available today</span>':'<span class="pill pl-cancelled">No slot today</span>')+
+      '<button class="btn sm pri" onclick="scheduleFromWaitlist(\''+w.id+'\')">Schedule</button>'+
+      '<button class="btn sm dangerb" onclick="dropWaitlist(\''+w.id+'\')">Remove</button></div>';
+  }).join('');
+  renderNavBadges();
+}
+function scheduleFromWaitlist(id){
+  var w=DB.waitlist.find(x=>x.id===id);
+  document.querySelector('.nav[data-pg="smart"]').click();
+  setTimeout(function(){
+    document.getElementById('sm-pt').value=w.patientId;
+    document.getElementById('sm-spec').value=w.spec; smSpecChange();
+    if(w.providerId!=='any')document.getElementById('sm-prov').value=w.providerId;
+    runSmart(); toast('Loaded '+DB.patient(w.patientId).name+' into Smart Schedule');
+  },120);
+}
+function dropWaitlist(id){DB.removeWaitlist(id);renderWaitlist();toast('Removed from waitlist');}
+
+/* ============================================================
+   PROVIDERS + VISIT TYPES (setup)
+============================================================ */
+function renderProviders(){
+  document.getElementById('prov-list').innerHTML=DB.providers.map(function(p){
+    var sp=DB.specialties.find(s=>s.id===p.specialty),loc=DB.locations.find(l=>l.id===p.loc);
+    var todays=DB.appts.filter(a=>a.providerId===p.id&&a.date===STATE.date&&a.status!=='cancelled').length;
+    return '<div class="card"><div class="card-bd" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">'+
+      '<div style="width:54px;height:54px;border-radius:14px;background:'+p.color+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700">'+p.name.split(' ').map(x=>x[0]).slice(-2).join('')+'</div>'+
+      '<div style="flex:1;min-width:180px"><div style="font-size:18px;font-weight:700">'+p.name+', '+p.cred+'</div>'+
+      '<div style="font-size:14px;color:var(--sub)">'+sp.icon+' '+sp.name+' · '+(p.type==='physician'?'Physician':'Mid-level ('+p.cred+')')+(p.supervisor?' · supervised by '+DB.provider(p.supervisor).name:'')+'</div>'+
+      '<div style="font-size:13.5px;color:var(--sub);margin-top:2px">📍 '+loc.name+' · 🕐 '+fmtTime(p.hours[0])+'–'+fmtTime(p.hours[1])+' '+tzAbbr(p.tz)+'</div></div>'+
+      '<div style="text-align:center"><div style="font-size:26px;font-weight:700;font-family:var(--mono);color:'+p.color+'">'+todays+'</div><div style="font-size:12.5px;color:var(--sub)">today</div></div>'+
+    '</div></div>';
+  }).join('');
+}
+function renderVisitTypes(){
+  var t=document.getElementById('vt-tbl');
+  t.innerHTML='<thead><tr><th>Specialty</th><th>Visit Type</th><th>Modality</th><th>Duration</th><th>Room?</th><th>CPT</th></tr></thead><tbody>'+
+    DB.visitTypes.map(function(v){var sp=DB.specialties.find(s=>s.id===v.spec);
+      return '<tr><td>'+sp.icon+' '+sp.name+'</td><td><b>'+v.name+'</b></td><td><span class="pill '+(v.modality==='tele'?'pl-in-progress':v.modality==='procedure'?'pl-checked-in':'pl-scheduled')+'">'+modIcon(v.modality)+'</span></td><td>'+v.dur+' min</td><td>'+(v.room?'✅ Required':'—')+'</td><td style="font-family:var(--mono)">'+v.cpt+'</td></tr>';
+    }).join('')+'</tbody>';
+}
+/* ============================================================
+   MODALS
+============================================================ */
+function closeModal(){document.getElementById('ov').classList.remove('on');document.getElementById('modal').innerHTML='';}
+document.getElementById('ov').addEventListener('click',function(e){if(e.target.id==='ov')closeModal();});
+function showModal(html,wide){var m=document.getElementById('modal');m.className='modal'+(wide?' wide':'');m.innerHTML=html;document.getElementById('ov').classList.add('on');}
+
+/* ---- BOOK APPOINTMENT ---- */
+var BOOK={};
+function openBook(forceMod,providerId,start,preset){
+  preset=preset||{};
+  BOOK={providerId:providerId||'',start:(start!=null?start:540),date:STATE.date,specialty:preset.specialty||'',visitTypeId:preset.visitTypeId||'',patientId:preset.patientId||'',roomId:'',aiSuggested:preset.aiSuggested||false};
+  if(providerId&&!BOOK.specialty){BOOK.specialty=DB.provider(providerId).specialty;}
+  if(forceMod==='procedure'&&!BOOK.specialty)BOOK.specialty='cardiology';
+  renderBookModal(forceMod);
+}
+function openBookRoom(roomId,start){
+  var rm=DB.room(roomId);
+  BOOK={providerId:'',start:start,date:STATE.date,specialty:rm.specialty,visitTypeId:'',patientId:'',roomId:roomId,aiSuggested:false};
+  renderBookModal('procedure');
+}
+function renderBookModal(forceMod){
+  var specOpts=DB.specialties.map(s=>'<option value="'+s.id+'"'+(s.id===BOOK.specialty?' selected':'')+'>'+s.icon+' '+s.name+'</option>').join('');
+  var vts=DB.visitTypes.filter(v=>v.spec===BOOK.specialty&&(!forceMod||(forceMod==='procedure'?v.modality==='procedure':true)));
+  if(!BOOK.visitTypeId&&vts[0])BOOK.visitTypeId=vts[0].id;
+  var vtOpts=vts.map(v=>'<option value="'+v.id+'"'+(v.id===BOOK.visitTypeId?' selected':'')+'>'+v.name+' · '+v.dur+'m · '+modIcon(v.modality)+'</option>').join('');
+  var vt=DB.vtype(BOOK.visitTypeId);
+  var provs=DB.providers.filter(p=>p.specialty===BOOK.specialty);
+  if(!BOOK.providerId&&provs[0])BOOK.providerId=provs[0].id;
+  var provOpts=provs.map(p=>'<option value="'+p.id+'"'+(p.id===BOOK.providerId?' selected':'')+'>'+p.name+', '+p.cred+'</option>').join('');
+  var ptOpts=DB.patients.map(p=>'<option value="'+p.id+'"'+(p.id===BOOK.patientId?' selected':'')+'>'+p.name+' · '+p.mrn+'</option>').join('');
+  // time options
+  var timeOpts='';for(var t=GRID_START;t<GRID_END;t+=15){timeOpts+='<option value="'+t+'"'+(t===BOOK.start?' selected':'')+'>'+fmtTime(t)+'</option>';}
+  var needRoom=vt&&vt.room;
+  var roomOpts='';
+  if(needRoom){var rms=DB.rooms.filter(r=>r.specialty===BOOK.specialty);if(!BOOK.roomId&&rms[0])BOOK.roomId=rms[0].id;roomOpts=rms.map(r=>'<option value="'+r.id+'"'+(r.id===BOOK.roomId?' selected':'')+'>'+r.icon+' '+r.name+'</option>').join('');}
+  // conflict + risk preview
+  var conf=BOOK.providerId?providerConflict(BOOK.providerId,BOOK.date,BOOK.start,vt?vt.dur:20):null;
+  var rconf=needRoom&&BOOK.roomId?roomConflict(BOOK.roomId,BOOK.date,BOOK.start,vt.dur):null;
+  var pt=DB.patient(BOOK.patientId);
+  var risk=pt&&vt?noShowRisk({patientId:BOOK.patientId,providerId:BOOK.providerId,modality:vt.modality,start:BOOK.start,status:'scheduled'}):null;
+  var teleNote='';
+  if(vt&&vt.modality==='tele'&&pt&&BOOK.providerId&&pt.tz!==DB.provider(BOOK.providerId).tz){
+    var ptm=convertMin(BOOK.start,DB.provider(BOOK.providerId).tz,pt.tz,BOOK.date);
+    teleNote='<div class="note">🌐 Telehealth across timezones: patient sees <b>'+fmtTime(ptm)+' '+tzAbbr(pt.tz)+'</b> (you see '+fmtTime(BOOK.start)+' '+tzAbbr(DB.provider(BOOK.providerId).tz)+').</div>';
+  }
+  var html='<div class="modal-hd"><h2>'+(BOOK.aiSuggested?'🤖 Confirm AI-Suggested Appointment':'＋ New Appointment')+'</h2><button class="x" onclick="closeModal()">✕</button></div>'+
+  '<div class="modal-bd">'+
+    (BOOK.aiSuggested?'<div class="note ok">✅ AI suggested this slot. Review the details and confirm — nothing is booked until you click Book.</div>':'')+
+    '<div class="frow two"><div class="fld"><label>Patient</label><select onchange="bookSet(\'patientId\',this.value)">'+ptOpts+'</select></div>'+
+    '<div class="fld"><label>Specialty</label><select onchange="bookSet(\'specialty\',this.value,true)">'+specOpts+'</select></div></div>'+
+    '<div class="frow two"><div class="fld"><label>Visit type</label><select onchange="bookSet(\'visitTypeId\',this.value,true)">'+vtOpts+'</select></div>'+
+    '<div class="fld"><label>Provider</label><select onchange="bookSet(\'providerId\',this.value,true)">'+provOpts+'</select></div></div>'+
+    '<div class="frow two"><div class="fld"><label>Date</label><input type="date" value="'+BOOK.date+'" onchange="bookSet(\'date\',this.value,true)"></div>'+
+    '<div class="fld"><label>Start time ('+tzAbbr(DB.provider(BOOK.providerId).tz)+')</label><select onchange="bookSet(\'start\',+this.value,true)">'+timeOpts+'</select></div></div>'+
+    (needRoom?'<div class="frow"><div class="fld"><label>Room / equipment</label><select onchange="bookSet(\'roomId\',this.value,true)">'+roomOpts+'</select></div></div>':'')+
+    '<div class="frow"><div class="fld"><label>Reason for visit (optional)</label><textarea id="bk-reason" placeholder="e.g., chest pain follow-up">'+(BOOK.reason||'')+'</textarea></div></div>'+
+    teleNote+
+    (conf?'<div class="note warn">⛔ Conflict: '+DB.provider(BOOK.providerId).name+' already has '+DB.patient(conf.patientId).name+' at '+fmtTime(conf.start)+'. Pick another time.</div>':'')+
+    (rconf?'<div class="note warn">⛔ Room conflict: '+DB.room(BOOK.roomId).name+' is booked at '+fmtTime(rconf.start)+'.</div>':'')+
+    (risk?'<div class="note '+(risk.level==='high'?'warn':'')+'">'+(risk.level==='high'?'⚠️':'📊')+' Predicted no-show risk: <b>'+risk.score+'% ('+risk.level+')</b>'+(risk.why.length?' — '+risk.why.slice(0,2).join(', '):'')+(risk.level==='high'?'. Recommend a confirmation call.':'')+'</div>':'')+
+  '</div>'+
+  '<div class="modal-ft"><button class="btn" onclick="closeModal()">Cancel</button>'+
+    '<button class="btn pri" '+(conf||rconf?'disabled':'')+' onclick="saveBook()">'+(conf||rconf?'Resolve conflict to book':'Book Appointment')+'</button></div>';
+  showModal(html);
+}
+function bookSet(k,v,rerender){
+  BOOK[k]=v;
+  if(k==='specialty'){BOOK.visitTypeId='';BOOK.providerId='';BOOK.roomId='';}
+  if(k==='visitTypeId'){BOOK.roomId='';}
+  var r=document.getElementById('bk-reason');if(r)BOOK.reason=r.value;
+  if(rerender)renderBookModal();
+}
+function saveBook(){
+  var r=document.getElementById('bk-reason');if(r)BOOK.reason=r.value;
+  var vt=DB.vtype(BOOK.visitTypeId);
+  if(!BOOK.patientId){toast('Select a patient','err');return;}
+  if(!BOOK.providerId){toast('Select a provider','err');return;}
+  if(vt.room&&!BOOK.roomId){toast('Select a room','err');return;}
+  if(providerConflict(BOOK.providerId,BOOK.date,BOOK.start,vt.dur)){toast('Time conflict','err');return;}
+  if(vt.room&&roomConflict(BOOK.roomId,BOOK.date,BOOK.start,vt.dur)){toast('Room conflict','err');return;}
+  DB.addAppt({patientId:BOOK.patientId,providerId:BOOK.providerId,visitTypeId:BOOK.visitTypeId,date:BOOK.date,start:BOOK.start,dur:vt.dur,modality:vt.modality,roomId:vt.room?BOOK.roomId:null,status:'scheduled',reason:BOOK.reason||'',createdBy:STATE.role,aiSuggested:BOOK.aiSuggested});
+  closeModal();
+  toast('✅ Booked '+DB.patient(BOOK.patientId).name+' with '+DB.provider(BOOK.providerId).name,'ok');
+  STATE.date=BOOK.date;
+  refreshDateViews(); renderNavBadges();
+}
+
+/* ---- APPOINTMENT DETAIL ---- */
+function openAppt(id){
+  var a=DB.appts.find(x=>x.id===id);if(!a)return;
+  var pt=DB.patient(a.patientId),vt=DB.vtype(a.visitTypeId),pr=DB.provider(a.providerId);
+  var risk=noShowRisk(a);
+  var room=a.roomId?DB.room(a.roomId):null;
+  var teleRow='';
+  if(a.modality==='tele'&&pt.tz!==pr.tz){var ptm=convertMin(a.start,pr.tz,pt.tz,a.date);teleRow='<div class="detail-row"><span class="k">Patient local time</span><span class="v">'+fmtTime(ptm)+' '+tzAbbr(pt.tz)+'</span></div>';}
+  var statusBtns=FLOW.includes(a.status)?'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">'+
+    (nextStatus(a.status)?'<button class="btn sm successb" onclick="apptStatus(\''+id+'\',\''+nextStatus(a.status)+'\')">'+nextLabel(a.status)+' →</button>':'')+
+    '<button class="btn sm dangerb" onclick="apptStatus(\''+id+'\',\'no-show\')">Mark No-Show</button>'+
+    '</div>':'';
+  var html='<div class="modal-hd"><h2>'+pt.name+'</h2><button class="x" onclick="closeModal()">✕</button></div>'+
+  '<div class="modal-bd">'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span class="pill pl-'+a.status+'">'+a.status.replace('-',' ')+'</span><span class="pill" style="background:'+(a.modality==='tele'?'var(--purple-lt);color:var(--purple)':a.modality==='procedure'?'var(--teal-lt);color:#00665b':'var(--primary-lt);color:var(--primary-dk)')+'">'+modIcon(a.modality)+'</span><span class="pill pl-'+risk.level.replace('high','no-show').replace('med','roomed').replace('low','completed')+'">No-show risk '+risk.score+'%</span></div>'+
+    '<div class="detail-row"><span class="k">MRN</span><span class="v">'+pt.mrn+'</span></div>'+
+    '<div class="detail-row"><span class="k">Date / Time</span><span class="v">'+fmtDateLong(a.date)+'<br>'+fmtTime(a.start)+'–'+fmtTime(a.start+a.dur)+' '+tzAbbr(pr.tz)+'</span></div>'+
+    teleRow+
+    '<div class="detail-row"><span class="k">Visit type</span><span class="v">'+vt.name+' · '+a.dur+'m · CPT '+vt.cpt+'</span></div>'+
+    '<div class="detail-row"><span class="k">Provider</span><span class="v">'+pr.name+', '+pr.cred+'</span></div>'+
+    (room?'<div class="detail-row"><span class="k">Room</span><span class="v">'+room.icon+' '+room.name+'</span></div>':'')+
+    '<div class="detail-row"><span class="k">Phone</span><span class="v">'+pt.phone+'</span></div>'+
+    (a.reason?'<div class="detail-row"><span class="k">Reason</span><span class="v">'+a.reason+'</span></div>':'')+
+    (risk.why.length?'<div class="note" style="margin-top:12px">📊 Risk factors: '+risk.why.join(' · ')+'</div>':'')+
+    statusBtns+
+  '</div>'+
+  '<div class="modal-ft">'+
+    (a.modality==='tele'?'<button class="btn purpb" onclick="startTele(\''+id+'\')">📹 Start Telehealth</button>':'')+
+    '<button class="btn" onclick="openEmr()">🩺 Open Chart in CareSync</button>'+
+    '<button class="btn" onclick="rescheduleAppt(\''+id+'\')">🔁 Reschedule</button>'+
+    '<button class="btn dangerb" onclick="cancelAppt(\''+id+'\')">Cancel Visit</button>'+
+  '</div>';
+  showModal(html,true);
+}
+function apptStatus(id,st){DB.updateAppt(id,{status:st});closeModal();toast('Status → '+st.replace('-',' '),'ok');refreshDateViews();renderCheckin();renderNavBadges();}
+function cancelAppt(id){DB.updateAppt(id,{status:'cancelled'});closeModal();toast('Appointment cancelled');refreshDateViews();renderNavBadges();}
+function rescheduleAppt(id){var a=DB.appts.find(x=>x.id===id);DB.updateAppt(id,{status:'cancelled'});closeModal();openBook(null,a.providerId,a.start,{patientId:a.patientId,visitTypeId:a.visitTypeId,specialty:DB.vtype(a.visitTypeId).spec});toast('Pick a new time to reschedule');}
+function startTele(id){var a=DB.appts.find(x=>x.id===id);DB.updateAppt(id,{status:'in-progress'});closeModal();toast('📹 Launching HIPAA telehealth room (Daily.co)…','ok');refreshDateViews();renderCheckin();}
+
+/* ---- ADD TO WAITLIST ---- */
+function openWaitlist(){
+  var ptOpts=DB.patients.map(p=>'<option value="'+p.id+'">'+p.name+' · '+p.mrn+'</option>').join('');
+  var specOpts=DB.specialties.map(s=>'<option value="'+s.id+'">'+s.icon+' '+s.name+'</option>').join('');
+  showModal('<div class="modal-hd"><h2>＋ Add to Waitlist</h2><button class="x" onclick="closeModal()">✕</button></div><div class="modal-bd">'+
+    '<div class="frow two"><div class="fld"><label>Patient</label><select id="wl-pt">'+ptOpts+'</select></div><div class="fld"><label>Specialty</label><select id="wl-spec">'+specOpts+'</select></div></div>'+
+    '<div class="frow two"><div class="fld"><label>Priority</label><select id="wl-pri"><option value="routine">Routine</option><option value="urgent">Urgent</option></select></div>'+
+    '<div class="fld"><label>Preferred modality</label><select id="wl-mod"><option value="in-person">In-Person</option><option value="tele">Telemedicine</option></select></div></div>'+
+    '<div class="frow"><div class="fld"><label>Note</label><textarea id="wl-reason" placeholder="e.g., wants earliest available"></textarea></div></div>'+
+    '</div><div class="modal-ft"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" onclick="saveWaitlist()">Add to Waitlist</button></div>');
+}
+function saveWaitlist(){
+  DB.addWaitlist({patientId:document.getElementById('wl-pt').value,spec:document.getElementById('wl-spec').value,providerId:'any',modality:document.getElementById('wl-mod').value,priority:document.getElementById('wl-pri').value,reason:document.getElementById('wl-reason').value||'Earliest available'});
+  closeModal();toast('Added to waitlist','ok');renderWaitlist();renderNavBadges();
+}
+
+/* ============================================================
+   TOAST + INIT
+============================================================ */
+var _tt;
+function toast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.className='show'+(type?' '+type:'');clearTimeout(_tt);_tt=setTimeout(()=>t.className='',2600);}
+
+function init(){
+  DB.load();
+  // populate filters
+  fillSelect('f-spec',[{v:'all',t:'All specialties'}].concat(DB.specialties.map(s=>({v:s.id,t:s.icon+' '+s.name}))));
+  fillSelect('f-loc',[{v:'all',t:'All locations'}].concat(DB.locations.map(l=>({v:l.id,t:l.name}))));
+  fillSelect('rf-spec',[{v:'all',t:'All specialties'}].concat(DB.specialties.map(s=>({v:s.id,t:s.icon+' '+s.name}))));
+  applyRole();
+  renderCalendar();
+}
+window.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+init();
+</script>
+</body>
+</html>
