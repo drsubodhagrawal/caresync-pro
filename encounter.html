@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CareSync Pro — AI Encounter Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0b1e3d;--navy2:#102550;--navy3:#163070;
+  --blue:#1a6ef5;--blue2:#3b82f6;--blue-lt:#dbeafe;--blue-xlt:#eff6ff;
+  --teal:#0d9488;--teal-lt:#ccfbf1;--teal2:#0f766e;
+  --green:#15803d;--green-lt:#dcfce7;
+  --amber:#b45309;--amber-lt:#fef3c7;
+  --red:#dc2626;--red-lt:#fee2e2;
+  --purple:#5b21b6;--purple2:#7c3aed;--purple-lt:#ede9fe;--purple-xlt:#f5f3ff;
+  --orange:#ea580c;--orange-lt:#ffedd5;
+  --gray0:#f9fafb;--gray1:#f3f4f6;--gray2:#e5e7eb;--gray3:#d1d5db;
+  --gray4:#9ca3af;--gray5:#6b7280;--gray6:#374151;--gray7:#1f2937;--gray8:#111827;
+  --font:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --r:8px;--r2:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+}
+body{font-family:var(--font);background:var(--gray1);color:var(--gray7);font-size:15px;line-height:1.45;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* ═══ TOP NAV (spine) ═══ */
+.tnav{height:58px;background:var(--navy);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06)}
+.tlogo{display:flex;align-items:center;gap:10px;padding-right:14px;border-right:1px solid rgba(255,255,255,.12)}
+.tlogo-box{width:38px;height:38px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px}
+.tlogo-name{font-size:16px;font-weight:700;color:#fff}
+.tlogo-sub{font-size:11px;color:rgba(255,255,255,.55)}
+.tmodule{padding:6px 15px;border:1.5px solid rgba(255,255,255,.28);border-radius:20px;font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,.1)}
+.tback{display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:9px;background:rgba(255,255,255,.09);color:#fff;font-size:13px;font-weight:600;text-decoration:none;border:1px solid rgba(255,255,255,.13);transition:all .13s}
+.tback:hover{background:rgba(255,255,255,.18)}
+.tsp{flex:1}
+.tenant-sw{display:flex;align-items:center;gap:8px;padding:7px 13px;border-radius:9px;background:rgba(255,255,255,.09);cursor:pointer;border:1px solid rgba(255,255,255,.13);transition:all .13s}
+.tenant-sw:hover{background:rgba(255,255,255,.16)}
+.tenant-sw .t-lbl{font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;line-height:1}
+.tenant-sw .t-val{font-size:13px;color:#fff;font-weight:600;line-height:1.3}
+.role-chip{display:flex;align-items:center;gap:9px;padding:7px 13px;border-radius:9px;background:rgba(26,110,245,.22);cursor:pointer;border:1px solid rgba(26,110,245,.5);transition:all .13s}
+.role-chip:hover{background:rgba(26,110,245,.34)}
+.role-chip .rc-av{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.role-chip .rc-name{font-size:13px;color:#fff;font-weight:600;line-height:1.2}
+.role-chip .rc-role{font-size:10.5px;color:rgba(255,255,255,.7);line-height:1.2}
+
+/* ═══ VOIP BAR (spine) ═══ */
+.voip{height:38px;background:var(--navy2);display:flex;align-items:center;padding:0 16px;gap:14px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.05)}
+.voip-status{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#fff;font-weight:600}
+.voip-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.25)}
+.voip-stat{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.78);cursor:pointer;padding:3px 9px;border-radius:7px;transition:all .12s}
+.voip-stat:hover{background:rgba(255,255,255,.1);color:#fff}
+.voip-stat b{color:#fff;font-family:var(--mono)}
+.voip-sp{flex:1}
+.voip-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(255,255,255,.8);cursor:pointer;border:none;background:rgba(255,255,255,.07);transition:all .12s}
+.voip-ic:hover{background:var(--blue);color:#fff}
+
+/* ═══ PATIENT HEADER BAR ═══ */
+.phdr{background:#fff;border-bottom:1px solid var(--gray2);padding:13px 22px;display:flex;align-items:center;gap:18px;flex-shrink:0;flex-wrap:wrap}
+.phdr-av{width:50px;height:50px;border-radius:12px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex-shrink:0}
+.phdr-id .pn{font-size:20px;font-weight:700;color:var(--navy);line-height:1.2}
+.phdr-id .pm{font-size:13px;color:var(--gray6);font-family:var(--mono);margin-top:2px}
+.phdr-chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.phchip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:9px;font-size:13px;font-weight:600;background:var(--gray1);color:var(--gray7)}
+.phchip.red{background:var(--red-lt);color:var(--red)}
+.phchip.amber{background:var(--amber-lt);color:var(--amber)}
+.phchip.teal{background:var(--teal-lt);color:var(--teal2)}
+.phchip .ph-k{font-size:10px;text-transform:uppercase;letter-spacing:.4px;opacity:.75}
+.phdr-sp{flex:1}
+
+/* ═══ SHELL: stepper + main + rail ═══ */
+.shell{flex:1;display:flex;overflow:hidden;min-height:0}
+.stepper{width:230px;background:#fff;border-right:1px solid var(--gray2);flex-shrink:0;overflow-y:auto;padding:16px 0}
+.step-item{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;border-left:3px solid transparent;transition:all .12s}
+.step-item:hover{background:var(--blue-xlt)}
+.step-item.active{background:var(--blue-xlt);border-left-color:var(--blue)}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--gray1);color:var(--gray6);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;font-family:var(--mono)}
+.step-item.active .step-num{background:var(--blue);color:#fff}
+.step-item.done .step-num{background:var(--green);color:#fff}
+.step-lbl{font-size:14.5px;font-weight:600;color:var(--gray7);line-height:1.2}
+.step-sub{font-size:11.5px;color:var(--gray5);margin-top:1px}
+.step-item.active .step-lbl{color:var(--navy)}
+
+.main{flex:1;overflow-y:auto;padding:22px 26px;min-width:0}
+.rail{width:300px;background:#fff;border-left:1px solid var(--gray2);flex-shrink:0;overflow-y:auto;padding:18px}
+
+/* ═══ PAGE / CARDS (spine) ═══ */
+.pg-title{font-size:24px;font-weight:700;color:var(--navy);line-height:1.2}
+.pg-sub{font-size:14px;color:var(--gray6);margin-top:4px;max-width:720px}
+.card{background:#fff;border:1px solid var(--gray2);border-radius:var(--r2);box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px}
+.card-hdr{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--gray2)}
+.card-title{font-size:17px;font-weight:700;color:var(--navy)}
+.card-badge{margin-left:auto;font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;background:var(--blue-lt);color:var(--navy3)}
+.card-body{padding:16px 18px}
+
+/* ═══ AI (violet — augments, never automates) ═══ */
+.ai-card{background:var(--purple-xlt);border:1px solid var(--purple-lt);border-left:4px solid var(--purple2);border-radius:var(--r2);margin-bottom:18px;overflow:hidden}
+.ai-hdr{display:flex;align-items:center;gap:10px;padding:13px 18px;border-bottom:1px solid var(--purple-lt)}
+.ai-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:4px 11px;border-radius:11px;background:var(--purple2);color:#fff}
+.ai-title{font-size:16px;font-weight:700;color:var(--purple)}
+.ai-confirm-note{margin-left:auto;font-size:12px;font-weight:600;color:var(--purple);background:#fff;padding:4px 11px;border-radius:10px;border:1px solid var(--purple-lt)}
+.ai-body{padding:16px 18px}
+.ai-sugg{background:#fff;border:1px solid var(--purple-lt);border-radius:10px;padding:14px;margin-bottom:11px}
+.ai-sugg:last-child{margin-bottom:0}
+.ai-sugg-txt{font-size:14px;color:var(--gray7);line-height:1.5}
+.ai-sugg-txt b{color:var(--navy)}
+.ai-sugg-acts{display:flex;gap:8px;margin-top:11px}
+.ai-sugg.confirmed{border-color:var(--green);background:var(--green-lt)}
+.ai-sugg.dismissed{opacity:.55}
+.ai-sugg-state{font-size:12px;font-weight:700;padding:4px 10px;border-radius:9px}
+.ss-confirmed{background:var(--green);color:#fff}
+.ss-dismissed{background:var(--gray3);color:var(--gray7)}
+
+/* ═══ BUTTONS (spine) ═══ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 18px;border-radius:9px;font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;border:1.5px solid var(--gray3);background:#fff;color:var(--gray7);transition:all .13s}
+.btn:hover{background:var(--gray1);border-color:var(--gray4)}
+.btn-pri{background:var(--blue);border-color:var(--blue);color:#fff}.btn-pri:hover{background:#1559cc;border-color:#1559cc}
+.btn-green{background:var(--green);border-color:var(--green);color:#fff}.btn-green:hover{background:#0f6b30}
+.btn-purple{background:var(--purple2);border-color:var(--purple2);color:#fff}.btn-purple:hover{background:var(--purple)}
+.btn-danger{background:var(--red);border-color:var(--red);color:#fff}.btn-danger:hover{background:#b91c1c}
+.btn-amber{background:var(--amber);border-color:var(--amber);color:#fff}.btn-amber:hover{background:#92400e}
+.btn-sm{min-height:34px;padding:0 13px;font-size:13.5px;border-radius:8px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-block{width:100%}
+
+/* ═══ CODE CHIPS + tooltip (friendly decode) ═══ */
+.code{display:inline-flex;align-items:center;font-family:var(--mono);font-size:12px;font-weight:600;padding:2px 7px;border-radius:5px;background:var(--blue-lt);color:var(--navy3);margin-right:6px}
+.code.rx{background:var(--teal-lt);color:var(--teal2)}
+.code.cpt{background:var(--amber-lt);color:var(--amber)}
+.hcc-tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;background:var(--purple-lt);color:var(--purple);margin-left:4px}
+.tip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--gray2);color:var(--gray6);font-size:11px;font-weight:700;cursor:help;margin-left:5px}
+.tip:hover::after{content:attr(data-tip);position:absolute;bottom:130%;left:50%;transform:translateX(-50%);background:var(--gray8);color:#fff;font-size:12px;font-weight:400;padding:8px 11px;border-radius:7px;white-space:normal;width:240px;z-index:50;box-shadow:var(--shadow);line-height:1.4}
+
+/* ═══ RECONCILE / PROBLEM ROWS ═══ */
+.rrow{display:flex;align-items:flex-start;gap:13px;padding:13px 15px;border:1px solid var(--gray2);border-radius:10px;margin-bottom:9px;background:#fff}
+.rrow-main{flex:1;min-width:0}
+.rrow-name{font-size:15px;font-weight:600;color:var(--gray8)}
+.rrow-sub{font-size:13px;color:var(--gray6);margin-top:3px}
+.rrow-acts{display:flex;gap:7px;flex-shrink:0;align-items:center}
+
+/* ═══ MEAT GRID ═══ */
+.meat-card{border:1px solid var(--gray2);border-radius:12px;margin-bottom:14px;overflow:hidden}
+.meat-hdr{display:flex;align-items:center;gap:10px;padding:13px 16px;background:var(--gray0);border-bottom:1px solid var(--gray2);flex-wrap:wrap}
+.meat-dx{font-size:15px;font-weight:700;color:var(--navy)}
+.meat-status{margin-left:auto;font-size:12px;font-weight:700;padding:4px 11px;border-radius:10px}
+.meat-incomplete{background:var(--amber-lt);color:var(--amber)}
+.meat-complete{background:var(--green-lt);color:var(--green)}
+.meat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px}
+.meat-fld label{display:flex;align-items:center;font-size:13px;font-weight:700;color:var(--gray7);margin-bottom:5px}
+.meat-fld .meat-k{width:22px;height:22px;border-radius:6px;background:var(--purple-lt);color:var(--purple);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-right:7px}
+.meat-fld textarea{width:100%;min-height:58px;padding:9px 11px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:14px;color:var(--gray7);resize:vertical}
+.meat-fld textarea:focus{outline:none;border-color:var(--purple2);box-shadow:0 0 0 3px var(--purple-lt)}
+.meat-fld textarea.filled{border-color:var(--green);background:var(--green-lt)}
+
+/* ═══ SOAP ═══ */
+.soap-fld{margin-bottom:15px}
+.soap-fld label{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--navy);margin-bottom:7px}
+.soap-letter{width:26px;height:26px;border-radius:7px;background:var(--navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.soap-fld textarea{width:100%;min-height:90px;padding:12px 14px;border:1.5px solid var(--gray3);border-radius:10px;font-family:var(--font);font-size:14.5px;line-height:1.55;color:var(--gray7);resize:vertical}
+.soap-fld textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-lt)}
+
+/* ═══ ORDERS ═══ */
+.ord-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--gray2);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all .12s}
+.ord-row:hover{border-color:var(--blue);background:var(--blue-xlt)}
+.ord-row.sel{border-color:var(--blue);background:var(--blue-xlt)}
+.ord-cb{width:20px;height:20px;border-radius:6px;border:2px solid var(--gray3);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex-shrink:0}
+.ord-row.sel .ord-cb{background:var(--blue);border-color:var(--blue)}
+.ord-name{font-size:14.5px;font-weight:600;color:var(--gray8);flex:1}
+.em-opt{display:flex;align-items:flex-start;gap:12px;padding:14px;border:1.5px solid var(--gray2);border-radius:11px;margin-bottom:10px;cursor:pointer;transition:all .12s}
+.em-opt:hover{border-color:var(--blue)}
+.em-opt.sel{border-color:var(--blue);background:var(--blue-xlt)}
+.em-radio{width:22px;height:22px;border-radius:50%;border:2px solid var(--gray3);flex-shrink:0;margin-top:1px;position:relative}
+.em-opt.sel .em-radio{border-color:var(--blue)}
+.em-opt.sel .em-radio::after{content:'';position:absolute;inset:4px;border-radius:50%;background:var(--blue)}
+.em-lvl{font-size:15px;font-weight:700;color:var(--navy)}
+.em-desc{font-size:13px;color:var(--gray6);margin-top:3px}
+
+/* ═══ RAIL ═══ */
+.rail-sec{margin-bottom:20px}
+.rail-h{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray5);margin-bottom:10px}
+.raf-big{font-size:34px;font-weight:700;font-family:var(--mono);color:var(--purple);line-height:1}
+.raf-sub{font-size:12px;color:var(--gray6);margin-top:3px}
+.prog-row{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--gray7);padding:8px 0;border-bottom:1px solid var(--gray1)}
+.prog-ic{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.pi-ok{background:var(--green-lt);color:var(--green)}
+.pi-wait{background:var(--amber-lt);color:var(--amber)}
+.prog-row b{margin-left:auto;font-family:var(--mono);font-size:13px}
+
+/* ═══ SIGN CHECKLIST ═══ */
+.chk-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--gray1);font-size:13.5px;color:var(--gray7)}
+.chk-ic{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.signed-banner{background:var(--green-lt);border:1px solid var(--green);border-radius:12px;padding:18px;text-align:center;margin-bottom:18px}
+.signed-banner .sb-ic{font-size:34px}
+.signed-banner .sb-t{font-size:18px;font-weight:700;color:var(--green);margin-top:6px}
+
+/* ═══ MODAL / TOAST (spine) ═══ */
+.modal-bg{position:fixed;inset:0;background:rgba(11,30,61,.5);display:none;align-items:center;justify-content:center;z-index:200;padding:18px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:540px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-hdr{display:flex;align-items:center;gap:10px;padding:18px 22px;border-bottom:1px solid var(--gray2)}
+.modal-title{font-size:19px;font-weight:700;color:var(--navy);flex:1}
+.modal-x{width:34px;height:34px;border-radius:8px;border:none;background:var(--gray1);color:var(--gray6);font-size:18px;cursor:pointer}
+.modal-x:hover{background:var(--gray2)}
+.modal-body{padding:20px 22px}
+.modal-foot{padding:16px 22px;border-top:1px solid var(--gray2);display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.fld{margin-bottom:15px}
+.fld label{display:block;font-size:13px;font-weight:600;color:var(--gray7);margin-bottom:6px}
+.fld input,.fld textarea,.fld select{width:100%;padding:11px 13px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:15px;color:var(--gray7)}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-lt)}
+.role-opt{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1.5px solid var(--gray2);border-radius:10px;cursor:pointer;margin-bottom:9px;transition:all .12s}
+.role-opt:hover{border-color:var(--blue);background:var(--blue-xlt)}
+.role-opt .ro-av{width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.role-opt .ro-name{font-size:15px;font-weight:600;color:var(--gray8)}
+.role-opt .ro-tier{font-size:12.5px;color:var(--gray6)}
+.toast-wrap{position:fixed;bottom:22px;right:22px;z-index:300;display:flex;flex-direction:column;gap:10px}
+.toast{display:flex;align-items:center;gap:10px;background:var(--gray8);color:#fff;padding:13px 17px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:tin .2s ease;max-width:360px}
+.toast.green{background:var(--green)}.toast.red{background:var(--red)}.toast.amber{background:var(--amber)}.toast.blue{background:var(--blue)}.toast.purple{background:var(--purple2)}
+@keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:1100px){.rail{display:none}}
+@media(max-width:820px){
+  .stepper{width:64px}
+  .step-lbl,.step-sub{display:none}
+  .meat-grid{grid-template-columns:1fr}
+  .main{padding:16px 14px}
+  .tlogo-sub,.tmodule,.tenant-sw .t-lbl{display:none}
+}
+@media(max-width:480px){
+  .pg-title{font-size:21px}
+  .phdr{padding:11px 14px;gap:12px}
+  .voip-stat span.lbl{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOP NAV ═══ -->
+<div class="tnav">
+  <div class="tlogo">
+    <div class="tlogo-box">❤️</div>
+    <div><div class="tlogo-name">CareSync Pro</div><div class="tlogo-sub">Medical Office Force</div></div>
+  </div>
+  <div class="tmodule">📝 AI Encounter Engine</div>
+  <a class="tback" href="appointment-dashboard.html">← Appointment Dashboard</a>
+  <div class="tsp"></div>
+  <div class="tenant-sw" onclick="openTenantModal()">
+    <span style="font-size:16px">🏢</span>
+    <div><div class="t-lbl">Tenant</div><div class="t-val" id="tenantLabel">Athens Heart Center ▸ AHC Main</div></div>
+  </div>
+  <div class="role-chip" onclick="openRoleModal()">
+    <div class="rc-av" id="roleAv">RP</div>
+    <div><div class="rc-name" id="roleName">Dr. Raj Patel</div><div class="rc-role" id="roleTier">Physician · Tier 4</div></div>
+    <span style="color:rgba(255,255,255,.6);font-size:12px">▾</span>
+  </div>
+</div>
+
+<!-- ═══ VOIP BAR ═══ -->
+<div class="voip">
+  <div class="voip-status"><span class="voip-dot"></span>VoIP Online</div>
+  <div class="voip-stat" onclick="voipDemo('Voicemails')"><span class="lbl">Voicemails</span> <b>3</b></div>
+  <div class="voip-stat" onclick="voipDemo('Missed Calls')"><span class="lbl">Missed</span> <b>1</b></div>
+  <div class="voip-sp"></div>
+  <button class="voip-ic" onclick="voipDemo('Dialer')" title="Dialer">📞</button>
+  <button class="voip-ic" onclick="voipDemo('Hold')" title="Hold">⏸️</button>
+  <button class="voip-ic" onclick="voipDemo('Transfer')" title="Transfer">↪️</button>
+</div>
+
+<!-- ═══ PATIENT HEADER ═══ -->
+<div class="phdr" id="phdr"></div>
+
+<!-- ═══ SHELL ═══ -->
+<div class="shell">
+  <div class="stepper" id="stepper"></div>
+  <div class="main" id="stepBody"></div>
+  <div class="rail" id="railBody"></div>
+</div>
+
+<!-- MODAL + TOAST -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-title" id="modalTitle">Title</div><button class="modal-x" onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ════════════════════════════════════════════════
+   CARESYNC FOUNDATION SPINE (shared, identical to shell)
+   ════════════════════════════════════════════════ */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function money(n){return '$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});}
+function $(id){return document.getElementById(id);}
+function cyrb53(str,seed){seed=seed||0;var h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(var i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString(16).padStart(14,'0');}
+
+var USERS={
+  super: {name:'Subodh Agrawal, MD', av:'SA', label:'Global SuperAdmin', tier:'Tier 0'},
+  padmin:{name:'Priya Shah',          av:'PS', label:'Practice Admin',     tier:'Tier 3-P'},
+  md:    {name:'Dr. Raj Patel',       av:'RP', label:'Physician',          tier:'Tier 4'},
+  nurse: {name:'Sarah Kim, MA',       av:'SK', label:'Nurse / MA',         tier:'Tier 5'},
+  front: {name:'Dana Brooks',         av:'DB', label:'Front Desk / Billing',tier:'Tier 6'}
+};
+var PERMS={
+  super: ['view','create','edit','archive','restore','sign','prescribe','order','bill','admin','audit_view','tenant_switch'],
+  padmin:['view','create','edit','archive','restore','bill','admin','audit_view'],
+  md:    ['view','create','edit','archive','restore','sign','prescribe','order','bill','audit_view'],
+  nurse: ['view','create','edit','archive','restore','order'],
+  front: ['view','create','edit','archive','restore']
+};
+var currentRole='md';
+function can(action){return (PERMS[currentRole]||[]).indexOf(action)>=0;}
+
+/* ---- audit chain ---- */
+var auditChain=[];var GENESIS='00000000000000';
+function logAudit(action,detail){
+  var prev=auditChain.length?auditChain[auditChain.length-1].hash:GENESIS;
+  var seq=auditChain.length+1;var ts=new Date().toISOString().replace('T',' ').slice(0,19);
+  var u=USERS[currentRole];var payload=[prev,seq,ts,u.name,currentRole,action,detail].join('|');
+  auditChain.push({seq:seq,ts:ts,actor:u.name,role:currentRole,action:action,detail:detail,prevHash:prev,hash:cyrb53(payload)});
+}
+
+/* ---- AiInteraction log (every AI call) ---- */
+var aiLog=[];
+function logAI(action,detail){
+  aiLog.push({seq:aiLog.length+1,ts:new Date().toISOString().replace('T',' ').slice(0,19),model:'claude-sonnet-4 (demo)',action:action,detail:detail});
+  logAudit('AI_'+action,'[AiInteraction] '+detail);
+}
+
+/* ---- modal / toast / voip ---- */
+function openModal(title,body,foot){$('modalTitle').textContent=title;$('modalBody').innerHTML=body;$('modalFoot').innerHTML=foot||'';$('modalBg').classList.add('open');}
+function closeModal(){$('modalBg').classList.remove('open');}
+function toast(msg,type){var d=document.createElement('div');d.className='toast '+(type||'');d.textContent=msg;$('toastWrap').appendChild(d);setTimeout(function(){d.style.opacity='0';d.style.transform='translateY(8px)';d.style.transition='all .25s';setTimeout(function(){d.remove();},260);},2600);}
+function voipDemo(what){toast(what+' — full VoIP / dialer activates in the VoIP phase','blue');}
+
+/* ---- role / tenant switch ---- */
+function openRoleModal(){
+  var body=Object.keys(USERS).map(function(k){var u=USERS[k];return '<div class="role-opt" onclick="switchRole(\''+k+'\')"><div class="ro-av">'+u.av+'</div><div><div class="ro-name">'+esc(u.name)+'</div><div class="ro-tier">'+u.label+' · '+u.tier+'</div></div></div>';}).join('');
+  openModal('Switch Role (RBAC demo)',body,'<button class="btn" onclick="closeModal()">Close</button>');
+}
+function switchRole(k){
+  if(!USERS[k])return;currentRole=k;var u=USERS[k];
+  $('roleAv').textContent=u.av;$('roleName').textContent=u.name;$('roleTier').textContent=u.label+' · '+u.tier;
+  logAudit('ROLE_SWITCH','Active role changed to '+u.label);
+  closeModal();renderRail();renderStep();
+  toast('Now acting as '+u.label+(can('sign')?'':' — cannot sign encounters'),'blue');
+}
+function openTenantModal(){
+  openModal('Switch Tenant',
+    '<div class="fld"><label>Group ▸ Organization</label><select id="tenSel"><option>Athens Heart Center ▸ AHC Main</option><option>Athens Heart Center ▸ Watkinsville</option></select></div><div style="font-size:13px;color:var(--gray6)">Every record carries Group → Org → Clinic → POD so the admin roll-up aggregates without a rebuild.</div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-pri" onclick="setTenant()">Switch</button>');
+}
+function setTenant(){var v=$('tenSel').value;$('tenantLabel').textContent=v;logAudit('TENANT_SWITCH','Active tenant set to '+v);closeModal();toast('Tenant switched','blue');}
+
+/* ════════════════════════════════════════════════
+   ENCOUNTER STATE — Athens Heart Center · Mon Jun 22 2026
+   ════════════════════════════════════════════════ */
+var ENC={
+  step:'brief',
+  appt:'AHC-APT-2207',
+  patient:{name:'Harold Branson',sex:'M',age:74,mrn:'AHC-04417',provider:'Dr. Raj Patel',visit:'Established · Cardiology follow-up',date:'Mon Jun 22, 2026',last:'Mar 18, 2026'},
+  vitals:{bp:'148/86',hr:'78 (irregular)',wt:'198 lb  (+4 lb)',spo2:'96%',temp:'98.2°F'},
+  rpm:{enrolled:true,days:22,oor:3,note:'3 out-of-range weight readings in 14 days (+4 lb) — possible early volume overload'},
+  problems:[
+    {code:'I50.32',label:'Chronic diastolic (HFpEF) heart failure',hcc:true,hccCat:'Heart Failure (CMS-HCC V28)',raf:0.331,carry:true,meat:{m:'',e:'',a:'',t:''}},
+    {code:'I48.91',label:'Atrial fibrillation, unspecified',hcc:true,hccCat:'Specified Heart Arrhythmias (V28)',raf:0.268,carry:true,meat:{m:'',e:'',a:'',t:''}},
+    {code:'E11.22',label:'Type 2 diabetes mellitus w/ diabetic CKD',hcc:true,hccCat:'Diabetes w/ Chronic Complications (V28)',raf:0.166,carry:true,meat:{m:'',e:'',a:'',t:''}},
+    {code:'N18.32',label:'Chronic kidney disease, stage 3b',hcc:true,hccCat:'CKD Stage 3 (V28)',raf:0.127,carry:true,meat:{m:'',e:'',a:'',t:''}},
+    {code:'I25.10',label:'Atherosclerotic heart disease, native vessel',hcc:false,carry:true},
+    {code:'E78.5',label:'Hyperlipidemia, unspecified',hcc:false,carry:true},
+    {code:'I10',label:'Essential (primary) hypertension',hcc:false,carry:true}
+  ],
+  meds:[
+    {rx:'866924',name:'Metoprolol succinate ER 50 mg',sig:'1 tab PO daily'},
+    {rx:'1364445',name:'Apixaban (Eliquis) 5 mg',sig:'1 tab PO BID'},
+    {rx:'310429',name:'Furosemide 40 mg',sig:'1 tab PO daily'},
+    {rx:'1545658',name:'Empagliflozin (Jardiance) 10 mg',sig:'1 tab PO daily'},
+    {rx:'617312',name:'Atorvastatin 40 mg',sig:'1 tab PO QHS'},
+    {rx:'314076',name:'Lisinopril 10 mg',sig:'1 tab PO daily'}
+  ],
+  allergies:[{name:'Sulfonamides',reaction:'Rash (documented 2019)'}],
+  ai:[
+    {id:'a1',type:'brief',text:'<b>74 y/o male</b> with HFpEF, atrial fibrillation on apixaban, and Type 2 diabetes with stage 3b CKD. RPM shows <b>3 out-of-range weight readings (+4 lb)</b> over 14 days — consistent with early volume overload. Assess volume status today.',status:'pending'},
+    {id:'a2',type:'brief',text:'<b>Allergy / med interaction:</b> documented <b>sulfonamide</b> allergy. Furosemide is a sulfonamide but has been <b>tolerated historically</b> — continue with awareness, no change indicated.',status:'pending'},
+    {id:'a3',type:'brief',text:'<b>Gap in care:</b> HbA1c last drawn Dec 2025 — due. Recommend BMP + HbA1c + NT-proBNP today.',status:'pending'},
+    {id:'a4',type:'hcc',text:'4 HCC-eligible diagnoses carried from last year are <b>not yet documented in 2026</b>. HCCs do not roll over — recapture with MEAT today or they are lost for the benefit year.',status:'pending'},
+    {id:'a5',type:'problem',text:'Latest eGFR <b>38 mL/min</b> (today\'s BMP pending) supports coding <code>N18.32</code> CKD stage 3b — already on the problem list, confirm carry-forward.',status:'pending'}
+  ],
+  soap:{
+    s:'74 y/o male, established cardiology patient, here for HFpEF / AFib / DM follow-up. Reports mild increase in ankle swelling and 4 lb weight gain over two weeks. Denies chest pain, orthopnea, PND. Adherent to medications.',
+    o:'',
+    a:'1. HFpEF (I50.32) — mild volume overload by RPM trend and exam.\n2. Atrial fibrillation (I48.91) — rate-controlled, anticoagulated (apixaban).\n3. T2DM with CKD (E11.22) — HbA1c due.\n4. CKD stage 3b (N18.32) — stable, eGFR ~38.',
+    p:'',
+    approved:false
+  },
+  orders:[
+    {id:'o1',type:'Lab',label:'BMP — basic metabolic panel',code:'80048',sel:true},
+    {id:'o2',type:'Lab',label:'HbA1c',code:'83036',sel:true},
+    {id:'o3',type:'Lab',label:'NT-proBNP',code:'83880',sel:true},
+    {id:'o4',type:'Imaging',label:'Echocardiogram, transthoracic',code:'93306',sel:false},
+    {id:'o5',type:'Referral',label:'Dietitian — heart failure / diabetes',code:'',sel:false}
+  ],
+  em:{level:'99214',confirmed:false},
+  signed:false
+};
+/* fill the AI-suggested Objective + Plan that the clinician will approve */
+ENC.soap.o='BP 148/86 · HR 78 irregular · Wt 198 lb (+4) · SpO2 96%. JVP mildly elevated. Trace bilateral pedal edema. Lungs clear. Irregularly irregular rhythm.';
+ENC.soap.p='1. Increase furosemide to 40 mg BID x5 days, then reassess; daily weights via RPM.\n2. Continue apixaban, metoprolol, empagliflozin, atorvastatin, lisinopril.\n3. Labs today: BMP, HbA1c, NT-proBNP.\n4. RTC 2 weeks; call for weight gain >3 lb.';
+
+/* ════════════════════════════════════════════════
+   COMPUTED HELPERS
+   ════════════════════════════════════════════════ */
+ENC.reconcileDone=false;
+var STEPS=[
+  {id:'brief',num:1,lbl:'AI Pre-Visit Brief',sub:'Review & confirm'},
+  {id:'reconcile',num:2,lbl:'Reconcile',sub:'Problems · Meds · Allergies'},
+  {id:'hcc',num:3,lbl:'HCC + MEAT',sub:'Risk capture'},
+  {id:'soap',num:4,lbl:'SOAP Note',sub:'AI-drafted'},
+  {id:'orders',num:5,lbl:'Orders & E/M',sub:'Labs · CPT'},
+  {id:'sign',num:6,lbl:'Sign & Close',sub:'Finalize'}
+];
+function hccList(){return ENC.problems.filter(function(p){return p.hcc;});}
+function meatComplete(p){return p.meat&&p.meat.m.trim()&&p.meat.e.trim()&&p.meat.a.trim()&&p.meat.t.trim();}
+function hccDone(){return hccList().filter(meatComplete).length;}
+function capturedRAF(){return hccList().filter(meatComplete).reduce(function(s,p){return s+p.raf;},0);}
+function totalRAF(){return hccList().reduce(function(s,p){return s+p.raf;},0);}
+function aiByType(t){return ENC.ai.filter(function(a){return a.type===t;});}
+function aiPending(){return ENC.ai.filter(function(a){return a.status==='pending';}).length;}
+function ordSel(){return ENC.orders.filter(function(o){return o.sel;}).length;}
+function stepDone(id){
+  if(id==='brief')return aiByType('brief').every(function(a){return a.status!=='pending';});
+  if(id==='reconcile')return ENC.reconcileDone;
+  if(id==='hcc')return hccDone()===hccList().length;
+  if(id==='soap')return ENC.soap.approved;
+  if(id==='orders')return ENC.em.confirmed;
+  if(id==='sign')return ENC.signed;
+  return false;
+}
+
+/* ════════════════════════════════════════════════
+   RENDER: header / stepper / rail
+   ════════════════════════════════════════════════ */
+function renderHeader(){
+  var p=ENC.patient;
+  $('phdr').innerHTML=
+    '<div class="phdr-av">'+p.name.split(' ').map(function(x){return x[0];}).join('')+'</div>'
+    +'<div class="phdr-id"><div class="pn">'+esc(p.name)+'</div><div class="pm">'+p.age+p.sex+' · MRN '+esc(p.mrn)+' · '+esc(p.provider)+'</div></div>'
+    +'<div class="phdr-sp"></div>'
+    +'<div class="phdr-chips">'
+    +'<div class="phchip red">⚠ Allergy: Sulfonamides</div>'
+    +'<div class="phchip">❤ HFpEF · AFib</div>'
+    +'<div class="phchip amber">📡 RPM OOR(3)<span class="tip" data-tip="'+esc(ENC.rpm.note)+'">i</span></div>'
+    +'<div class="phchip teal">'+ENC.problems.length+' active problems</div>'
+    +'<div class="phchip">Last visit '+esc(p.last)+'</div>'
+    +'</div>';
+}
+function renderStepper(){
+  $('stepper').innerHTML=STEPS.map(function(s){
+    var done=stepDone(s.id)&&ENC.step!==s.id;
+    var cls='step-item'+(ENC.step===s.id?' active':'')+(done?' done':'');
+    var num=done?'✓':s.num;
+    return '<div class="'+cls+'" onclick="goStep(\''+s.id+'\')"><div class="step-num">'+num+'</div><div><div class="step-lbl">'+s.lbl+'</div><div class="step-sub">'+s.sub+'</div></div></div>';
+  }).join('');
+}
+function renderRail(){
+  var done=hccDone(),tot=hccList().length;
+  var checks=[
+    {ok:aiPending()===0,l:'AI suggestions reviewed',v:(ENC.ai.length-aiPending())+'/'+ENC.ai.length},
+    {ok:ENC.reconcileDone,l:'Reconciliation confirmed',v:ENC.reconcileDone?'✓':'—'},
+    {ok:done===tot,l:'HCC MEAT captured',v:done+'/'+tot},
+    {ok:ENC.soap.approved,l:'SOAP note approved',v:ENC.soap.approved?'✓':'—'},
+    {ok:ENC.em.confirmed,l:'E/M + CPT confirmed',v:ENC.em.confirmed?ENC.em.level:'—'}
+  ];
+  var rows=checks.map(function(c){
+    return '<div class="prog-row"><div class="prog-ic '+(c.ok?'pi-ok':'pi-wait')+'">'+(c.ok?'✓':'•')+'</div>'+c.l+'<b>'+c.v+'</b></div>';
+  }).join('');
+  var ready=checks.every(function(c){return c.ok;})&&can('sign')&&!ENC.signed;
+  $('railBody').innerHTML=
+    '<div class="rail-sec"><div class="rail-h">Risk Adjustment Capture</div>'
+    +'<div class="raf-big">+'+capturedRAF().toFixed(3)+'</div>'
+    +'<div class="raf-sub">of +'+totalRAF().toFixed(3)+' available RAF · '+done+'/'+tot+' HCCs documented (demo weights)</div></div>'
+    +'<div class="rail-sec"><div class="rail-h">Encounter Progress</div>'+rows+'</div>'
+    +'<div class="rail-sec"><div class="rail-h">Finalize</div>'
+    +(ENC.signed
+        ? '<div class="phchip teal" style="width:100%;justify-content:center">✓ Signed & closed</div>'
+        : '<button class="btn btn-green btn-block" '+(ready?'':'disabled')+' onclick="goStep(\'sign\')">'+(can('sign')?'Go to Sign & Close →':'Sign restricted to MD')+'</button>')
+    +'<div style="font-size:11.5px;color:var(--gray5);margin-top:9px;line-height:1.4">AI augments — the physician confirms every suggestion. '+aiLog.length+' AI calls logged to AiInteraction.</div></div>';
+}
+function renderStep(){
+  renderStepper();
+  var fn={brief:stepBrief,reconcile:stepReconcile,hcc:stepHCC,soap:stepSOAP,orders:stepOrders,sign:stepSign}[ENC.step];
+  $('stepBody').innerHTML=fn?fn():'';
+  $('stepBody').scrollTop=0;
+  renderRail();
+}
+function goStep(id){ENC.step=id;renderStep();}
+
+/* ════════════════════════════════════════════════
+   STEP 1 — AI PRE-VISIT BRIEF
+   ════════════════════════════════════════════════ */
+function aiSuggHtml(a){
+  var st='';
+  if(a.status==='confirmed')st='<span class="ai-sugg-state ss-confirmed">✓ Confirmed by clinician</span>';
+  else if(a.status==='dismissed')st='<span class="ai-sugg-state ss-dismissed">Dismissed</span>';
+  else st='<button class="btn btn-green btn-sm" onclick="aiConfirm(\''+a.id+'\')">✓ Confirm</button><button class="btn btn-sm" onclick="aiDismiss(\''+a.id+'\')">Dismiss</button>';
+  return '<div class="ai-sugg'+(a.status==='confirmed'?' confirmed':'')+(a.status==='dismissed'?' dismissed':'')+'"><div class="ai-sugg-txt">'+a.text+'</div><div class="ai-sugg-acts">'+st+'</div></div>';
+}
+function stepBrief(){
+  var items=aiByType('brief').map(aiSuggHtml).join('');
+  var v=ENC.vitals;
+  return '<div class="pg-title">AI Pre-Visit Brief</div><div class="pg-sub">A chart summary drafted by AI. Nothing is entered into the record until you confirm it — AI augments, the physician decides.</div>'
+    +'<div class="ai-card" style="margin-top:16px"><div class="ai-hdr"><span class="ai-badge">✦ AI</span><div class="ai-title">Pre-Visit Summary</div><div class="ai-confirm-note">Physician confirms each item</div></div><div class="ai-body">'+items+'</div></div>'
+    +'<div class="card"><div class="card-hdr"><span style="font-size:18px">🩺</span><div class="card-title">Today\'s Vitals</div><span class="card-badge">Rooming · '+esc(USERS.nurse.name)+'</span></div><div class="card-body" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px">'
+    +'<div><div style="font-size:12px;color:var(--gray5);font-weight:600">BP</div><div style="font-size:18px;font-weight:700;color:var(--navy);font-family:var(--mono)">'+v.bp+'</div></div>'
+    +'<div><div style="font-size:12px;color:var(--gray5);font-weight:600">HR</div><div style="font-size:18px;font-weight:700;color:var(--navy);font-family:var(--mono)">'+v.hr+'</div></div>'
+    +'<div><div style="font-size:12px;color:var(--gray5);font-weight:600">Weight</div><div style="font-size:18px;font-weight:700;color:var(--amber);font-family:var(--mono)">'+v.wt+'</div></div>'
+    +'<div><div style="font-size:12px;color:var(--gray5);font-weight:600">SpO₂</div><div style="font-size:18px;font-weight:700;color:var(--navy);font-family:var(--mono)">'+v.spo2+'</div></div>'
+    +'<div><div style="font-size:12px;color:var(--gray5);font-weight:600">Temp</div><div style="font-size:18px;font-weight:700;color:var(--navy);font-family:var(--mono)">'+v.temp+'</div></div>'
+    +'</div></div>'
+    +'<div style="display:flex;justify-content:flex-end;margin-top:6px"><button class="btn btn-pri" onclick="goStep(\'reconcile\')">Next: Reconcile →</button></div>';
+}
+function aiConfirm(id){var a=ENC.ai.find(function(x){return x.id===id;});if(!a)return;a.status='confirmed';logAI('CONFIRM','Clinician confirmed AI suggestion '+id);toast('Confirmed — written to chart','green');renderStep();}
+function aiDismiss(id){var a=ENC.ai.find(function(x){return x.id===id;});if(!a)return;a.status='dismissed';logAI('DISMISS','Clinician dismissed AI suggestion '+id);toast('Dismissed','blue');renderStep();}
+
+/* ════════════════════════════════════════════════
+   STEP 2 — RECONCILE
+   ════════════════════════════════════════════════ */
+function stepReconcile(){
+  var probs=ENC.problems.map(function(p){
+    return '<div class="rrow"><div class="rrow-main"><div class="rrow-name"><span class="code">'+p.code+'</span>'+esc(p.label)+(p.hcc?'<span class="hcc-tag">HCC V28</span>':'')+'</div><div class="rrow-sub">Carried forward from last encounter</div></div><div class="rrow-acts"><span class="phchip teal" style="font-size:12px">✓ Reconciled</span></div></div>';
+  }).join('');
+  var meds=ENC.meds.map(function(m){
+    return '<div class="rrow"><div class="rrow-main"><div class="rrow-name"><span class="code rx">RxNorm '+m.rx+'</span>'+esc(m.name)+'</div><div class="rrow-sub">'+esc(m.sig)+'</div></div><div class="rrow-acts"><span class="phchip teal" style="font-size:12px">✓ Active</span></div></div>';
+  }).join('');
+  var algs=ENC.allergies.map(function(a){
+    return '<div class="rrow"><div class="rrow-main"><div class="rrow-name">⚠ '+esc(a.name)+'</div><div class="rrow-sub">'+esc(a.reaction)+'</div></div><div class="rrow-acts"><span class="phchip red" style="font-size:12px">Confirmed</span></div></div>';
+  }).join('');
+  var aiProb=aiByType('problem').map(aiSuggHtml).join('');
+  return '<div class="pg-title">Reconcile — Problems · Meds · Allergies</div><div class="pg-sub">Structured, coded data only (ICD-10 · RxNorm). Confirm carry-forward and act on AI suggestions before moving on.</div>'
+    +'<div class="ai-card" style="margin-top:16px"><div class="ai-hdr"><span class="ai-badge">✦ AI</span><div class="ai-title">Coding Suggestion</div><div class="ai-confirm-note">Physician confirms</div></div><div class="ai-body">'+aiProb+'</div></div>'
+    +'<div class="card"><div class="card-hdr"><span style="font-size:18px">📋</span><div class="card-title">Active Problems</div><span class="card-badge">'+ENC.problems.length+' · ICD-10</span></div><div class="card-body">'+probs+'</div></div>'
+    +'<div class="card"><div class="card-hdr"><span style="font-size:18px">💊</span><div class="card-title">Medications</div><span class="card-badge" style="background:var(--teal-lt);color:var(--teal2)">'+ENC.meds.length+' · RxNorm</span></div><div class="card-body">'+meds+'</div></div>'
+    +'<div class="card"><div class="card-hdr"><span style="font-size:18px">⚠️</span><div class="card-title">Allergies</div><span class="card-badge" style="background:var(--red-lt);color:var(--red)">'+ENC.allergies.length+'</span></div><div class="card-body">'+algs+'</div></div>'
+    +'<div style="display:flex;justify-content:space-between;margin-top:6px;gap:10px;flex-wrap:wrap"><button class="btn" onclick="goStep(\'brief\')">← Back</button><button class="btn btn-pri" onclick="confirmReconcile()">Confirm Reconciliation & Continue →</button></div>';
+}
+function confirmReconcile(){
+  if(aiByType('problem').some(function(a){return a.status==='pending';})){toast('Review the AI coding suggestion first','amber');return;}
+  ENC.reconcileDone=true;logAudit('RECONCILE','Problems/meds/allergies reconciled and confirmed');toast('Reconciliation confirmed','green');goStep('hcc');
+}
+
+/* ════════════════════════════════════════════════
+   STEP 3 — HCC + MEAT
+   ════════════════════════════════════════════════ */
+var MEAT_LABELS={m:['M','Monitor — signs, symptoms, disease progression'],e:['E','Evaluate — test results, response to treatment'],a:['A','Assess — review, order tests, discussion'],t:['T','Treat — meds, referrals, plan']};
+function stepHCC(){
+  var cards=hccList().map(function(p,i){
+    var pi=ENC.problems.indexOf(p);
+    var complete=meatComplete(p);
+    var flds=['m','e','a','t'].map(function(f){
+      var lab=MEAT_LABELS[f];
+      var val=p.meat[f];
+      return '<div class="meat-fld"><label><span class="meat-k">'+lab[0]+'</span>'+lab[1]+'</label><textarea id="meat_'+pi+'_'+f+'" class="'+(val.trim()?'filled':'')+'" oninput="meatSet('+pi+',\''+f+'\',this)" placeholder="…">'+esc(val)+'</textarea></div>';
+    }).join('');
+    return '<div class="meat-card"><div class="meat-hdr"><span class="code">'+p.code+'</span><div class="meat-dx">'+esc(p.label)+'</div><span class="hcc-tag">'+esc(p.hccCat)+' · RAF +'+p.raf.toFixed(3)+'</span><span class="meat-status '+(complete?'meat-complete':'meat-incomplete')+'" id="meatstat_'+pi+'">'+(complete?'✓ MEAT complete — billable':'MEAT incomplete')+'</span></div><div class="meat-grid">'+flds+'</div></div>';
+  }).join('');
+  var aiHcc=aiByType('hcc').map(aiSuggHtml).join('');
+  return '<div class="pg-title">HCC Capture with MEAT</div><div class="pg-sub">CMS-HCC V28 (operative Jan 1 2026). Each HCC must show <b>M</b>onitor / <b>E</b>valuate / <b>A</b>ssess / <b>T</b>reat to bill — your OIG audit defense. A diagnosis is not billable until all four are documented.</div>'
+    +'<div class="ai-card" style="margin-top:16px"><div class="ai-hdr"><span class="ai-badge">✦ AI</span><div class="ai-title">Recapture Reminder</div><div class="ai-confirm-note">Physician confirms</div></div><div class="ai-body">'+aiHcc+'</div></div>'
+    +cards
+    +'<div style="display:flex;justify-content:space-between;margin-top:6px;gap:10px;flex-wrap:wrap"><button class="btn" onclick="goStep(\'reconcile\')">← Back</button><button class="btn btn-purple" onclick="fillMeatDemo()">✦ AI: draft MEAT for me</button><button class="btn btn-pri" onclick="goStep(\'soap\')">Next: SOAP →</button></div>';
+}
+function meatSet(pi,f,el){
+  ENC.problems[pi].meat[f]=el.value;
+  el.classList.toggle('filled',el.value.trim().length>0);
+  var p=ENC.problems[pi],complete=meatComplete(p);
+  var badge=$('meatstat_'+pi);
+  if(badge){badge.className='meat-status '+(complete?'meat-complete':'meat-incomplete');badge.textContent=complete?'✓ MEAT complete — billable':'MEAT incomplete';}
+  renderRail();renderStepper();
+}
+function fillMeatDemo(){
+  var drafts={
+    'I50.32':{m:'Daily weights via RPM; +4 lb / 14 days. Reports increased ankle swelling.',e:'JVP mildly elevated, trace pedal edema. NT-proBNP ordered today.',a:'HFpEF with mild volume overload. Reviewed RPM trend with patient.',t:'Furosemide increased to 40 mg BID x5 days; continue GDMT.'},
+    'I48.91':{m:'Irregularly irregular rhythm; HR 78 at rest.',e:'Rate-controlled on metoprolol; reviewed anticoagulation status.',a:'AFib, rate-controlled, adequately anticoagulated (apixaban).',t:'Continue apixaban 5 mg BID and metoprolol succinate 50 mg.'},
+    'E11.22':{m:'Reviewed home glucose logs; HbA1c last Dec 2025.',e:'HbA1c ordered today; eGFR ~38 supports CKD complication.',a:'T2DM with diabetic CKD, suboptimal control suspected.',t:'Continue empagliflozin; reinforce diet; dietitian referral offered.'},
+    'N18.32':{m:'Trend eGFR; monitor for progression.',e:'eGFR ~38 mL/min (stage 3b); BMP ordered today.',a:'CKD stage 3b, stable, secondary to diabetes/hypertension.',t:'ACE inhibitor continued; SGLT2i for renal protection; avoid nephrotoxins.'}
+  };
+  hccList().forEach(function(p){var d=drafts[p.code];if(d){p.meat.m=d.m;p.meat.e=d.e;p.meat.a=d.a;p.meat.t=d.t;}});
+  logAI('DRAFT_MEAT','AI drafted MEAT narratives for '+hccList().length+' HCCs — pending physician edit');
+  toast('AI drafted MEAT — review & edit, then it bills','purple');
+  renderStep();
+}
+
+/* ════════════════════════════════════════════════
+   STEP 4 — SOAP
+   ════════════════════════════════════════════════ */
+function stepSOAP(){
+  var parts=[['s','Subjective'],['o','Objective'],['a','Assessment'],['p','Plan']];
+  var flds=parts.map(function(x){
+    return '<div class="soap-fld"><label><span class="soap-letter">'+x[1][0]+'</span>'+x[1]+'</label><textarea id="soap_'+x[0]+'" oninput="soapSet(\''+x[0]+'\',this)" '+(ENC.soap.approved?'readonly style="background:var(--gray0)"':'')+'>'+esc(ENC.soap[x[0]])+'</textarea></div>';
+  }).join('');
+  return '<div class="pg-title">SOAP Note</div><div class="pg-sub">AI drafted the note from the visit data. Edit any field, then approve — your edits and approval are what enter the record.</div>'
+    +'<div class="ai-card" style="margin-top:16px"><div class="ai-hdr"><span class="ai-badge">✦ AI</span><div class="ai-title">Draft generated from vitals, problems & RPM</div><div class="ai-confirm-note">Editable · physician approves</div></div><div class="ai-body" style="padding-top:4px"><div style="font-size:13px;color:var(--purple);font-weight:600">Edit freely below — this is a draft, not the final note.</div></div></div>'
+    +'<div class="card"><div class="card-body">'+flds+'</div></div>'
+    +'<div style="display:flex;justify-content:space-between;margin-top:6px;gap:10px;flex-wrap:wrap"><button class="btn" onclick="goStep(\'hcc\')">← Back</button>'
+    +(ENC.soap.approved?'<span class="phchip teal">✓ SOAP approved</span>':'<button class="btn btn-green" onclick="approveSOAP()">✓ Approve SOAP Note</button>')
+    +'<button class="btn btn-pri" onclick="goStep(\'orders\')">Next: Orders →</button></div>';
+}
+function soapSet(f,el){ENC.soap[f]=el.value;}
+function approveSOAP(){
+  if(!ENC.soap.s.trim()||!ENC.soap.a.trim()){toast('Subjective and Assessment cannot be empty','amber');return;}
+  ENC.soap.approved=true;logAI('SOAP_APPROVE','Physician edited & approved SOAP note');logAudit('SOAP_SIGN','SOAP note approved by '+USERS[currentRole].name);toast('SOAP note approved','green');renderStep();
+}
+
+/* ════════════════════════════════════════════════
+   STEP 5 — ORDERS & E/M
+   ════════════════════════════════════════════════ */
+var EM_OPTS=[
+  {lvl:'99213',desc:'Established · low MDM — 1 stable chronic illness'},
+  {lvl:'99214',desc:'Established · moderate MDM — 2+ chronic, one with exacerbation; prescription drug management',rec:true},
+  {lvl:'99215',desc:'Established · high MDM — severe exacerbation / threat to life'}
+];
+function stepOrders(){
+  var ords=ENC.orders.map(function(o){
+    return '<div class="ord-row'+(o.sel?' sel':'')+'" onclick="orderToggle(\''+o.id+'\')"><div class="ord-cb">'+(o.sel?'✓':'')+'</div><div class="ord-name"><span class="phchip" style="font-size:11px;margin-right:8px">'+o.type+'</span>'+esc(o.label)+(o.code?' <span class="code cpt">CPT '+o.code+'</span>':'')+'</div></div>';
+  }).join('');
+  var ems=EM_OPTS.map(function(e){
+    return '<div class="em-opt'+(ENC.em.level===e.lvl?' sel':'')+'" onclick="emSelect(\''+e.lvl+'\')"><div class="em-radio"></div><div><div class="em-lvl">'+e.lvl+(e.rec?'  <span class="hcc-tag" style="background:var(--blue-lt);color:var(--navy3)">✦ AI suggested</span>':'')+'</div><div class="em-desc">'+e.desc+'</div></div></div>';
+  }).join('');
+  return '<div class="pg-title">Orders & E/M Level</div><div class="pg-sub">Select today\'s orders, then confirm the AI-suggested E/M level. The CPT rationale is shown so you stay in control of the bill.</div>'
+    +'<div class="card" style="margin-top:16px"><div class="card-hdr"><span style="font-size:18px">🧪</span><div class="card-title">Orders</div><span class="card-badge">'+ordSel()+' selected</span></div><div class="card-body">'+ords+'</div></div>'
+    +'<div class="ai-card"><div class="ai-hdr"><span class="ai-badge">✦ AI</span><div class="ai-title">E/M Level — rationale</div><div class="ai-confirm-note">Physician confirms</div></div><div class="ai-body"><div class="ai-sugg-txt" style="margin-bottom:12px">Suggested <b>99214</b>: two or more chronic illnesses with one (HFpEF) showing exacerbation, plus prescription drug management (furosemide titration) → <b>moderate</b> medical decision-making.</div>'+ems+'</div></div>'
+    +'<div style="display:flex;justify-content:space-between;margin-top:6px;gap:10px;flex-wrap:wrap"><button class="btn" onclick="goStep(\'soap\')">← Back</button>'
+    +(ENC.em.confirmed?'<span class="phchip teal">✓ '+ENC.em.level+' confirmed</span>':'<button class="btn btn-green" onclick="confirmEM()">✓ Confirm E/M '+ENC.em.level+'</button>')
+    +'<button class="btn btn-pri" onclick="goStep(\'sign\')">Next: Sign →</button></div>';
+}
+function orderToggle(id){var o=ENC.orders.find(function(x){return x.id===id;});if(!o)return;if(!can('order')&&!can('sign')){toast('Your role cannot place orders','amber');return;}o.sel=!o.sel;logAudit('ORDER_'+(o.sel?'ADD':'REMOVE'),o.label);renderStep();}
+function emSelect(l){ENC.em.level=l;ENC.em.confirmed=false;renderStep();}
+function confirmEM(){ENC.em.confirmed=true;logAudit('EM_CONFIRM','E/M level '+ENC.em.level+' confirmed by '+USERS[currentRole].name);toast('E/M '+ENC.em.level+' confirmed','green');renderStep();}
+
+/* ════════════════════════════════════════════════
+   STEP 6 — SIGN & CLOSE
+   ════════════════════════════════════════════════ */
+function stepSign(){
+  if(ENC.signed)return signedView();
+  var done=hccDone(),tot=hccList().length;
+  var checks=[
+    {ok:aiPending()===0,l:'All AI suggestions reviewed (confirmed or dismissed)'},
+    {ok:ENC.reconcileDone,l:'Problems, meds & allergies reconciled'},
+    {ok:done===tot,l:'All '+tot+' HCCs have complete MEAT ('+done+'/'+tot+')'},
+    {ok:ENC.soap.approved,l:'SOAP note approved'},
+    {ok:ENC.em.confirmed,l:'E/M level confirmed ('+ENC.em.level+')'},
+    {ok:can('sign'),l:'Signer is authorized to sign ('+USERS[currentRole].label+')'}
+  ];
+  var rows=checks.map(function(c){return '<div class="chk-row"><div class="chk-ic '+(c.ok?'pi-ok':'pi-wait')+'">'+(c.ok?'✓':'!')+'</div><span style="flex:1">'+c.l+'</span></div>';}).join('');
+  var ready=checks.every(function(c){return c.ok;});
+  return '<div class="pg-title">Sign & Close Encounter</div><div class="pg-sub">Signing writes the encounter to the immutable, hash-chained audit log. Every AI call this visit is recorded to AiInteraction. Staging-gate aware — nothing from the patient portal was auto-applied.</div>'
+    +'<div class="card" style="margin-top:16px"><div class="card-hdr"><span style="font-size:18px">✅</span><div class="card-title">Pre-Sign Checklist</div><span class="card-badge '+(ready?'':'')+'" style="background:'+(ready?'var(--green-lt)':'var(--amber-lt)')+';color:'+(ready?'var(--green)':'var(--amber)')+'">'+(ready?'Ready':'Incomplete')+'</span></div><div class="card-body">'+rows+'</div></div>'
+    +'<div class="card"><div class="card-hdr"><span style="font-size:18px">📊</span><div class="card-title">Encounter Summary</div></div><div class="card-body" style="font-size:14px;line-height:1.7;color:var(--gray7)">'
+    +'<div><b>Patient:</b> '+esc(ENC.patient.name)+' · MRN '+esc(ENC.patient.mrn)+'</div>'
+    +'<div><b>Provider:</b> '+esc(ENC.patient.provider)+' · '+esc(ENC.patient.date)+'</div>'
+    +'<div><b>HCCs captured:</b> '+done+'/'+tot+' · RAF +'+capturedRAF().toFixed(3)+' (demo)</div>'
+    +'<div><b>Orders:</b> '+ordSel()+' · <b>E/M:</b> '+ENC.em.level+'</div>'
+    +'<div><b>AI calls logged:</b> '+aiLog.length+' to AiInteraction</div></div></div>'
+    +'<div style="display:flex;justify-content:space-between;margin-top:6px;gap:10px;flex-wrap:wrap"><button class="btn" onclick="goStep(\'orders\')">← Back</button>'
+    +'<button class="btn btn-green" '+(ready?'':'disabled')+' onclick="openSignModal()">🔏 Sign & Close Encounter</button></div>';
+}
+function openSignModal(){
+  openModal('Confirm Signature',
+    '<div style="font-size:14px;color:var(--gray7);line-height:1.6">You are signing this encounter as <b>'+esc(USERS[currentRole].name)+'</b> ('+USERS[currentRole].label+').<br><br>This appends a tamper-evident entry to the audit chain and finalizes billing capture. It cannot be edited afterward — only addended.</div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-green" onclick="doSign()">Sign now</button>');
+}
+function doSign(){
+  ENC.signed=true;
+  hccList().forEach(function(p){if(meatComplete(p))p.billable=true;});
+  logAI('ENCOUNTER_SUMMARY','Encounter finalized: '+hccDone()+' HCCs, RAF +'+capturedRAF().toFixed(3)+', E/M '+ENC.em.level);
+  logAudit('SIGN_ENCOUNTER','Encounter '+ENC.appt+' signed & closed by '+USERS[currentRole].name+' · '+ordSel()+' orders · E/M '+ENC.em.level);
+  closeModal();renderStep();
+  toast('Encounter signed & closed ✓','green');
+}
+function signedView(){
+  return '<div class="signed-banner"><div class="sb-ic">🔏</div><div class="sb-t">Encounter Signed & Closed</div><div style="font-size:13px;color:var(--gray6);margin-top:4px">Finalized by '+esc(USERS[currentRole].name)+' · written to immutable audit log</div></div>'
+    +'<div class="card"><div class="card-hdr"><span style="font-size:18px">🔐</span><div class="card-title">Audit & AiInteraction Trail</div><span class="card-badge" style="background:var(--teal-lt);color:var(--teal2)">'+auditChain.length+' entries · SHA-chained</span></div><div class="card-body" style="font-size:13px;max-height:340px;overflow-y:auto">'
+    +auditChain.slice().reverse().map(function(e){return '<div style="padding:8px 0;border-bottom:1px solid var(--gray1)"><b style="color:var(--navy)">#'+e.seq+' '+esc(e.action)+'</b> <span style="color:var(--gray5);font-family:var(--mono);font-size:11px">'+e.ts+'</span><div style="color:var(--gray6);margin-top:2px">'+esc(e.detail)+'</div></div>';}).join('')
+    +'</div></div>'
+    +'<div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-pri" href="appointment-dashboard.html">← Back to Appointment Dashboard</a><button class="btn" onclick="location.reload()">Start new demo encounter</button></div>';
+}
+
+/* ════════════════════════════════════════════════
+   BOOT
+   ════════════════════════════════════════════════ */
+function boot(){
+  var u=USERS[currentRole];
+  $('roleAv').textContent=u.av;$('roleName').textContent=u.name;$('roleTier').textContent=u.label+' · '+u.tier;
+  logAudit('ENCOUNTER_OPEN','Opened encounter '+ENC.appt+' for '+ENC.patient.name+' ('+ENC.patient.mrn+')');
+  logAI('PREVISIT_BRIEF','Generated pre-visit brief from chart, RPM and gaps for '+ENC.patient.mrn);
+  renderHeader();renderStep();
+}
+document.addEventListener('DOMContentLoaded',boot);
+</script>
+</body>
+</html>

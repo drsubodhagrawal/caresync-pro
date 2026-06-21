@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CareSync Pro — Foundation Shell</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0b1e3d;--navy2:#102550;--navy3:#163070;
+  --blue:#1a6ef5;--blue2:#3b82f6;--blue-lt:#dbeafe;--blue-xlt:#eff6ff;
+  --teal:#0d9488;--teal-lt:#ccfbf1;--teal2:#0f766e;
+  --green:#15803d;--green-lt:#dcfce7;
+  --amber:#b45309;--amber-lt:#fef3c7;
+  --red:#dc2626;--red-lt:#fee2e2;
+  --purple:#5b21b6;--purple2:#7c3aed;--purple-lt:#ede9fe;
+  --orange:#ea580c;--orange-lt:#ffedd5;
+  --gray0:#f9fafb;--gray1:#f3f4f6;--gray2:#e5e7eb;--gray3:#d1d5db;
+  --gray4:#9ca3af;--gray5:#6b7280;--gray6:#374151;--gray7:#1f2937;--gray8:#111827;
+  --font:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --r:8px;--r2:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+}
+body{font-family:var(--font);background:var(--gray1);color:var(--gray7);font-size:15px;line-height:1.45;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* ═══ TOP NAV ═══ */
+.tnav{height:58px;background:var(--navy);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06)}
+.tlogo{display:flex;align-items:center;gap:10px;padding-right:14px;border-right:1px solid rgba(255,255,255,.12)}
+.tlogo-box{width:38px;height:38px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px}
+.tlogo-name{font-size:16px;font-weight:700;color:#fff}
+.tlogo-sub{font-size:11px;color:rgba(255,255,255,.55)}
+.tmodule{padding:6px 15px;border:1.5px solid rgba(255,255,255,.28);border-radius:20px;font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,.1)}
+.tsp{flex:1}
+.tenant-sw{display:flex;align-items:center;gap:8px;padding:7px 13px;border-radius:9px;background:rgba(255,255,255,.09);cursor:pointer;border:1px solid rgba(255,255,255,.13);transition:all .13s}
+.tenant-sw:hover{background:rgba(255,255,255,.16)}
+.tenant-sw .t-lbl{font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;line-height:1}
+.tenant-sw .t-val{font-size:13px;color:#fff;font-weight:600;line-height:1.3}
+.role-chip{display:flex;align-items:center;gap:9px;padding:7px 13px;border-radius:9px;background:rgba(26,110,245,.22);cursor:pointer;border:1px solid rgba(26,110,245,.5);transition:all .13s}
+.role-chip:hover{background:rgba(26,110,245,.34)}
+.role-chip .rc-av{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.role-chip .rc-name{font-size:13px;color:#fff;font-weight:600;line-height:1.2}
+.role-chip .rc-role{font-size:10.5px;color:rgba(255,255,255,.7);line-height:1.2}
+
+/* ═══ VOIP BAR ═══ */
+.voip{height:38px;background:var(--navy2);display:flex;align-items:center;padding:0 16px;gap:14px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.05)}
+.voip-status{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#fff;font-weight:600}
+.voip-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.25)}
+.voip-stat{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.78);cursor:pointer;padding:3px 9px;border-radius:7px;transition:all .12s}
+.voip-stat:hover{background:rgba(255,255,255,.1);color:#fff}
+.voip-stat b{color:#fff;font-family:var(--mono)}
+.voip-sp{flex:1}
+.voip-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(255,255,255,.8);cursor:pointer;border:none;background:rgba(255,255,255,.07);transition:all .12s}
+.voip-ic:hover{background:var(--blue);color:#fff}
+
+/* ═══ BODY LAYOUT ═══ */
+.shell{flex:1;display:flex;overflow:hidden;min-height:0}
+.lsidebar{width:248px;background:#fff;border-right:1px solid var(--gray2);flex-shrink:0;overflow-y:auto;padding:14px 0}
+.ls-sec{padding:6px 16px 4px;font-size:11px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.6px;margin-top:8px}
+.ls-item{display:flex;align-items:center;gap:11px;padding:11px 16px;font-size:15px;font-weight:500;color:var(--gray7);cursor:pointer;border-left:3px solid transparent;transition:all .12s}
+.ls-item:hover{background:var(--blue-xlt);color:var(--navy)}
+.ls-item.active{background:var(--blue-xlt);color:var(--navy);border-left-color:var(--blue);font-weight:600}
+.ls-item .ls-ic{font-size:18px;width:22px;text-align:center}
+.ls-item .ls-gate{margin-left:auto;font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;background:var(--gray1);color:var(--gray5);font-family:var(--mono)}
+
+.main{flex:1;overflow-y:auto;padding:22px 26px;min-width:0}
+
+/* ═══ PAGE HEADER ═══ */
+.pg-hdr{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.pg-title{font-size:24px;font-weight:700;color:var(--navy);line-height:1.2}
+.pg-sub{font-size:14px;color:var(--gray6);margin-top:4px;max-width:760px}
+.pg-actions{margin-left:auto;display:flex;gap:9px;flex-wrap:wrap}
+
+/* ═══ BANNER ═══ */
+.banner{display:flex;gap:13px;align-items:flex-start;background:var(--blue-xlt);border:1px solid var(--blue-lt);border-left:4px solid var(--blue);border-radius:var(--r);padding:14px 16px;margin-bottom:20px}
+.banner .b-ic{font-size:22px;line-height:1}
+.banner .b-txt{font-size:14px;color:var(--gray7)}
+.banner .b-txt b{color:var(--navy)}
+
+/* ═══ KPI TILES ═══ */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.kpi-tile{background:#fff;border:1px solid var(--gray2);border-radius:var(--r2);padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi-accent{position:absolute;top:0;left:0;right:0;height:4px}
+.kpi-ic{font-size:22px;margin-bottom:8px}
+.kpi-val{font-size:32px;font-weight:700;font-family:var(--mono);color:var(--navy);line-height:1;letter-spacing:-.5px}
+.kpi-lbl{font-size:13px;font-weight:600;color:var(--gray6);margin-top:7px}
+
+/* ═══ CARDS ═══ */
+.cards2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px}
+.card{background:#fff;border:1px solid var(--gray2);border-radius:var(--r2);box-shadow:var(--shadow);overflow:hidden}
+.card-hdr{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--gray2)}
+.card-title{font-size:17px;font-weight:700;color:var(--navy)}
+.card-badge{margin-left:auto;font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;background:var(--blue-lt);color:var(--navy3)}
+.card-badge.ai{background:var(--purple-lt);color:var(--purple)}
+.card-body{padding:16px 18px}
+
+/* ═══ BUTTONS ═══ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 18px;border-radius:9px;font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;border:1.5px solid var(--gray3);background:#fff;color:var(--gray7);transition:all .13s}
+.btn:hover{background:var(--gray1);border-color:var(--gray4)}
+.btn-pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-pri:hover{background:#1559cc;border-color:#1559cc}
+.btn-green{background:var(--green);border-color:var(--green);color:#fff}
+.btn-green:hover{background:#0f6b30}
+.btn-danger{background:var(--red);border-color:var(--red);color:#fff}
+.btn-danger:hover{background:#b91c1c}
+.btn-amber{background:var(--amber);border-color:var(--amber);color:#fff}
+.btn-amber:hover{background:#92400e}
+.btn-sm{min-height:34px;padding:0 13px;font-size:13.5px;border-radius:8px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* ═══ LIST STANDARD ═══ */
+.list-tools{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-box{position:relative;flex:1;min-width:180px}
+.search-box input{width:100%;height:42px;padding:0 14px 0 38px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:15px;color:var(--gray7)}
+.search-box input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-lt)}
+.search-box .s-ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--gray5)}
+.status-sel{height:42px;padding:0 12px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:14px;font-weight:600;color:var(--gray7);background:#fff;cursor:pointer}
+.status-sel:focus{outline:none;border-color:var(--blue)}
+.list-inner{display:flex;flex-direction:column;gap:8px}
+.lrow{display:flex;align-items:center;gap:13px;padding:13px 15px;border:1px solid var(--gray2);border-radius:10px;background:#fff;transition:all .12s}
+.lrow:hover{border-color:var(--gray3);background:var(--gray0)}
+.lrow.arch{background:var(--gray0);border-style:dashed;opacity:.92}
+.lrow-main{flex:1;min-width:0}
+.lrow-name{font-size:15px;font-weight:600;color:var(--gray8)}
+.lrow-sub{font-size:13px;color:var(--gray6);margin-top:2px}
+.lrow-arch{font-size:12px;color:var(--amber);margin-top:3px;font-weight:500}
+.lrow-acts{display:flex;gap:7px;flex-shrink:0}
+.list-empty{text-align:center;padding:34px 16px;color:var(--gray5);font-size:14px}
+.list-empty .le-ic{font-size:34px;margin-bottom:8px}
+.list-foot{margin-top:12px;font-size:12.5px;color:var(--gray5);display:flex;gap:14px}
+
+/* ═══ BADGES / PILLS ═══ */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:11px}
+.pill-green{background:var(--green-lt);color:var(--green)}
+.pill-amber{background:var(--amber-lt);color:var(--amber)}
+.pill-red{background:var(--red-lt);color:var(--red)}
+.pill-gray{background:var(--gray1);color:var(--gray6)}
+
+/* ═══ RBAC GRID ═══ */
+.perm-grid{display:grid;grid-template-columns:1fr auto;gap:2px 14px;align-items:center}
+.perm-row{display:contents}
+.perm-name{font-size:14px;color:var(--gray7);padding:7px 0;border-bottom:1px solid var(--gray1)}
+.perm-name .pm-key{font-family:var(--mono);font-size:11.5px;color:var(--gray5);margin-left:6px}
+.perm-val{padding:7px 0;border-bottom:1px solid var(--gray1);text-align:right}
+.perm-yes{color:var(--green);font-weight:700;font-size:14px}
+.perm-no{color:var(--gray4);font-weight:700;font-size:14px}
+
+/* ═══ AUDIT ═══ */
+.audit-list{display:flex;flex-direction:column;gap:7px;max-height:300px;overflow-y:auto}
+.audit-row{display:flex;gap:11px;align-items:flex-start;padding:10px 12px;background:var(--gray0);border:1px solid var(--gray2);border-radius:9px;font-size:13px}
+.audit-seq{font-family:var(--mono);font-weight:600;color:var(--blue);font-size:12px;flex-shrink:0;width:26px}
+.audit-main{flex:1;min-width:0}
+.audit-act{font-weight:700;color:var(--navy);font-size:13.5px}
+.audit-det{color:var(--gray6);font-size:12.5px;margin-top:1px;word-break:break-word}
+.audit-meta{color:var(--gray5);font-size:11px;margin-top:3px;font-family:var(--mono)}
+.audit-hash{color:var(--teal2);font-size:10.5px;font-family:var(--mono);margin-top:2px;word-break:break-all}
+.chain-status{display:flex;align-items:center;gap:8px;padding:11px 14px;border-radius:9px;font-size:13.5px;font-weight:600;margin-bottom:13px}
+.chain-ok{background:var(--green-lt);color:var(--green)}
+.chain-bad{background:var(--red-lt);color:var(--red)}
+
+/* ═══ ALERT / TOOLTIP ═══ */
+.tip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--gray2);color:var(--gray6);font-size:11px;font-weight:700;cursor:help;margin-left:6px}
+.tip:hover::after{content:attr(data-tip);position:absolute;bottom:130%;left:50%;transform:translateX(-50%);background:var(--gray8);color:#fff;font-size:12px;font-weight:400;padding:8px 11px;border-radius:7px;white-space:normal;width:230px;z-index:50;box-shadow:var(--shadow);line-height:1.4}
+
+/* ═══ MODAL ═══ */
+.modal-bg{position:fixed;inset:0;background:rgba(11,30,61,.5);display:none;align-items:center;justify-content:center;z-index:200;padding:18px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-hdr{display:flex;align-items:center;gap:10px;padding:18px 22px;border-bottom:1px solid var(--gray2)}
+.modal-title{font-size:19px;font-weight:700;color:var(--navy);flex:1}
+.modal-x{width:34px;height:34px;border-radius:8px;border:none;background:var(--gray1);color:var(--gray6);font-size:18px;cursor:pointer}
+.modal-x:hover{background:var(--gray2)}
+.modal-body{padding:20px 22px}
+.modal-foot{padding:16px 22px;border-top:1px solid var(--gray2);display:flex;justify-content:flex-end;gap:10px}
+.fld{margin-bottom:15px}
+.fld label{display:block;font-size:13px;font-weight:600;color:var(--gray7);margin-bottom:6px}
+.fld input,.fld textarea,.fld select{width:100%;padding:11px 13px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:15px;color:var(--gray7)}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-lt)}
+.role-opt{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1.5px solid var(--gray2);border-radius:10px;cursor:pointer;margin-bottom:9px;transition:all .12s}
+.role-opt:hover{border-color:var(--blue);background:var(--blue-xlt)}
+.role-opt .ro-av{width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.role-opt .ro-name{font-size:15px;font-weight:600;color:var(--gray8)}
+.role-opt .ro-tier{font-size:12.5px;color:var(--gray6)}
+
+/* ═══ TOAST ═══ */
+.toast-wrap{position:fixed;bottom:22px;right:22px;z-index:300;display:flex;flex-direction:column;gap:10px}
+.toast{display:flex;align-items:center;gap:10px;background:var(--gray8);color:#fff;padding:13px 17px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:tin .2s ease;max-width:340px}
+.toast.green{background:var(--green)}.toast.red{background:var(--red)}.toast.amber{background:var(--amber)}.toast.blue{background:var(--blue)}
+@keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .cards2{grid-template-columns:1fr}
+  .lsidebar{display:none}
+  .main{padding:18px 16px}
+}
+@media(max-width:480px){
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .tlogo-sub,.tmodule{display:none}
+  .tenant-sw .t-lbl{display:none}
+  .voip-stat span.lbl{display:none}
+  .pg-title{font-size:21px}
+  .main{padding:14px 12px}
+  .kpi-val{font-size:27px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOP NAV ═══ -->
+<div class="tnav">
+  <div class="tlogo">
+    <div class="tlogo-box">❤️</div>
+    <div>
+      <div class="tlogo-name">CareSync Pro</div>
+      <div class="tlogo-sub">Medical Office Force</div>
+    </div>
+  </div>
+  <div class="tmodule">🧱 Foundation · Shell v1</div>
+  <div class="tsp"></div>
+  <div class="tenant-sw" onclick="openTenantModal()">
+    <span style="font-size:16px">🏢</span>
+    <div>
+      <div class="t-lbl">Tenant</div>
+      <div class="t-val" id="tenantLabel">Athens Heart Center ▸ AHC Main</div>
+    </div>
+  </div>
+  <div class="role-chip" onclick="openRoleModal()">
+    <div class="rc-av" id="roleAv">RP</div>
+    <div>
+      <div class="rc-name" id="roleName">Dr. Raj Patel</div>
+      <div class="rc-role" id="roleTier">Physician · Tier 4</div>
+    </div>
+    <span style="color:rgba(255,255,255,.6);font-size:12px">▾</span>
+  </div>
+</div>
+
+<!-- ═══ VOIP BAR ═══ -->
+<div class="voip">
+  <div class="voip-status"><span class="voip-dot"></span>VoIP Online</div>
+  <div class="voip-stat" onclick="voipDemo('Voicemails')"><span class="lbl">Voicemails</span> <b>3</b></div>
+  <div class="voip-stat" onclick="voipDemo('Missed Calls')"><span class="lbl">Missed</span> <b>1</b></div>
+  <div class="voip-sp"></div>
+  <button class="voip-ic" onclick="voipDemo('Dialer')" title="Dialer">📞</button>
+  <button class="voip-ic" onclick="voipDemo('Hold')" title="Hold">⏸️</button>
+  <button class="voip-ic" onclick="voipDemo('Transfer')" title="Transfer">↪️</button>
+</div>
+
+<!-- ═══ SHELL ═══ -->
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <div class="lsidebar">
+    <div class="ls-sec">Operational</div>
+    <div class="ls-item active" data-perm="view" onclick="go('home',this)"><span class="ls-ic">🧱</span>Foundation Self-Test</div>
+    <div class="ls-item" data-perm="view" onclick="go('sched',this)"><span class="ls-ic">📅</span>Schedule</div>
+    <div class="ls-item" data-perm="view" onclick="go('appts',this)"><span class="ls-ic">🩺</span>Appointments</div>
+
+    <div class="ls-sec">Clinical</div>
+    <div class="ls-item" data-perm="sign" onclick="go('encounter',this)"><span class="ls-ic">📝</span>Encounter<span class="ls-gate">sign</span></div>
+    <div class="ls-item" data-perm="prescribe" onclick="go('rx',this)"><span class="ls-ic">💊</span>Prescriptions<span class="ls-gate">rx</span></div>
+    <div class="ls-item" data-perm="order" onclick="go('orders',this)"><span class="ls-ic">🧪</span>Orders<span class="ls-gate">order</span></div>
+
+    <div class="ls-sec">Revenue</div>
+    <div class="ls-item" data-perm="bill" onclick="go('billing',this)"><span class="ls-ic">💳</span>Billing<span class="ls-gate">bill</span></div>
+
+    <div class="ls-sec">Administration</div>
+    <div class="ls-item" data-perm="admin" onclick="go('settings',this)"><span class="ls-ic">⚙️</span>Practice Settings<span class="ls-gate">admin</span></div>
+    <div class="ls-item" data-perm="audit_view" onclick="go('audit',this)"><span class="ls-ic">🔐</span>Audit Log<span class="ls-gate">audit</span></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="pg-hdr">
+      <div>
+        <div class="pg-title">Foundation Self-Test</div>
+        <div class="pg-sub">The shared spine every CareSync module sits on. Switch roles (top-right) and watch the sidebar, buttons, and permission grid change. Add / archive / restore an item to see the permanent list standard and the tamper-evident audit chain in action.</div>
+      </div>
+      <div class="pg-actions">
+        <button class="btn btn-sm" onclick="fireToastDemo()">🔔 Test Toast</button>
+        <button class="btn btn-sm" onclick="openCompDemoModal()">🪟 Test Modal</button>
+      </div>
+    </div>
+
+    <div class="banner">
+      <div class="b-ic">🧱</div>
+      <div class="b-txt"><b>This page is the foundation, not a finished module.</b> It exists to prove the spine works before we build <code>encounter.html</code> on top: tenant context, 8-tier RBAC gate, hash-chained audit, and the Add/Archive/Restore/Search list standard. Everything here is live and clickable.</div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-tile"><div class="kpi-accent" style="background:var(--blue)"></div><div class="kpi-ic">📍</div><div class="kpi-val" id="kpiLoc">2</div><div class="kpi-lbl">Active Locations</div></div>
+      <div class="kpi-tile"><div class="kpi-accent" style="background:var(--teal)"></div><div class="kpi-ic">👤</div><div class="kpi-val" id="kpiRole">5</div><div class="kpi-lbl">RBAC Roles Wired</div></div>
+      <div class="kpi-tile"><div class="kpi-accent" style="background:var(--purple2)"></div><div class="kpi-ic">🔐</div><div class="kpi-val" id="kpiAudit">0</div><div class="kpi-lbl">Audit Entries</div></div>
+      <div class="kpi-tile"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-ic">💳</div><div class="kpi-val" id="kpiMoney">$1,240</div><div class="kpi-lbl">Copay Collected Today</div></div>
+    </div>
+
+    <div class="cards2">
+      <!-- RBAC CARD -->
+      <div class="card">
+        <div class="card-hdr">
+          <span style="font-size:18px">🛡️</span>
+          <div class="card-title">RBAC Gate <span class="tip" data-tip="can(action) reads the current role's permission set. Sidebar items and buttons render only if the role passes the gate. Switch roles to see it change.">i</span></div>
+          <span class="card-badge" id="rbacBadge">Physician</span>
+        </div>
+        <div class="card-body">
+          <div style="font-size:13px;color:var(--gray6);margin-bottom:12px">What the <b id="rbacRoleName">Physician</b> role can do right now:</div>
+          <div class="perm-grid" id="permGrid"></div>
+        </div>
+      </div>
+
+      <!-- LIST STANDARD CARD -->
+      <div class="card">
+        <div class="card-hdr">
+          <span style="font-size:18px">📍</span>
+          <div class="card-title">List Standard <span class="tip" data-tip="Every CareSync list ships with Add, Archive (soft-delete with reason + timestamp) + Restore, a Search that filters, and an All / Active / Archived status dropdown.">i</span></div>
+          <button class="btn btn-pri btn-sm" id="addLocBtn" onclick="openAddLoc()">+ Add Location</button>
+        </div>
+        <div class="card-body">
+          <div class="list-tools">
+            <div class="search-box"><span class="s-ic">🔍</span><input id="locSearch" type="text" placeholder="Search locations…" oninput="renderLocList()"></div>
+            <select class="status-sel" id="locStatus" onchange="renderLocList()">
+              <option value="all">All</option>
+              <option value="active" selected>Active</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
+          <div class="list-inner" id="locListInner"></div>
+          <div class="list-foot" id="locFoot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUDIT CARD -->
+    <div class="card">
+      <div class="card-hdr">
+        <span style="font-size:18px">🔐</span>
+        <div class="card-title">Tamper-Evident Audit Chain <span class="tip" data-tip="Every sensitive action appends a hash-chained entry. Each hash includes the previous hash, so altering any past entry breaks the chain — append-only, per 45 CFR 164.312(b).">i</span></div>
+        <span class="card-badge" style="background:var(--teal-lt);color:var(--teal2)">SHA-chained · append-only</span>
+      </div>
+      <div class="card-body">
+        <div class="chain-status chain-ok" id="chainStatus">✓ Chain intact — verify any time</div>
+        <div style="display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap">
+          <button class="btn btn-green btn-sm" onclick="verifyChainUI()">✓ Verify Integrity</button>
+          <button class="btn btn-amber btn-sm" onclick="simulateTamper()">⚠️ Simulate Tamper</button>
+          <button class="btn btn-sm" onclick="resetAudit()">↺ Reset Demo Chain</button>
+        </div>
+        <div class="audit-list" id="auditList"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL + TOAST MOUNTS -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalCard">
+    <div class="modal-hdr"><div class="modal-title" id="modalTitle">Title</div><button class="modal-x" onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ════════════════════════════════════════════════
+   CARESYNC FOUNDATION — shared spine
+   ════════════════════════════════════════════════ */
+
+/* ---- helpers ---- */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function money(n){return '$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});}
+function $(id){return document.getElementById(id);}
+
+/* ---- 53-bit hash (cyrb53) for the audit chain ---- */
+function cyrb53(str,seed){
+  seed=seed||0;
+  var h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;
+  for(var i=0,ch;i<str.length;i++){
+    ch=str.charCodeAt(i);
+    h1=Math.imul(h1^ch,2654435761);
+    h2=Math.imul(h2^ch,1597334677);
+  }
+  h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);
+  h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);
+  return (4294967296*(2097151&h2)+(h1>>>0)).toString(16).padStart(14,'0');
+}
+
+/* ---- 8-tier RBAC (foundation set: 5 working roles) ---- */
+var USERS={
+  super: {name:'Subodh Agrawal, MD', av:'SA', label:'Global SuperAdmin', tier:'Tier 0'},
+  padmin:{name:'Priya Shah',          av:'PS', label:'Practice Admin',     tier:'Tier 3-P'},
+  md:    {name:'Dr. Raj Patel',       av:'RP', label:'Physician',          tier:'Tier 4'},
+  nurse: {name:'Sarah Kim, MA',       av:'SK', label:'Nurse / MA',         tier:'Tier 5'},
+  front: {name:'Dana Brooks',         av:'DB', label:'Front Desk / Billing',tier:'Tier 6'}
+};
+var PERMS={
+  super: ['view','create','edit','archive','restore','sign','prescribe','order','bill','admin','audit_view','tenant_switch'],
+  padmin:['view','create','edit','archive','restore','bill','admin','audit_view'],
+  md:    ['view','create','edit','archive','restore','sign','prescribe','order','bill','audit_view'],
+  nurse: ['view','create','edit','archive','restore','order'],
+  front: ['view','create','edit','archive','restore']
+};
+/* readable labels for the permission grid */
+var PERM_LABELS=[
+  ['view','View charts & lists'],
+  ['create','Create records'],
+  ['edit','Edit records'],
+  ['archive','Archive (soft-delete)'],
+  ['restore','Restore archived'],
+  ['order','Place orders (labs/imaging)'],
+  ['sign','Sign & close encounters'],
+  ['prescribe','Prescribe (e-Rx / EPCS)'],
+  ['bill','Billing & claims'],
+  ['admin','Practice settings'],
+  ['audit_view','View audit log'],
+  ['tenant_switch','Switch tenant']
+];
+var currentRole='md';
+function can(action){return (PERMS[currentRole]||[]).indexOf(action)>=0;}
+
+/* ════ AUDIT CHAIN ════ */
+var auditChain=[];
+var GENESIS='00000000000000';
+function logAudit(action,detail){
+  var prev=auditChain.length?auditChain[auditChain.length-1].hash:GENESIS;
+  var seq=auditChain.length+1;
+  var ts=new Date().toISOString().replace('T',' ').slice(0,19);
+  var u=USERS[currentRole];
+  var payload=[prev,seq,ts,u.name,currentRole,action,detail].join('|');
+  var hash=cyrb53(payload);
+  auditChain.push({seq:seq,ts:ts,actor:u.name,role:currentRole,action:action,detail:detail,prevHash:prev,hash:hash});
+  renderAudit();
+}
+function verifyChain(){
+  for(var i=0;i<auditChain.length;i++){
+    var e=auditChain[i];
+    var prev=(i===0)?GENESIS:auditChain[i-1].hash;
+    if(e.prevHash!==prev) return {ok:false,at:e.seq,why:'broken link to previous entry'};
+    var payload=[e.prevHash,e.seq,e.ts,e.actor,e.role,e.action,e.detail].join('|');
+    if(cyrb53(payload)!==e.hash) return {ok:false,at:e.seq,why:'entry content was altered'};
+  }
+  return {ok:true};
+}
+function renderAudit(){
+  var wrap=$('auditList');
+  if(!auditChain.length){wrap.innerHTML='<div class="list-empty"><div class="le-ic">🔐</div>No audit entries yet</div>';}
+  else{
+    wrap.innerHTML=auditChain.slice().reverse().map(function(e){
+      return '<div class="audit-row"><div class="audit-seq">#'+e.seq+'</div><div class="audit-main">'
+        +'<div class="audit-act">'+esc(e.action)+'</div>'
+        +'<div class="audit-det">'+esc(e.detail)+'</div>'
+        +'<div class="audit-meta">'+esc(e.actor)+' · '+esc(e.role)+' · '+e.ts+'</div>'
+        +'<div class="audit-hash">hash '+e.hash+' ← prev '+e.prevHash+'</div>'
+        +'</div></div>';
+    }).join('');
+  }
+  $('kpiAudit').textContent=auditChain.length;
+}
+function verifyChainUI(){
+  var r=verifyChain();var el=$('chainStatus');
+  if(r.ok){el.className='chain-status chain-ok';el.textContent='✓ Chain intact — all '+auditChain.length+' entries verified';toast('Audit chain verified — '+auditChain.length+' entries intact','green');}
+  else{el.className='chain-status chain-bad';el.textContent='✗ TAMPER DETECTED at entry #'+r.at+' — '+r.why;toast('Tamper detected at entry #'+r.at,'red');}
+}
+function simulateTamper(){
+  if(auditChain.length<2){toast('Add a location first so there are entries to tamper with','amber');return;}
+  auditChain[1].detail=auditChain[1].detail+' [SILENTLY ALTERED]';
+  renderAudit();
+  verifyChainUI();
+}
+function resetAudit(){
+  auditChain=[];renderAudit();
+  logAudit('SESSION_START','Foundation shell loaded · demo audit chain reset');
+  $('chainStatus').className='chain-status chain-ok';
+  $('chainStatus').textContent='✓ Chain intact — verify any time';
+  toast('Demo audit chain reset','blue');
+}
+
+/* ════ LIST STANDARD (Locations demo) ════ */
+var locations=[
+  {id:'L1',name:'Main Campus — Athens',sub:'1199 Prince Ave · 8 exam rooms · 4 diagnostic labs',status:'active'},
+  {id:'L2',name:'Watkinsville Satellite',sub:'2061 Experiment Station Rd · 4 exam rooms',status:'active'},
+  {id:'L3',name:'Old Vascular Lab',sub:'Decommissioned suite',status:'archived',archReason:'Relocated equipment to Main Campus Echo Lab',archTs:'2025-11-02 14:20'}
+];
+var locSeq=4;
+function renderLocList(){
+  var q=($('locSearch').value||'').toLowerCase().trim();
+  var st=$('locStatus').value;
+  var rows=locations.filter(function(l){
+    if(st!=='all' && l.status!==st) return false;
+    if(q && (l.name+' '+l.sub).toLowerCase().indexOf(q)<0) return false;
+    return true;
+  });
+  var inner=$('locListInner');
+  if(!rows.length){
+    inner.innerHTML='<div class="list-empty"><div class="le-ic">📭</div>No locations match this filter</div>';
+  }else{
+    inner.innerHTML=rows.map(function(l){
+      var arch=l.status==='archived';
+      var acts='';
+      if(arch){
+        acts+= can('restore') ? '<button class="btn btn-sm btn-green" onclick="restoreLoc(\''+l.id+'\')">↺ Restore</button>' : '';
+      }else{
+        acts+= can('archive') ? '<button class="btn btn-sm" onclick="openArchiveLoc(\''+l.id+'\')">🗄️ Archive</button>' : '';
+      }
+      return '<div class="lrow'+(arch?' arch':'')+'">'
+        +'<div class="lrow-main">'
+        +'<div class="lrow-name">'+esc(l.name)+(arch?' <span class="pill pill-gray">Archived</span>':' <span class="pill pill-green">Active</span>')+'</div>'
+        +'<div class="lrow-sub">'+esc(l.sub)+'</div>'
+        +(arch?'<div class="lrow-arch">🗄️ '+esc(l.archReason)+' · '+esc(l.archTs)+'</div>':'')
+        +'</div>'
+        +'<div class="lrow-acts">'+acts+'</div>'
+        +'</div>';
+    }).join('');
+  }
+  var act=locations.filter(function(l){return l.status==='active';}).length;
+  var arc=locations.filter(function(l){return l.status==='archived';}).length;
+  $('locFoot').innerHTML='<span>Showing '+rows.length+' of '+locations.length+'</span><span>● '+act+' active</span><span>🗄️ '+arc+' archived</span>';
+  $('kpiLoc').textContent=act;
+  $('addLocBtn').style.display=can('create')?'inline-flex':'none';
+}
+function openAddLoc(){
+  if(!can('create')){toast('Your role cannot create records','amber');return;}
+  openModal('Add Location',
+    '<div class="fld"><label>Location name</label><input id="nlName" placeholder="e.g. Oconee Specialty Annex"></div>'
+    +'<div class="fld"><label>Details (address · rooms)</label><input id="nlSub" placeholder="e.g. 700 Hog Mountain Rd · 6 exam rooms"></div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-pri" onclick="saveLoc()">Save Location</button>');
+}
+function saveLoc(){
+  var nm=($('nlName').value||'').trim();
+  var sb=($('nlSub').value||'').trim();
+  if(!nm){toast('Please enter a location name','amber');return;}
+  var id='L'+(locSeq++);
+  locations.push({id:id,name:nm,sub:sb||'—',status:'active'});
+  logAudit('CREATE_LOCATION','Added location "'+nm+'" ('+id+')');
+  closeModal();renderLocList();
+  toast('Location added','green');
+}
+function openArchiveLoc(id){
+  if(!can('archive')){toast('Your role cannot archive records','amber');return;}
+  var l=locations.find(function(x){return x.id===id;});if(!l)return;
+  openModal('Archive Location',
+    '<div style="font-size:14px;color:var(--gray6);margin-bottom:14px">Soft-delete <b>'+esc(l.name)+'</b>. It stays recoverable and the reason is written to the audit log.</div>'
+    +'<div class="fld"><label>Reason for archiving (required)</label><textarea id="arReason" rows="3" placeholder="e.g. Lease ended · merged into Main Campus"></textarea></div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-amber" onclick="confirmArchiveLoc(\''+id+'\')">Archive</button>');
+}
+function confirmArchiveLoc(id){
+  var l=locations.find(function(x){return x.id===id;});if(!l)return;
+  var r=($('arReason').value||'').trim();
+  if(!r){toast('A reason is required to archive','amber');return;}
+  l.status='archived';l.archReason=r;l.archTs=new Date().toISOString().replace('T',' ').slice(0,16);
+  logAudit('ARCHIVE_LOCATION','Archived "'+l.name+'" ('+id+') — reason: '+r);
+  closeModal();renderLocList();
+  toast('Location archived (recoverable)','blue');
+}
+function restoreLoc(id){
+  if(!can('restore')){toast('Your role cannot restore records','amber');return;}
+  var l=locations.find(function(x){return x.id===id;});if(!l)return;
+  l.status='active';var prevReason=l.archReason;delete l.archReason;delete l.archTs;
+  logAudit('RESTORE_LOCATION','Restored "'+l.name+'" ('+id+') from archive');
+  renderLocList();
+  toast('Location restored','green');
+}
+
+/* ════ RBAC GRID ════ */
+function renderRbac(){
+  var u=USERS[currentRole];
+  $('rbacBadge').textContent=u.label;
+  $('rbacRoleName').textContent=u.label;
+  $('permGrid').innerHTML=PERM_LABELS.map(function(p){
+    var ok=can(p[0]);
+    return '<div class="perm-name">'+esc(p[1])+'<span class="pm-key">'+p[0]+'</span></div>'
+      +'<div class="perm-val">'+(ok?'<span class="perm-yes">✓ Yes</span>':'<span class="perm-no">— No</span>')+'</div>';
+  }).join('');
+}
+
+/* ════ ROLE / TENANT SWITCH ════ */
+function openRoleModal(){
+  var body=Object.keys(USERS).map(function(k){
+    var u=USERS[k];
+    return '<div class="role-opt" onclick="switchRole(\''+k+'\')"><div class="ro-av">'+u.av+'</div><div><div class="ro-name">'+esc(u.name)+'</div><div class="ro-tier">'+u.label+' · '+u.tier+'</div></div></div>';
+  }).join('');
+  openModal('Switch Role (RBAC demo)',body,'<button class="btn" onclick="closeModal()">Close</button>');
+}
+function switchRole(k){
+  if(!USERS[k])return;
+  currentRole=k;var u=USERS[k];
+  $('roleAv').textContent=u.av;$('roleName').textContent=u.name;$('roleTier').textContent=u.label+' · '+u.tier;
+  applyRoleFilter();renderRbac();renderLocList();
+  logAudit('ROLE_SWITCH','Active role changed to '+u.label+' ('+u.tier+')');
+  closeModal();
+  toast('Now acting as '+u.label,'blue');
+}
+function openTenantModal(){
+  openModal('Switch Tenant',
+    '<div class="fld"><label>Group ▸ Organization</label><select id="tenSel">'
+    +'<option value="Athens Heart Center ▸ AHC Main">Athens Heart Center ▸ AHC Main</option>'
+    +'<option value="Athens Heart Center ▸ Watkinsville">Athens Heart Center ▸ Watkinsville</option>'
+    +'<option value="Athens Heart Center & Specialty ▸ Sleep Clinic">Athens Heart Center &amp; Specialty ▸ Sleep Clinic</option>'
+    +'</select></div>'
+    +'<div style="font-size:13px;color:var(--gray6)">Every record carries Group → Org → Clinic → POD context, so the admin roll-up later aggregates without a rebuild.</div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-pri" onclick="setTenant()">Switch</button>');
+}
+function setTenant(){
+  var v=$('tenSel').value;
+  $('tenantLabel').textContent=v;
+  logAudit('TENANT_SWITCH','Active tenant set to '+v);
+  closeModal();toast('Tenant switched','blue');
+}
+
+/* ════ NAV ════ */
+function go(id,el){
+  document.querySelectorAll('.ls-item').forEach(function(x){x.classList.remove('active');});
+  if(el)el.classList.add('active');
+  if(id!=='home'){
+    toast('"'+id+'" module arrives in a later phase — this is the foundation shell','blue');
+    var h=document.querySelector('.ls-item[onclick*="home"]');
+    document.querySelectorAll('.ls-item').forEach(function(x){x.classList.remove('active');});
+    if(h)h.classList.add('active');
+  }
+}
+function applyRoleFilter(){
+  document.querySelectorAll('.ls-item').forEach(function(it){
+    var p=it.getAttribute('data-perm');
+    it.style.display=(!p||can(p))?'flex':'none';
+  });
+}
+
+/* ════ MODAL / TOAST / VOIP ════ */
+function openModal(title,body,foot){
+  $('modalTitle').textContent=title;$('modalBody').innerHTML=body;$('modalFoot').innerHTML=foot||'';
+  $('modalBg').classList.add('open');
+}
+function closeModal(){$('modalBg').classList.remove('open');}
+function toast(msg,type){
+  var d=document.createElement('div');d.className='toast '+(type||'');d.textContent=msg;
+  $('toastWrap').appendChild(d);
+  setTimeout(function(){d.style.opacity='0';d.style.transform='translateY(8px)';d.style.transition='all .25s';setTimeout(function(){d.remove();},260);},2600);
+}
+function voipDemo(what){toast(what+' — full VoIP / dialer activates in the VoIP phase','blue');}
+function fireToastDemo(){toast('Toast helper works ✓','green');}
+function openCompDemoModal(){
+  openModal('Modal helper','<div style="font-size:14px;color:var(--gray6)">This is the shared <code>openModal()</code> / <code>closeModal()</code> helper. Every module reuses it for add/edit/confirm dialogs — consistent look, one code path.</div>','<button class="btn btn-pri" onclick="closeModal()">Got it</button>');
+}
+
+/* ════ BOOT ════ */
+function boot(){
+  applyRoleFilter();
+  renderRbac();
+  renderLocList();
+  logAudit('SESSION_START','Foundation shell loaded · tenant Athens Heart Center ▸ AHC Main');
+}
+document.addEventListener('DOMContentLoaded',boot);
+</script>
+</body>
+</html>
