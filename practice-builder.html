@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CareSync Pro — Practice Builder · Schedule Engine Intake</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0b1e3d;--navy2:#102550;
+  --blue:#1a6ef5;--blue2:#3b82f6;--blue-lt:#dbeafe;--blue-xlt:#eff6ff;
+  --teal:#0d9488;--teal-lt:#ccfbf1;--teal2:#0f766e;
+  --green:#15803d;--green-lt:#dcfce7;
+  --amber:#b45309;--amber-lt:#fef3c7;
+  --red:#dc2626;--red-lt:#fee2e2;
+  --purple:#7c3aed;--purple-lt:#ede9fe;
+  --orange:#ea580c;--orange-lt:#ffedd5;
+  --gray0:#f9fafb;--gray1:#f3f4f6;--gray2:#e5e7eb;--gray3:#d1d5db;
+  --gray4:#9ca3af;--gray5:#6b7280;--gray6:#374151;--gray7:#1f2937;
+  --font:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --r:8px;--r2:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+}
+body{font-family:var(--font);background:var(--gray1);color:var(--gray7);font-size:15px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* TOP NAV */
+.tnav{height:54px;background:var(--navy);display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0}
+.tlogo{display:flex;align-items:center;gap:9px;padding-right:14px;border-right:1px solid rgba(255,255,255,.12)}
+.tlogo-box{width:36px;height:36px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.tlogo-name{font-size:15px;font-weight:700;color:#fff;line-height:1.1}
+.tlogo-sub{font-size:11px;color:rgba(255,255,255,.5)}
+.tsp{flex:1}
+.tmodule{padding:6px 15px;border:1.5px solid rgba(255,255,255,.25);border-radius:20px;font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,.1)}
+.tuser{display:flex;align-items:center;gap:9px;padding:6px 13px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:13px;font-weight:600}
+.tavatar{width:30px;height:30px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+
+/* SHELL */
+.shell{flex:1;display:flex;overflow:hidden}
+.sidebar{width:230px;background:#fff;border-right:1px solid var(--gray2);overflow-y:auto;flex-shrink:0}
+.ls-sec{border-bottom:1px solid var(--gray2);padding:6px 0}
+.ls-sec-lbl{font-size:11px;font-weight:700;color:var(--gray4);text-transform:uppercase;letter-spacing:.5px;padding:10px 18px 5px}
+.ls-item{display:flex;align-items:center;gap:10px;padding:11px 18px;font-size:14px;color:var(--gray6);cursor:pointer;transition:all .13s;border-left:3px solid transparent}
+.ls-item:hover{background:var(--gray0);color:var(--blue)}
+.ls-item.on{background:var(--blue-xlt);color:var(--blue);border-left-color:var(--blue);font-weight:600}
+.ls-ic{font-size:16px;width:20px;text-align:center}
+.ls-badge{margin-left:auto;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--purple-lt);color:var(--purple)}
+
+.main{flex:1;overflow-y:auto;padding:18px 22px 90px}
+.pg-title{font-size:23px;font-weight:700;color:var(--navy)}
+.pg-sub{font-size:14px;color:var(--gray5);margin-top:3px}
+
+/* WIZARD BAR */
+.wizbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 18px;padding:14px;background:#fff;border:1px solid var(--gray2);border-radius:var(--r2);box-shadow:var(--shadow)}
+.wiz-step{padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid var(--gray3);background:#fff;color:var(--gray5);cursor:pointer;transition:all .15s;white-space:nowrap}
+.wiz-step:hover{border-color:var(--blue)}
+.wiz-step.done{background:var(--green-lt);border-color:var(--green);color:var(--green)}
+.wiz-step.active{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* CARD */
+.card{background:#fff;border-radius:var(--r2);border:1px solid var(--gray2);padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card-title-bar{padding:11px 15px;border-radius:var(--r);font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.ct-blue{background:var(--blue-xlt);color:var(--navy);border-left:4px solid var(--blue)}
+.ct-teal{background:var(--teal-lt);color:var(--teal2);border-left:4px solid var(--teal)}
+.ct-purple{background:var(--purple-lt);color:var(--purple);border-left:4px solid var(--purple)}
+.ct-green{background:var(--green-lt);color:var(--green);border-left:4px solid var(--green)}
+.ct-amber{background:var(--amber-lt);color:var(--amber);border-left:4px solid var(--amber)}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
+
+/* FIELDS */
+.fld{width:100%;padding:10px 13px;border:1.5px solid var(--gray3);border-radius:var(--r);font-size:15px;font-family:var(--font);color:var(--gray7);background:#fff;outline:none;transition:border .13s}
+.fld:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,110,245,.12)}
+select.fld{cursor:pointer}
+.lbl{font-size:13px;font-weight:600;color:var(--gray6);margin-bottom:6px;display:block}
+
+/* BUTTONS */
+.btn{padding:10px 17px;border-radius:var(--r);border:1.5px solid var(--gray3);background:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);color:var(--gray6);transition:all .13s;display:inline-flex;align-items:center;gap:6px;min-height:42px}
+.btn:hover{background:var(--gray0);border-color:var(--gray4)}
+.btn-pri{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-pri:hover{background:#1558d6;border-color:#1558d6}
+.btn-green{background:var(--green);color:#fff;border-color:var(--green)}
+.btn-green:hover{background:#166534}
+.btn-teal{background:var(--teal);color:#fff;border-color:var(--teal)}
+.btn-purple{background:var(--purple);color:#fff;border-color:var(--purple)}
+.btn-amber{background:var(--amber);color:#fff;border-color:var(--amber)}
+.btn-red-o{background:#fff;color:var(--red);border-color:#fca5a5}
+.btn-red-o:hover{background:var(--red-lt)}
+.btn-sm{padding:6px 12px;font-size:13px;min-height:36px}
+.btn-xs{padding:4px 9px;font-size:12px;min-height:28px;border-radius:6px}
+
+/* TABLE */
+.t{width:100%;border-collapse:collapse;font-size:14px}
+.t th{background:var(--gray0);font-weight:700;color:var(--gray6);padding:11px 12px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.3px;border-bottom:2px solid var(--gray2)}
+.t td{padding:11px 12px;border-bottom:1px solid var(--gray2);vertical-align:middle}
+.t tr:hover td{background:var(--gray0)}
+
+/* PILLS */
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
+.pill-b{background:var(--blue-lt);color:#1d4ed8}
+.pill-g{background:var(--green-lt);color:var(--green)}
+.pill-a{background:var(--amber-lt);color:var(--amber)}
+.pill-r{background:var(--red-lt);color:var(--red)}
+.pill-p{background:var(--purple-lt);color:var(--purple)}
+.pill-t{background:var(--teal-lt);color:var(--teal2)}
+.pill-gray{background:var(--gray2);color:var(--gray5)}
+
+/* ALERTS */
+.al{display:flex;gap:12px;padding:13px 15px;border-radius:var(--r);margin-bottom:14px;border-left:4px solid}
+.al-b{background:var(--blue-xlt);border-color:var(--blue)}
+.al-g{background:var(--green-lt);border-color:var(--green)}
+.al-a{background:var(--amber-lt);border-color:var(--amber)}
+.al-p{background:var(--purple-lt);border-color:var(--purple)}
+.al-ic{font-size:19px;flex-shrink:0;margin-top:1px}
+.al-t{font-size:14px;font-weight:600;color:var(--gray7)}
+.al-s{font-size:13px;color:var(--gray5);margin-top:3px}
+
+/* MINI CARD + ROW CARD */
+.mc{background:var(--gray0);border:1px solid var(--gray2);border-radius:var(--r);padding:13px 15px}
+.rowcard{background:#fff;border:1px solid var(--gray2);border-radius:var(--r2);padding:14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.rowcard-hd{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.rc-avatar{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0}
+.rc-x{margin-left:auto}
+.sec-hdr{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:8px 13px;border-radius:6px;margin:16px 0 10px;border-left:3px solid}
+.sec-hdr.blue{color:var(--navy);background:var(--blue-lt);border-color:var(--blue)}
+.sec-hdr.teal{color:var(--teal2);background:var(--teal-lt);border-color:var(--teal)}
+.sec-hdr.purple{color:var(--purple);background:var(--purple-lt);border-color:var(--purple)}
+
+/* SEGMENTED + CHIPS */
+.seg{display:flex;gap:0;border:1.5px solid var(--gray3);border-radius:var(--r);overflow:hidden;flex-wrap:wrap}
+.seg-opt{flex:1;min-width:130px;padding:13px 10px;text-align:center;cursor:pointer;font-size:14px;font-weight:600;color:var(--gray6);background:#fff;border-right:1.5px solid var(--gray3);transition:all .13s}
+.seg-opt:last-child{border-right:none}
+.seg-opt:hover{background:var(--gray0)}
+.seg-opt.on{background:var(--blue);color:#fff}
+.seg-opt .so-sub{display:block;font-size:11px;font-weight:500;margin-top:3px;opacity:.8}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:20px;font-size:14px;font-weight:600;border:1.5px solid var(--gray3);background:#fff;color:var(--gray6);cursor:pointer;transition:all .13s;margin:0 8px 8px 0}
+.chip:hover{border-color:var(--blue)}
+.chip.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.chip.on-teal{background:var(--teal);color:#fff;border-color:var(--teal)}
+.chip.on-purple{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+/* FOOTER NAV */
+.footer{position:fixed;bottom:0;left:230px;right:0;height:70px;background:#fff;border-top:1px solid var(--gray2);display:flex;align-items:center;padding:0 24px;gap:12px;box-shadow:0 -2px 12px rgba(0,0,0,.05);z-index:40}
+.footer-info{font-size:13px;color:var(--gray5)}
+
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:13px 22px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .3s;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast.show{opacity:1}
+.code{font-family:var(--mono);font-size:12px;background:var(--gray1);padding:2px 7px;border-radius:5px;color:var(--gray7)}
+
+/* RESPONSIVE — phone / tablet */
+@media(max-width:920px){
+  .sidebar{display:none}
+  .footer{left:0}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .main{padding:14px 14px 90px}
+}
+@media(min-width:921px) and (max-width:1200px){
+  .g4{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="tnav">
+  <div class="tlogo">
+    <div class="tlogo-box">🩺</div>
+    <div><div class="tlogo-name">CareSync Pro</div><div class="tlogo-sub">Medical Office Force</div></div>
+  </div>
+  <div class="tmodule">🏗️ Practice Builder</div>
+  <div class="tsp"></div>
+  <div class="tuser"><div class="tavatar">SA</div><div>Subodh Agrawal, MD<div style="font-size:11px;font-weight:400;opacity:.6">Super Admin</div></div></div>
+</div>
+
+<div class="shell">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="ls-sec">
+      <div class="ls-sec-lbl">Schedule Engine</div>
+      <div class="ls-item on"><span class="ls-ic">🏗️</span>Practice Builder <span class="ls-badge">Intake</span></div>
+      <div class="ls-item" onclick="toast('Opens Practice Schedule grid')"><span class="ls-ic">📅</span>Practice Schedule</div>
+      <div class="ls-item" onclick="toast('Opens Appointment Reasons admin')"><span class="ls-ic">📋</span>Appointment Reasons</div>
+      <div class="ls-item" onclick="toast('Opens Rooms admin')"><span class="ls-ic">🚪</span>Rooms</div>
+      <div class="ls-item" onclick="toast('Opens Check-In board')"><span class="ls-ic">✅</span>Check-In</div>
+      <div class="ls-item" onclick="toast('Opens Checkout board')"><span class="ls-ic">💳</span>Checkout</div>
+      <div class="ls-item" onclick="toast('Opens Permissions matrix')"><span class="ls-ic">🔐</span>Permissions</div>
+    </div>
+    <div class="ls-sec">
+      <div class="ls-sec-lbl">Onboarding Status</div>
+      <div class="ls-item" onclick="wizJump(1)"><span class="ls-ic">①</span>Practice Profile</div>
+      <div class="ls-item" onclick="wizJump(2)"><span class="ls-ic">②</span>Locations</div>
+      <div class="ls-item" onclick="wizJump(3)"><span class="ls-ic">③</span>Providers</div>
+      <div class="ls-item" onclick="wizJump(4)"><span class="ls-ic">④</span>Specialty & Language</div>
+      <div class="ls-item" onclick="wizJump(5)"><span class="ls-ic">⑤</span>Rooms & Resources</div>
+      <div class="ls-item" onclick="wizJump(6)"><span class="ls-ic">⑥</span>Appointment Types</div>
+      <div class="ls-item" onclick="wizJump(7)"><span class="ls-ic">⑦</span>EMR Import</div>
+      <div class="ls-item" onclick="wizJump(8)"><span class="ls-ic">⑧</span>Review & Generate</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div>
+      <div class="pg-title">🏗️ Practice Builder — Schedule Engine Intake</div>
+      <div class="pg-sub" id="pg-sub">Configure a new practice end-to-end. Scales from a solo provider with one room to a multi-location enterprise. On completion, MOF generates the live Practice Schedule.</div>
+    </div>
+
+    <!-- DEMO SWITCHER -->
+    <div class="al al-p" style="margin-top:14px">
+      <div class="al-ic">🎚️</div>
+      <div style="flex:1">
+        <div class="al-t">Load a demo profile to see the form scale (you can edit everything after)</div>
+        <div style="margin-top:9px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-sm" onclick="loadDemo('solo')">👤 Solo Practitioner · 1 room</button>
+          <button class="btn btn-sm" onclick="loadDemo('group')">👥 Small Group · 1 location</button>
+          <button class="btn btn-sm btn-purple" onclick="loadDemo('enterprise')">🏢 Enterprise · Athens Heart Center</button>
+          <button class="btn btn-sm" onclick="loadDemo('blank')">🧹 Start Blank</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wizbar" id="wiz-bar"></div>
+    <div id="wiz-content"></div>
+  </div>
+</div>
+
+<!-- FOOTER NAV -->
+<div class="footer">
+  <button class="btn" id="wiz-back-btn" onclick="wizBack()">← Back</button>
+  <div class="footer-info" id="wiz-footer-info"></div>
+  <div class="tsp" style="flex:1"></div>
+  <button class="btn" onclick="saveDraft()">💾 Save Draft</button>
+  <button class="btn btn-pri" id="wiz-next-btn" onclick="wizNext()">Next Step →</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  REFERENCE DATA
+// ════════════════════════════════════════════════════════════
+var SPECIALTIES=['Cardiology','Internal Medicine','Family Medicine','Pediatrics','Endocrinology','Pain Management','Urgent Care','Nephrology','Pulmonology','Neurology','OB/GYN','Orthopedics','Psychiatry','Dermatology','Gastroenterology'];
+var LANGUAGES=['English','Spanish','Hindi','Mandarin','Vietnamese','Korean','Arabic','French','Russian','Portuguese','ASL'];
+var TIMEZONES=['Eastern (ET)','Central (CT)','Mountain (MT)','Pacific (PT)','Alaska (AKT)','Hawaii (HT)'];
+var EMR_SOURCES=['Epic','eClinicalWorks','athenahealth','NextGen','Veradigm (Allscripts)','Greenway Health','AdvancedMD','Tebra (Kareo)','DrChrono','Practice Fusion'];
+var PCOLORS=['#1a6ef5','#0d9488','#7c3aed','#b45309','#15803d','#dc2626','#0f766e','#5b21b6'];
+
+// ════════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════════
+var STATE={};
+var _uid=100;
+function uid(){_uid++;return _uid;}
+
+// ── PERMANENT UI STANDARD: every list = Add + Archive + Restore + Search + All filter ──
+var UI={loc:{q:'',f:'active'},prov:{q:'',f:'active'},room:{q:'',f:'active'},appt:{q:'',f:'active'}};
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+function matchQ(text,q){return !q||(text||'').toLowerCase().indexOf(q.toLowerCase())>=0;}
+function filtered(arr,key,textFn){
+  var u=UI[key];
+  return arr.map(function(it,idx){return {it:it,idx:idx};}).filter(function(o){
+    var active=!o.it.archived;
+    if(u.f==='active'&&!active)return false;
+    if(u.f==='archived'&&active)return false;
+    return matchQ(textFn(o.it),u.q);
+  });
+}
+function counts(arr){var a=arr.filter(function(x){return !x.archived;}).length;return {all:arr.length,active:a,arch:arr.length-a};}
+// toolbar re-renders ONLY the inner list on search/filter -> input keeps focus
+function listToolbar(key,addLabel,addFn,arr){
+  var u=UI[key],c=counts(arr),L=cap(key);
+  return '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px">'+
+    '<input class="fld" style="flex:1;min-width:200px;max-width:360px" placeholder="🔍 Search…" value="'+esc(u.q)+'" oninput="UI.'+key+'.q=this.value;render'+L+'List()">'+
+    '<select class="fld" style="max-width:175px" onchange="UI.'+key+'.f=this.value;render'+L+'List()">'+
+      '<option value="all" '+(u.f==='all'?'selected':'')+'>All ('+c.all+')</option>'+
+      '<option value="active" '+(u.f==='active'?'selected':'')+'>Active ('+c.active+')</option>'+
+      '<option value="archived" '+(u.f==='archived'?'selected':'')+'>Archived ('+c.arch+')</option>'+
+    '</select>'+
+    '<button class="btn btn-green" onclick="'+addFn+'">＋ '+addLabel+'</button>'+
+  '</div>';
+}
+function emptyMsg(key){var u=UI[key];return '<div class="mc" style="color:var(--gray5)">'+(u.q?'No matches for "'+esc(u.q)+'".':u.f==='archived'?'Nothing archived.':'Nothing here yet.')+'</div>';}
+// generic archive/restore — reason captured for HIPAA audit
+function archiveItem(arr,idx,refreshFn){
+  var active=arr.filter(function(x){return !x.archived;}).length;
+  if(active<=1){toast('At least one active item is required');return;}
+  var reason=prompt('Reason for archiving (saved to audit trail):','No longer in use');
+  if(reason===null)return;
+  arr[idx].archived=true;arr[idx].archivedReason=reason;arr[idx].archivedAt=new Date().toLocaleString();
+  refreshFn();toast('Archived · reason logged');
+}
+function restoreItem(arr,idx,refreshFn){arr[idx].archived=false;delete arr[idx].archivedReason;delete arr[idx].archivedAt;refreshFn();toast('Restored');}
+
+// ── Demo profile builders ──
+function demoEnterprise(){
+  return {
+    practice:{name:'Athens Heart Center & Specialty Clinics',type:'Multi-Location Enterprise',npi:'1407889579',ein:'82-4521900',mainPhone:'(706) 208-9700',fax:'(706) 208-9701',primarySpecialty:'Cardiology',size:'enterprise'},
+    locations:[
+      {id:1,name:'Main Campus — Athens',address:'2005 Prince Ave, Athens, GA 30606',tz:'Eastern (ET)',phone:'(706) 208-9700',open:'8:00 AM',close:'5:00 PM',sat:'Closed'},
+      {id:2,name:'Watkinsville Satellite',address:'1011 Jennings Mill Rd, Watkinsville, GA 30677',tz:'Eastern (ET)',phone:'(706) 769-1234',open:'8:30 AM',close:'4:30 PM',sat:'9:00 AM – 1:00 PM'}
+    ],
+    providers:[
+      {id:1,name:'Dr. Raj Patel',cred:'MD, FACC',spec:'Interventional Cardiology',npi:'1234567890',langs:['English','Hindi'],locId:1,start:'8:00 AM',end:'5:00 PM',color:'#1a6ef5'},
+      {id:2,name:'Dr. Kim Holloway',cred:'MD, FACC',spec:'Electrophysiology',npi:'2345678901',langs:['English'],locId:1,start:'9:00 AM',end:'4:00 PM',color:'#0d9488'},
+      {id:3,name:'NP Lisa Chen',cred:'NP-C, AACC',spec:'Heart Failure · RPM',npi:'3456789012',langs:['English','Mandarin'],locId:2,start:'8:30 AM',end:'3:30 PM',color:'#7c3aed'}
+    ],
+    specialties:['Cardiology','Internal Medicine','Endocrinology'],
+    languages:['English','Spanish','Hindi','Mandarin'],
+    rooms:[
+      {id:1,name:'Exam 1',locId:1,type:'exam',equip:'Multi-provider'},
+      {id:2,name:'Exam 2',locId:1,type:'exam',equip:'Multi-provider'},
+      {id:3,name:'Echo Lab',locId:1,type:'procedure',equip:'GE Vivid E95'},
+      {id:4,name:'Stress Lab',locId:1,type:'procedure',equip:'Treadmill + ECG'},
+      {id:5,name:'Nuclear Room',locId:1,type:'procedure',equip:'Siemens Symbia SPECT/CT'},
+      {id:6,name:'Exam 1 (Watkinsville)',locId:2,type:'exam',equip:'Multi-provider'},
+      {id:7,name:'Device Clinic',locId:2,type:'procedure',equip:'Pacemaker/ICD interrogation'},
+      {id:8,name:'Old Vascular Lab',locId:1,type:'procedure',equip:'Retired ultrasound unit',archived:true,archivedReason:'Equipment decommissioned 2025',archivedAt:'01/15/2026'}
+    ],
+    apptTypes:[
+      {id:1,name:'New Consult',cpt:'99205',dur:45,buffer:15,mode:'both',patient:'new',interval:15,maxSlots:1,auth:false},
+      {id:2,name:'Follow-Up (Established)',cpt:'99214',dur:15,buffer:5,mode:'both',patient:'est',interval:15,maxSlots:2,auth:false},
+      {id:3,name:'Annual Wellness Visit',cpt:'G0439',dur:30,buffer:10,mode:'in',patient:'est',interval:30,maxSlots:1,auth:false},
+      {id:4,name:'Echocardiogram',cpt:'93306',dur:45,buffer:10,mode:'in',patient:'both',interval:30,maxSlots:1,auth:true},
+      {id:5,name:'Nuclear Stress Test',cpt:'78452',dur:90,buffer:15,mode:'in',patient:'both',interval:60,maxSlots:1,auth:true},
+      {id:6,name:'Device Check',cpt:'93294',dur:20,buffer:5,mode:'in',patient:'est',interval:15,maxSlots:3,auth:false},
+      {id:7,name:'RPM Face-to-Face',cpt:'99457',dur:20,buffer:5,mode:'tele',patient:'est',interval:15,maxSlots:2,auth:false},
+      {id:8,name:'Telehealth Visit',cpt:'99214+95',dur:20,buffer:5,mode:'tele',patient:'both',interval:15,maxSlots:2,auth:false}
+    ],
+    emr:{connected:false,source:'eClinicalWorks',method:'API (FHIR R4 Bulk $export)',demo:true,ins:true,money:true}
+  };
+}
+function demoGroup(){
+  var e=demoEnterprise();
+  return {
+    practice:{name:'Full Family Health',type:'Small Group',npi:'1558823014',ein:'58-2210045',mainPhone:'(770) 555-0150',fax:'(770) 555-0151',primarySpecialty:'Family Medicine',size:'group'},
+    locations:[{id:1,name:'Main Office',address:'120 Main St, Marietta, GA 30060',tz:'Eastern (ET)',phone:'(770) 555-0150',open:'8:00 AM',close:'5:00 PM',sat:'9:00 AM – 12:00 PM'}],
+    providers:[
+      {id:1,name:'Dr. Sarah Lee',cred:'MD',spec:'Family Medicine',npi:'1111111111',langs:['English','Korean'],locId:1,start:'8:00 AM',end:'5:00 PM',color:'#1a6ef5'},
+      {id:2,name:'Dr. Marcus Bell',cred:'DO',spec:'Family Medicine',npi:'2222222222',langs:['English'],locId:1,start:'8:00 AM',end:'4:00 PM',color:'#0d9488'},
+      {id:3,name:'PA Tonya Reed',cred:'PA-C',spec:'Primary Care',npi:'3333333333',langs:['English','Spanish'],locId:1,start:'9:00 AM',end:'5:00 PM',color:'#7c3aed'}
+    ],
+    specialties:['Family Medicine','Pediatrics'],
+    languages:['English','Spanish','Korean'],
+    rooms:[
+      {id:1,name:'Exam 1',locId:1,type:'exam',equip:'Standard'},
+      {id:2,name:'Exam 2',locId:1,type:'exam',equip:'Standard'},
+      {id:3,name:'Exam 3',locId:1,type:'exam',equip:'Standard'},
+      {id:4,name:'Procedure Room',locId:1,type:'procedure',equip:'Minor procedures'}
+    ],
+    apptTypes:[
+      {id:1,name:'New Patient',cpt:'99204',dur:30,buffer:10,mode:'both',patient:'new',interval:15,maxSlots:1,auth:false},
+      {id:2,name:'Established Follow-Up',cpt:'99213',dur:15,buffer:5,mode:'both',patient:'est',interval:15,maxSlots:2,auth:false},
+      {id:3,name:'Annual Wellness Visit',cpt:'G0438',dur:40,buffer:10,mode:'in',patient:'est',interval:30,maxSlots:1,auth:false},
+      {id:4,name:'Sick Visit',cpt:'99213',dur:15,buffer:5,mode:'both',patient:'both',interval:15,maxSlots:2,auth:false},
+      {id:5,name:'Telehealth Visit',cpt:'99213+95',dur:20,buffer:5,mode:'tele',patient:'both',interval:15,maxSlots:2,auth:false}
+    ],
+    emr:{connected:false,source:'Tebra (Kareo)',method:'CSV / 837 upload',demo:true,ins:true,money:true}
+  };
+}
+function demoSolo(){
+  return {
+    practice:{name:'Dr. Maria Gonzalez Family Practice',type:'Solo Practitioner',npi:'1669934125',ein:'12-3456789',mainPhone:'(404) 555-0188',fax:'(404) 555-0189',primarySpecialty:'Internal Medicine',size:'solo'},
+    locations:[{id:1,name:'Office',address:'88 Oak Ln, Smyrna, GA 30080',tz:'Eastern (ET)',phone:'(404) 555-0188',open:'9:00 AM',close:'4:00 PM',sat:'Closed'}],
+    providers:[{id:1,name:'Dr. Maria Gonzalez',cred:'MD',spec:'Internal Medicine',npi:'1669934125',langs:['English','Spanish'],locId:1,start:'9:00 AM',end:'4:00 PM',color:'#1a6ef5'}],
+    specialties:['Internal Medicine'],
+    languages:['English','Spanish'],
+    rooms:[{id:1,name:'Exam 1',locId:1,type:'exam',equip:'Standard'}],
+    apptTypes:[
+      {id:1,name:'New Patient',cpt:'99204',dur:40,buffer:10,mode:'both',patient:'new',interval:20,maxSlots:1,auth:false},
+      {id:2,name:'Follow-Up',cpt:'99213',dur:20,buffer:5,mode:'both',patient:'est',interval:20,maxSlots:1,auth:false},
+      {id:3,name:'Telehealth',cpt:'99213+95',dur:20,buffer:5,mode:'tele',patient:'both',interval:20,maxSlots:1,auth:false}
+    ],
+    emr:{connected:false,source:'Practice Fusion',method:'CSV upload',demo:true,ins:true,money:true}
+  };
+}
+function demoBlank(){
+  return {
+    practice:{name:'',type:'Solo Practitioner',npi:'',ein:'',mainPhone:'',fax:'',primarySpecialty:'Family Medicine',size:'solo'},
+    locations:[{id:1,name:'',address:'',tz:'Eastern (ET)',phone:'',open:'8:00 AM',close:'5:00 PM',sat:'Closed'}],
+    providers:[{id:1,name:'',cred:'MD',spec:'',npi:'',langs:['English'],locId:1,start:'8:00 AM',end:'5:00 PM',color:'#1a6ef5'}],
+    specialties:[],languages:['English'],
+    rooms:[{id:1,name:'Exam 1',locId:1,type:'exam',equip:''}],
+    apptTypes:[{id:1,name:'New Patient',cpt:'99204',dur:30,buffer:10,mode:'both',patient:'new',interval:15,maxSlots:1,auth:false}],
+    emr:{connected:false,source:'',method:'',demo:false,ins:false,money:false}
+  };
+}
+function loadDemo(kind){
+  if(kind==='solo')STATE=demoSolo();
+  else if(kind==='group')STATE=demoGroup();
+  else if(kind==='enterprise')STATE=demoEnterprise();
+  else STATE=demoBlank();
+  wizStep=1;wizRender();
+  toast('Loaded: '+STATE.practice.size.toUpperCase()+' profile');
+}
+// ════════════════════════════════════════════════════════════
+//  WIZARD ENGINE
+// ════════════════════════════════════════════════════════════
+var wizStep=1;
+var wizSteps=['Practice Profile','Locations','Providers','Specialty & Language','Rooms & Resources','Appointment Types','EMR Import','Review & Generate'];
+
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show');},2600);}
+function saveDraft(){try{localStorage.setItem('mof_pb_draft',JSON.stringify(STATE));}catch(e){}toast('💾 Draft saved');}
+function esc(s){return (s==null?'':String(s)).replace(/"/g,'&quot;');}
+
+function wizRender(){
+  var bar=document.getElementById('wiz-bar');
+  bar.innerHTML=wizSteps.map(function(s,i){
+    var cls=i+1<wizStep?'wiz-step done':i+1===wizStep?'wiz-step active':'wiz-step';
+    var prefix=i+1<wizStep?'✓ ':(i+1)+'. ';
+    return '<div class="'+cls+'" onclick="wizJump('+(i+1)+')">'+prefix+s+'</div>';
+  }).join('');
+  document.getElementById('wiz-back-btn').style.visibility=wizStep===1?'hidden':'visible';
+  var nb=document.getElementById('wiz-next-btn');
+  nb.textContent=wizStep===8?'🚀 Generate Practice Schedule':'Next Step →';
+  nb.className=wizStep===8?'btn btn-green':'btn btn-pri';
+  document.getElementById('wiz-footer-info').textContent='Step '+wizStep+' of 8 · '+wizSteps[wizStep-1];
+  var fn=window['step'+wizStep];
+  document.getElementById('wiz-content').innerHTML=fn?fn():'';
+  document.querySelector('.main').scrollTop=0;
+}
+function wizNext(){if(wizStep<8){wizStep++;wizRender();}else{generateSchedule();}}
+function wizBack(){if(wizStep>1){wizStep--;wizRender();}}
+function wizJump(n){wizStep=n;wizRender();}
+
+// ── helper: location name by id ──
+function locName(id){var l=STATE.locations.find(function(x){return x.id==id;});return l?l.name:'—';}
+
+// ════════════════════════════════════════════════════════════
+//  STEP 1 — PRACTICE PROFILE
+// ════════════════════════════════════════════════════════════
+function setSize(sz){STATE.practice.size=sz;
+  var map={solo:'Solo Practitioner',group:'Small Group',multi:'Multi-Location',enterprise:'Multi-Location Enterprise'};
+  STATE.practice.type=map[sz];step1Refresh();}
+function step1Refresh(){document.getElementById('wiz-content').innerHTML=step1();}
+function step1(){
+  var p=STATE.practice;
+  var sizes=[['solo','👤 Solo','1 provider · 1 room'],['group','👥 Small Group','2–10 providers'],['multi','🏬 Multi-Location','2–5 sites'],['enterprise','🏢 Enterprise','6+ sites / specialties']];
+  return `
+  <div class="card">
+    <div class="card-title-bar ct-blue">🏥 Step 1 — Practice Profile & Size</div>
+    <label class="lbl">Practice Size — this scales the rest of the form</label>
+    <div class="seg" style="margin-bottom:16px">
+      ${sizes.map(function(s){return '<div class="seg-opt '+(p.size===s[0]?'on':'')+'" onclick="setSize(\''+s[0]+'\')">'+s[1]+'<span class="so-sub">'+s[2]+'</span></div>';}).join('')}
+    </div>
+    <div class="g2">
+      <div><label class="lbl">Practice / Group Name</label><input class="fld" value="${esc(p.name)}" oninput="STATE.practice.name=this.value"></div>
+      <div><label class="lbl">Primary Specialty</label><select class="fld" onchange="STATE.practice.primarySpecialty=this.value">${SPECIALTIES.map(function(s){return '<option '+(p.primarySpecialty===s?'selected':'')+'>'+s+'</option>';}).join('')}</select></div>
+      <div><label class="lbl">Group NPI (Type 2)</label><input class="fld" value="${esc(p.npi)}" oninput="STATE.practice.npi=this.value" placeholder="10-digit NPI"></div>
+      <div><label class="lbl">Tax ID (EIN)</label><input class="fld" value="${esc(p.ein)}" oninput="STATE.practice.ein=this.value" placeholder="XX-XXXXXXX"></div>
+      <div><label class="lbl">Main Phone</label><input class="fld" value="${esc(p.mainPhone)}" oninput="STATE.practice.mainPhone=this.value"></div>
+      <div><label class="lbl">Fax</label><input class="fld" value="${esc(p.fax)}" oninput="STATE.practice.fax=this.value"></div>
+    </div>
+    <div class="al al-g" style="margin-top:16px"><div class="al-ic">✅</div><div><div class="al-t">Auto-verification (MOF Super Admin)</div><div class="al-s">NPI checked against NPPES registry · EIN validated · State license status pulled. This mirrors the "New Healthcare Institution" step in your super-admin dashboard.</div></div></div>
+  </div>
+  <div class="al al-b"><div class="al-ic">🧭</div><div><div class="al-t">Why size first?</div><div class="al-s">A solo practice skips multi-location and multi-room complexity automatically. An enterprise unlocks per-location hours, cross-site providers, and procedure rooms. Same form — it adapts.</div></div></div>`;
+}
+
+// ════════════════════════════════════════════════════════════
+//  STEP 2 — LOCATIONS
+// ════════════════════════════════════════════════════════════
+function addLocation(){STATE.locations.push({id:uid(),name:'',address:'',tz:'Eastern (ET)',phone:'',open:'8:00 AM',close:'5:00 PM',sat:'Closed'});UI.loc.f='active';step2Refresh();toast('Location added');}
+function archiveLocation(i){archiveItem(STATE.locations,i,step2Refresh);}
+function restoreLocation(i){restoreItem(STATE.locations,i,step2Refresh);}
+function step2Refresh(){document.getElementById('wiz-content').innerHTML=step2();}
+function renderLocList(){document.getElementById('loc-list').innerHTML=renderLocListInner();}
+function locRow(l,i){
+  if(l.archived)return '<div class="rowcard" style="opacity:.6;background:var(--gray0)"><div style="display:flex;align-items:center;gap:12px"><div class="rc-avatar" style="background:var(--gray4)">📦</div><div style="flex:1"><div style="font-weight:700;color:var(--gray6)">'+(esc(l.name)||'Location')+' <span class="pill pill-gray">Archived</span></div><div style="font-size:12px;color:var(--gray5)">Reason: '+esc(l.archivedReason)+' · '+esc(l.archivedAt)+'</div></div><button class="btn btn-xs" onclick="restoreLocation('+i+')">↺ Restore</button></div></div>';
+  return `
+    <div class="rowcard">
+      <div class="rowcard-hd">
+        <div class="rc-avatar" style="background:var(--blue)">📍</div>
+        <div style="flex:1;font-size:16px;font-weight:700;color:var(--navy)">${esc(l.name)||'New Location'}</div>
+        <button class="btn btn-xs btn-red-o rc-x" onclick="archiveLocation(${i})">📦 Archive</button>
+      </div>
+      <div class="g2">
+        <div><label class="lbl">Location Name</label><input class="fld" value="${esc(l.name)}" oninput="STATE.locations[${i}].name=this.value"></div>
+        <div><label class="lbl">Phone</label><input class="fld" value="${esc(l.phone)}" oninput="STATE.locations[${i}].phone=this.value"></div>
+        <div style="grid-column:1/-1"><label class="lbl">Street Address</label><input class="fld" value="${esc(l.address)}" oninput="STATE.locations[${i}].address=this.value"></div>
+        <div><label class="lbl">Time Zone</label><select class="fld" onchange="STATE.locations[${i}].tz=this.value">${TIMEZONES.map(function(t){return '<option '+(l.tz===t?'selected':'')+'>'+t+'</option>';}).join('')}</select></div>
+        <div><label class="lbl">Saturday Hours</label><input class="fld" value="${esc(l.sat)}" oninput="STATE.locations[${i}].sat=this.value"></div>
+        <div><label class="lbl">Opens (Mon–Fri)</label><input class="fld" value="${esc(l.open)}" oninput="STATE.locations[${i}].open=this.value"></div>
+        <div><label class="lbl">Closes (Mon–Fri)</label><input class="fld" value="${esc(l.close)}" oninput="STATE.locations[${i}].close=this.value"></div>
+      </div>
+    </div>`;
+}
+function renderLocListInner(){var rows=filtered(STATE.locations,'loc',function(l){return l.name+' '+l.address;});return rows.length?rows.map(function(o){return locRow(o.it,o.idx);}).join(''):emptyMsg('loc');}
+function step2(){
+  return `
+  <div class="card">
+    <div class="card-title-bar ct-blue">📍 Step 2 — Locations & Time Zones</div>
+    <div class="al al-b"><div class="al-ic">ℹ️</div><div><div class="al-t">Each location carries its own time zone and hours</div><div class="al-s">Time zone drives DST-correct slot display and telehealth cross-timezone warnings. Archived locations are kept for audit and can be restored.</div></div></div>
+    ${listToolbar('loc','Add Location','addLocation()',STATE.locations)}
+    <div id="loc-list">${renderLocListInner()}</div>
+  </div>`;
+}
+// ════════════════════════════════════════════════════════════
+//  STEP 3 — PROVIDERS
+// ════════════════════════════════════════════════════════════
+function addProvider(){var c=PCOLORS[STATE.providers.length%PCOLORS.length];STATE.providers.push({id:uid(),name:'',cred:'MD',spec:'',npi:'',langs:['English'],locId:STATE.locations.filter(function(l){return !l.archived;})[0].id,start:'8:00 AM',end:'5:00 PM',color:c});UI.prov.f='active';step3Refresh();toast('Provider added');}
+function archiveProvider(i){archiveItem(STATE.providers,i,step3Refresh);}
+function restoreProvider(i){restoreItem(STATE.providers,i,step3Refresh);}
+function toggleProvLang(i,lang){var L=STATE.providers[i].langs;var x=L.indexOf(lang);if(x>=0)L.splice(x,1);else L.push(lang);renderProvList();}
+function initials(n){return (n||'?').split(' ').map(function(w){return w[0];}).join('').replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'?';}
+function step3Refresh(){document.getElementById('wiz-content').innerHTML=step3();}
+function renderProvList(){document.getElementById('prov-list').innerHTML=renderProvListInner();}
+function provRow(p,i){
+  var creds=['MD','DO','NP-C','PA-C','NP','PA','CNM','DPM'];
+  if(p.archived)return '<div class="rowcard" style="opacity:.6;background:var(--gray0)"><div style="display:flex;align-items:center;gap:12px"><div class="rc-avatar" style="background:var(--gray4)">📦</div><div style="flex:1"><div style="font-weight:700;color:var(--gray6)">'+(esc(p.name)||'Provider')+' <span class="pill pill-gray">Archived</span></div><div style="font-size:12px;color:var(--gray5)">Reason: '+esc(p.archivedReason)+' · '+esc(p.archivedAt)+'</div></div><button class="btn btn-xs" onclick="restoreProvider('+i+')">↺ Restore</button></div></div>';
+  var locs=STATE.locations.filter(function(l){return !l.archived;});
+  return `
+    <div class="rowcard" style="border-left:4px solid ${p.color}">
+      <div class="rowcard-hd">
+        <div class="rc-avatar" style="background:${p.color}">${initials(p.name)}</div>
+        <div style="flex:1;font-size:16px;font-weight:700;color:var(--navy)">${esc(p.name)||'New Provider'}<div style="font-size:12px;font-weight:500;color:var(--gray5)">${esc(p.cred)} · ${esc(p.spec)||'specialty'}</div></div>
+        <button class="btn btn-xs btn-red-o rc-x" onclick="archiveProvider(${i})">📦 Archive</button>
+      </div>
+      <div class="g3">
+        <div><label class="lbl">Full Name</label><input class="fld" value="${esc(p.name)}" oninput="STATE.providers[${i}].name=this.value"></div>
+        <div><label class="lbl">Credential</label><select class="fld" onchange="STATE.providers[${i}].cred=this.value">${creds.map(function(c){return '<option '+(p.cred===c?'selected':'')+'>'+c+'</option>';}).join('')}</select></div>
+        <div><label class="lbl">Individual NPI</label><input class="fld" value="${esc(p.npi)}" oninput="STATE.providers[${i}].npi=this.value"></div>
+        <div><label class="lbl">Specialty</label><select class="fld" onchange="STATE.providers[${i}].spec=this.value"><option value="">— select —</option>${SPECIALTIES.map(function(s){return '<option '+(p.spec===s?'selected':'')+'>'+s+'</option>';}).join('')}${(p.spec&&SPECIALTIES.indexOf(p.spec)<0)?'<option selected>'+esc(p.spec)+'</option>':''}</select></div>
+        <div><label class="lbl">Primary Location</label><select class="fld" onchange="STATE.providers[${i}].locId=this.value">${locs.map(function(l){return '<option value="'+l.id+'" '+(p.locId==l.id?'selected':'')+'>'+esc(l.name||'Location')+'</option>';}).join('')}</select></div>
+        <div><label class="lbl">Working Hours</label><div style="display:flex;gap:6px;align-items:center"><input class="fld" value="${esc(p.start)}" oninput="STATE.providers[${i}].start=this.value"><span style="color:var(--gray5)">–</span><input class="fld" value="${esc(p.end)}" oninput="STATE.providers[${i}].end=this.value"></div></div>
+      </div>
+      <label class="lbl" style="margin-top:12px">Languages Spoken</label>
+      <div>${LANGUAGES.map(function(lg){return '<span class="chip '+(p.langs.indexOf(lg)>=0?'on':'')+'" onclick="toggleProvLang('+i+',\''+lg+'\')">'+lg+'</span>';}).join('')}</div>
+    </div>`;
+}
+function renderProvListInner(){var rows=filtered(STATE.providers,'prov',function(p){return p.name+' '+p.spec+' '+p.cred;});return rows.length?rows.map(function(o){return provRow(o.it,o.idx);}).join(''):emptyMsg('prov');}
+function step3(){
+  return `
+  <div class="card">
+    <div class="card-title-bar ct-blue">👨‍⚕️ Step 3 — Providers</div>
+    <div class="al al-b"><div class="al-ic">ℹ️</div><div><div class="al-t">Each active provider gets a schedule column</div><div class="al-s">Provider languages let the front desk match interpreter needs at booking. Archive a provider who leaves — their history stays for audit and can be restored.</div></div></div>
+    ${listToolbar('prov','Add Provider','addProvider()',STATE.providers)}
+    <div id="prov-list">${renderProvListInner()}</div>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════════
+//  STEP 4 — SPECIALTY & LANGUAGE
+// ════════════════════════════════════════════════════════════
+function toggleSpec(s){var x=STATE.specialties.indexOf(s);if(x>=0)STATE.specialties.splice(x,1);else STATE.specialties.push(s);step4Refresh();}
+function toggleLang(l){var x=STATE.languages.indexOf(l);if(x>=0)STATE.languages.splice(x,1);else STATE.languages.push(l);step4Refresh();}
+function step4Refresh(){document.getElementById('wiz-content').innerHTML=step4();}
+function step4(){
+  return `
+  <div class="card">
+    <div class="card-title-bar ct-purple">🩺 Step 4 — Specialties Offered</div>
+    <div class="al al-p"><div class="al-ic">🎯</div><div><div class="al-t">${STATE.specialties.length} specialty(ies) selected</div><div class="al-s">Specialties define which appointment-type templates and procedure rooms are offered. Patients/front desk filter by specialty when booking.</div></div></div>
+    <div>${SPECIALTIES.map(function(s){return '<span class="chip '+(STATE.specialties.indexOf(s)>=0?'on-purple':'')+'" onclick="toggleSpec(\''+s+'\')">'+s+'</span>';}).join('')}</div>
+  </div>
+  <div class="card">
+    <div class="card-title-bar ct-teal">🗣️ Languages Supported (practice-wide)</div>
+    <div class="al al-b"><div class="al-ic">🌐</div><div><div class="al-t">${STATE.languages.length} language(s) supported</div><div class="al-s">Drives interpreter scheduling and patient-facing booking language. A Spanish-speaking patient booking online sees a Spanish-capable provider flagged.</div></div></div>
+    <div>${LANGUAGES.map(function(l){return '<span class="chip '+(STATE.languages.indexOf(l)>=0?'on-teal':'')+'" onclick="toggleLang(\''+l+'\')">'+l+'</span>';}).join('')}</div>
+  </div>`;
+}
+// ════════════════════════════════════════════════════════════
+//  STEP 5 — ROOMS & RESOURCES
+// ════════════════════════════════════════════════════════════
+function addRoom(type){STATE.rooms.push({id:uid(),name:type==='procedure'?'New Procedure Room':'Exam '+(STATE.rooms.filter(function(r){return r.type==='exam'&&!r.archived;}).length+1),locId:STATE.locations.filter(function(l){return !l.archived;})[0].id,type:type,equip:''});UI.room.f='active';step5Refresh();toast((type==='procedure'?'Procedure':'Exam')+' room added');}
+function archiveRoom(i){archiveItem(STATE.rooms,i,step5Refresh);}
+function restoreRoom(i){restoreItem(STATE.rooms,i,step5Refresh);}
+function step5Refresh(){document.getElementById('wiz-content').innerHTML=step5();}
+function renderRoomList(){document.getElementById('room-list').innerHTML=renderRoomListInner();}
+function roomRow(r,i){
+  if(r.archived)return '<div class="rowcard" style="opacity:.6;background:var(--gray0);padding:12px"><div style="display:flex;align-items:center;gap:10px"><div style="font-size:18px">📦</div><div style="flex:1"><strong style="color:var(--gray6)">'+(esc(r.name)||'Room')+'</strong> <span class="pill pill-gray">Archived</span><div style="font-size:12px;color:var(--gray5)">Reason: '+esc(r.archivedReason)+' · '+esc(r.archivedAt)+'</div></div><button class="btn btn-xs" onclick="restoreRoom('+i+')">↺ Restore</button></div></div>';
+  var clr=r.type==='procedure'?'var(--teal)':'var(--blue)';
+  var locs=STATE.locations.filter(function(l){return !l.archived;});
+  return `<div class="rowcard" style="border-left:4px solid ${clr};padding:12px">
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div style="flex:2;min-width:160px"><label class="lbl">Room Name</label><input class="fld" value="${esc(r.name)}" oninput="STATE.rooms[${i}].name=this.value"></div>
+      <div style="flex:2;min-width:160px"><label class="lbl">Location</label><select class="fld" onchange="STATE.rooms[${i}].locId=this.value">${locs.map(function(l){return '<option value="'+l.id+'" '+(r.locId==l.id?'selected':'')+'>'+esc(l.name||'Location')+'</option>';}).join('')}</select></div>
+      <div style="flex:3;min-width:180px"><label class="lbl">Equipment / Notes</label><input class="fld" value="${esc(r.equip)}" oninput="STATE.rooms[${i}].equip=this.value" placeholder="e.g. GE Vivid E95"></div>
+      <button class="btn btn-xs btn-red-o" style="margin-top:22px" onclick="archiveRoom(${i})">📦 Archive</button>
+    </div></div>`;
+}
+function renderRoomListInner(){
+  var rows=filtered(STATE.rooms,'room',function(r){return r.name+' '+r.equip;});
+  var exam=rows.filter(function(o){return o.it.type==='exam';});
+  var proc=rows.filter(function(o){return o.it.type==='procedure';});
+  return '<div class="sec-hdr blue">🩺 Exam Rooms</div>'+
+    (exam.length?exam.map(function(o){return roomRow(o.it,o.idx);}).join(''):emptyMsg('room'))+
+    '<button class="btn btn-sm btn-pri" style="margin-top:6px" onclick="addRoom(\'exam\')">＋ Add Exam Room</button>'+
+    '<div class="sec-hdr teal">🔬 Procedure / Diagnostic Rooms</div>'+
+    (proc.length?proc.map(function(o){return roomRow(o.it,o.idx);}).join(''):'<div class="mc" style="color:var(--gray5)">No procedure rooms in this view.</div>')+
+    '<button class="btn btn-sm btn-teal" style="margin-top:6px" onclick="addRoom(\'procedure\')">＋ Add Procedure Room</button>';
+}
+function step5(){
+  return `
+  <div class="card">
+    <div class="card-title-bar ct-blue">🚪 Step 5 — Rooms & Resources</div>
+    <div class="al al-b"><div class="al-ic">ℹ️</div><div><div class="al-t">Exam rooms host encounters · procedure rooms become diagnostic schedule columns</div><div class="al-s">Search across all rooms, filter by status, and archive a decommissioned room without losing its history.</div></div></div>
+    ${listToolbar('room','Add Room','addRoom(\'exam\')',STATE.rooms)}
+    <div id="room-list">${renderRoomListInner()}</div>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════════
+//  STEP 6 — APPOINTMENT TYPES
+// ════════════════════════════════════════════════════════════
+function addApptType(){STATE.apptTypes.push({id:uid(),name:'New Visit Type',cpt:'',dur:20,buffer:5,mode:'both',patient:'both',interval:15,maxSlots:1,auth:false});UI.appt.f='active';step6Refresh();toast('Appointment type added');}
+function archiveAppt(i){archiveItem(STATE.apptTypes,i,step6Refresh);}
+function restoreAppt(i){restoreItem(STATE.apptTypes,i,step6Refresh);}
+function step6Refresh(){document.getElementById('wiz-content').innerHTML=step6();}
+function renderApptList(){document.getElementById('appt-list').innerHTML=renderApptListInner();}
+function apptRow(a,i){
+  var modes=[['in','In-Person'],['tele','Telehealth'],['both','Both']];
+  var pats=[['new','New'],['est','Established'],['both','Both']];
+  if(a.archived)return '<div class="rowcard" style="opacity:.6;background:var(--gray0);padding:12px"><div style="display:flex;align-items:center;gap:10px"><div style="font-size:18px">📦</div><div style="flex:1"><strong style="color:var(--gray6)">'+esc(a.name)+'</strong> <span class="pill pill-gray">Archived</span><div style="font-size:12px;color:var(--gray5)">Reason: '+esc(a.archivedReason)+' · '+esc(a.archivedAt)+'</div></div><button class="btn btn-xs" onclick="restoreAppt('+i+')">↺ Restore</button></div></div>';
+  return `
+    <div class="rowcard" style="padding:13px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span class="pill ${a.mode==='tele'?'pill-p':a.mode==='in'?'pill-b':'pill-t'}">${a.mode==='tele'?'Telehealth':a.mode==='in'?'In-Person':'In-Person + Tele'}</span>
+        <span class="pill pill-gray">${a.patient==='new'?'New':a.patient==='est'?'Established':'New + Est'}</span>
+        ${a.auth?'<span class="pill pill-r">Auth Required</span>':''}
+        <button class="btn btn-xs btn-red-o" style="margin-left:auto" onclick="archiveAppt(${i})">📦 Archive</button>
+      </div>
+      <div class="g4">
+        <div style="grid-column:span 2"><label class="lbl">Visit Type Name</label><input class="fld" value="${esc(a.name)}" oninput="STATE.apptTypes[${i}].name=this.value"></div>
+        <div><label class="lbl">Default CPT</label><input class="fld" value="${esc(a.cpt)}" oninput="STATE.apptTypes[${i}].cpt=this.value"></div>
+        <div><label class="lbl">Duration (min)</label><input class="fld" type="number" value="${a.dur}" oninput="STATE.apptTypes[${i}].dur=+this.value"></div>
+        <div><label class="lbl">Booking Interval</label><select class="fld" onchange="STATE.apptTypes[${i}].interval=+this.value">${[10,15,20,30,60].map(function(n){return '<option '+(a.interval===n?'selected':'')+'>'+n+'</option>';}).join('')}</select></div>
+        <div><label class="lbl">Max Slots / Interval</label><input class="fld" type="number" value="${a.maxSlots}" oninput="STATE.apptTypes[${i}].maxSlots=+this.value"></div>
+        <div><label class="lbl">Buffer (min)</label><input class="fld" type="number" value="${a.buffer}" oninput="STATE.apptTypes[${i}].buffer=+this.value"></div>
+        <div><label class="lbl">Place of Service</label><select class="fld" onchange="STATE.apptTypes[${i}].mode=this.value;renderApptList()">${modes.map(function(m){return '<option value="'+m[0]+'" '+(a.mode===m[0]?'selected':'')+'>'+m[1]+'</option>';}).join('')}</select></div>
+        <div><label class="lbl">Patient Type</label><select class="fld" onchange="STATE.apptTypes[${i}].patient=this.value;renderApptList()">${pats.map(function(m){return '<option value="'+m[0]+'" '+(a.patient===m[0]?'selected':'')+'>'+m[1]+'</option>';}).join('')}</select></div>
+        <div><label class="lbl">Prior Auth?</label><select class="fld" onchange="STATE.apptTypes[${i}].auth=(this.value==='yes');renderApptList()"><option value="no" ${!a.auth?'selected':''}>Not required</option><option value="yes" ${a.auth?'selected':''}>Required</option></select></div>
+      </div>
+    </div>`;
+}
+function renderApptListInner(){var rows=filtered(STATE.apptTypes,'appt',function(a){return a.name+' '+a.cpt;});return rows.length?rows.map(function(o){return apptRow(o.it,o.idx);}).join(''):emptyMsg('appt');}
+function step6(){
+  return `
+  <div class="card">
+    <div class="card-title-bar ct-amber">📋 Step 6 — Appointment Types (Reasons)</div>
+    <div class="al al-a"><div class="al-ic">🧱</div><div><div class="al-t">This maps 1:1 to your "Appointment Reasons" tab</div><div class="al-s">Each type carries duration, interval, max slots, place of service, new vs established, default CPT, and prior-auth. Archive a retired visit type without breaking old appointments tied to it.</div></div></div>
+    ${listToolbar('appt','Add Type','addApptType()',STATE.apptTypes)}
+    <div id="appt-list">${renderApptListInner()}</div>
+  </div>`;
+}
+// ════════════════════════════════════════════════════════════
+//  STEP 7 — EMR IMPORT (migration + demographics/insurance/$$)
+// ════════════════════════════════════════════════════════════
+var IMPORTED=null;
+function importMethodFor(src){
+  var api=['Epic','athenahealth','NextGen','DrChrono','eClinicalWorks'];
+  return api.indexOf(src)>=0?'API (FHIR R4 Bulk $export)':'CSV / 837 / SFTP upload';
+}
+function runImport(){
+  if(!STATE.emr.source){toast('Pick a source EMR first');return;}
+  STATE.emr.connected=true;STATE.emr.method=importMethodFor(STATE.emr.source);
+  IMPORTED=[
+    {dt:'Jun 23 · 9:00a',pt:'Eleanor Whitfield',dob:'04/12/1948',prov:'Dr. Patel',type:'Follow-Up',ins:'Medicare + AARP',elig:'Active',copay:'$0',bal:'$45.00',collect:'$45.00'},
+    {dt:'Jun 23 · 9:30a',pt:'Robert Hayes',dob:'11/03/1955',prov:'Dr. Patel',type:'Echo',ins:'Humana MA',elig:'Active · Auth ✓',copay:'$40',bal:'$0.00',collect:'$40.00'},
+    {dt:'Jun 23 · 10:00a',pt:'Carlos Rivera',dob:'07/22/1968',prov:'NP Chen',type:'New Consult',ins:'Anthem BCBS',elig:'Active',copay:'$50',bal:'$0.00',collect:'$50.00'},
+    {dt:'Jun 23 · 10:30a',pt:'Margaret Liu',dob:'02/18/1952',prov:'Dr. Holloway',type:'Device Check',ins:'Medicare',elig:'Active',copay:'$0',bal:'$120.00',collect:'$120.00'},
+    {dt:'Jun 23 · 11:00a',pt:'Dorothy Payne',dob:'09/30/1944',prov:'Dr. Patel',type:'Telehealth',ins:'UnitedHealthcare',elig:'Active',copay:'$30',bal:'$0.00',collect:'$30.00'}
+  ];
+  step7Refresh();toast('✅ Imported 5 of 312 future appointments (demo sample)');
+}
+function step7Refresh(){document.getElementById('wiz-content').innerHTML=step7();}
+function step7(){
+  var e=STATE.emr;
+  return `
+  <div class="card">
+    <div class="card-title-bar ct-teal">🔄 Step 7 — Import Future Schedule from Your Current EMR</div>
+    <div class="al al-b"><div class="al-ic">📥</div><div><div class="al-t">Bring your existing future appointments into MOF — no gap in care</div><div class="al-s">MOF reads the appointment, then pulls each patient's demographics, insurance, eligibility, copay and prior balance. That is how the front desk knows exactly what to collect when the patient walks in.</div></div></div>
+    <div class="g2">
+      <div><label class="lbl">Current EMR (Top 10 supported)</label><select class="fld" onchange="STATE.emr.source=this.value;STATE.emr.method=importMethodFor(this.value);step7Refresh()"><option value="">— select your EMR —</option>${EMR_SOURCES.map(function(s){return '<option '+(e.source===s?'selected':'')+'>'+s+'</option>';}).join('')}</select></div>
+      <div><label class="lbl">Migration Method (auto-selected)</label><input class="fld" value="${e.source?esc(importMethodFor(e.source)):''}" readonly style="background:var(--gray0)"></div>
+    </div>
+    <div class="sec-hdr teal">Field Mapping — what MOF pulls per appointment</div>
+    <div class="g3">
+      <div class="mc"><label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer"><input type="checkbox" ${e.demo?'checked':''} onchange="STATE.emr.demo=this.checked" style="width:18px;height:18px">👤 Demographics</label><div style="font-size:12px;color:var(--gray5);margin-top:5px">Name, DOB, address, phone, MRN</div></div>
+      <div class="mc"><label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer"><input type="checkbox" ${e.ins?'checked':''} onchange="STATE.emr.ins=this.checked" style="width:18px;height:18px">🛡️ Insurance + Eligibility</label><div style="font-size:12px;color:var(--gray5);margin-top:5px">Payer, plan, 270/271 status, auth</div></div>
+      <div class="mc"><label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer"><input type="checkbox" ${e.money?'checked':''} onchange="STATE.emr.money=this.checked" style="width:18px;height:18px">💳 Copay + Prior Balance</label><div style="font-size:12px;color:var(--gray5);margin-top:5px">Copay, deductible, outstanding balance</div></div>
+    </div>
+    <div class="al al-a" style="margin-top:14px"><div class="al-ic">🔒</div><div><div class="al-t">Staging gate applies to imports</div><div class="al-s">Imported appointments land in the Intake table as <span class="code">pending_staff_review</span>. Staff confirm before they appear on the live provider grid — never auto-promoted.</div></div></div>
+    <button class="btn btn-teal" style="margin-top:6px" onclick="runImport()">🔗 Connect &amp; Pull Future Schedule</button>
+    ${IMPORTED?`
+      <div class="sec-hdr teal">Imported Sample — Front Desk "Collect Today" View</div>
+      <div style="overflow:auto"><table class="t">
+        <thead><tr><th>Date/Time</th><th>Patient</th><th>DOB</th><th>Provider</th><th>Visit</th><th>Insurance</th><th>Eligibility</th><th>Copay</th><th>Balance</th><th>Collect</th></tr></thead>
+        <tbody>${IMPORTED.map(function(r){return '<tr><td><span class="code">'+r.dt+'</span></td><td><strong>'+r.pt+'</strong></td><td>'+r.dob+'</td><td>'+r.prov+'</td><td>'+r.type+'</td><td>'+r.ins+'</td><td><span class="pill pill-g">'+r.elig+'</span></td><td>'+r.copay+'</td><td>'+r.bal+'</td><td><strong style="color:var(--green)">'+r.collect+'</strong></td></tr>';}).join('')}</tbody>
+      </table></div>
+      <div class="al al-g" style="margin-top:12px"><div class="al-ic">✅</div><div><div class="al-t">5 appointments mapped · est. $285.00 to collect today</div><div class="al-s">Every row carries the data the front desk needs at check-in. Eligibility re-verifies via pVerify/Waystar 270/271 the morning of the visit.</div></div></div>`:''}
+  </div>`;
+}
+// ════════════════════════════════════════════════════════════
+//  STEP 8 — REVIEW & GENERATE
+// ════════════════════════════════════════════════════════════
+function summRow(label,val){return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--gray2)"><span style="color:var(--gray5);font-size:13px">'+label+'</span><span style="font-weight:600;font-size:14px;text-align:right">'+val+'</span></div>';}
+function activeOf(arr){return arr.filter(function(x){return !x.archived;});}
+function step8(){
+  var p=STATE.practice;
+  var actRooms=activeOf(STATE.rooms),actProv=activeOf(STATE.providers),actAppt=activeOf(STATE.apptTypes),actLoc=activeOf(STATE.locations);
+  var examN=actRooms.filter(function(r){return r.type==='exam';}).length;
+  var procN=actRooms.filter(function(r){return r.type==='procedure';}).length;
+  var teleN=actAppt.filter(function(a){return a.mode!=='in';}).length;
+  var authN=actAppt.filter(function(a){return a.auth;}).length;
+  return `
+  <div class="card">
+    <div class="card-title-bar ct-green">🔍 Step 8 — Review & Generate</div>
+    <div class="al al-b"><div class="al-ic">📋</div><div><div class="al-t">Review the configuration. "Generate" builds the live Practice Schedule.</div><div class="al-s">This creates one schedule column per active provider and per active procedure room, applies your appointment-type rules, and (if connected) loads imported appointments into the staging gate. Archived items are excluded.</div></div></div>
+    <div class="g2">
+      <div class="mc">
+        <div style="font-weight:700;color:var(--navy);margin-bottom:8px">🏥 ${esc(p.name)||'Practice'}</div>
+        ${summRow('Size',p.type)}
+        ${summRow('Primary specialty',p.primarySpecialty)}
+        ${summRow('Group NPI',esc(p.npi)||'—')}
+        ${summRow('Active locations',actLoc.length)}
+        ${summRow('Active providers',actProv.length)}
+        ${summRow('Specialties offered',STATE.specialties.length||'—')}
+        ${summRow('Languages',STATE.languages.join(', ')||'—')}
+      </div>
+      <div class="mc">
+        <div style="font-weight:700;color:var(--navy);margin-bottom:8px">📅 Schedule Configuration</div>
+        ${summRow('Exam rooms',examN)}
+        ${summRow('Procedure rooms',procN)}
+        ${summRow('Appointment types',actAppt.length)}
+        ${summRow('Telehealth-enabled types',teleN)}
+        ${summRow('Auth-required types',authN)}
+        ${summRow('Schedule columns generated',actProv.length+procN)}
+        ${summRow('EMR migration',STATE.emr.connected?'<span class="pill pill-g">'+esc(STATE.emr.source)+' ✓</span>':'<span class="pill pill-gray">Not connected</span>')}
+      </div>
+    </div>
+    <div class="sec-hdr blue">Active Providers → Schedule Columns</div>
+    <div class="g3">${actProv.map(function(pr){return '<div class="mc" style="border-left:3px solid '+pr.color+'"><div style="font-weight:700;font-size:14px;color:var(--navy)">'+esc(pr.name)+'</div><div style="font-size:12px;color:var(--gray5)">'+esc(pr.cred)+' · '+esc(pr.spec)+'</div><div style="font-size:12px;color:var(--gray4);margin-top:3px">'+locName(pr.locId)+' · '+esc(pr.start)+'–'+esc(pr.end)+'</div></div>';}).join('')}</div>
+    <div id="gen-result"></div>
+  </div>`;
+}
+function generateSchedule(){
+  var p=STATE.practice;
+  var actProv=activeOf(STATE.providers),actAppt=activeOf(STATE.apptTypes);
+  var procN=activeOf(STATE.rooms).filter(function(r){return r.type==='procedure';}).length;
+  var cols=actProv.length+procN;
+  if(!p.name){toast('⚠️ Add a practice name first (Step 1)');wizJump(1);return;}
+  var html=`
+    <div class="card" style="border:2px solid var(--green);margin-top:16px">
+      <div class="card-title-bar ct-green">🚀 Practice Schedule Generated</div>
+      <div class="al al-g"><div class="al-ic">✅</div><div><div class="al-t">${esc(p.name)} is live on the MOF Schedule Engine</div><div class="al-s">${cols} schedule column(s) created · ${actAppt.length} appointment types active · ${activeOf(STATE.locations).length} location(s) · ${STATE.languages.length} languages.</div></div></div>
+      <div class="g4">
+        <div class="mc" style="text-align:center"><div style="font-size:30px;font-weight:700;color:var(--blue);font-family:var(--mono)">${actProv.length}</div><div style="font-size:12px;color:var(--gray5)">Provider columns</div></div>
+        <div class="mc" style="text-align:center"><div style="font-size:30px;font-weight:700;color:var(--teal);font-family:var(--mono)">${procN}</div><div style="font-size:12px;color:var(--gray5)">Diagnostic columns</div></div>
+        <div class="mc" style="text-align:center"><div style="font-size:30px;font-weight:700;color:var(--purple);font-family:var(--mono)">${actAppt.length}</div><div style="font-size:12px;color:var(--gray5)">Appt types</div></div>
+        <div class="mc" style="text-align:center"><div style="font-size:30px;font-weight:700;color:var(--green);font-family:var(--mono)">${STATE.emr.connected?'312':'0'}</div><div style="font-size:12px;color:var(--gray5)">Imported appts (staged)</div></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+        <button class="btn btn-pri" onclick="toast('Opening Practice Schedule grid…')">📅 Open Practice Schedule</button>
+        <button class="btn" onclick="toast('Opening staging gate review…')">🔍 Review Imported (Staging)</button>
+        <button class="btn" onclick="exportConfig()">⬇️ Export Config (JSON)</button>
+      </div>
+    </div>`;
+  document.getElementById('gen-result').innerHTML=html;
+  document.getElementById('gen-result').scrollIntoView({behavior:'smooth',block:'center'});
+  toast('🚀 Schedule generated for '+p.name);
+}
+function exportConfig(){
+  try{
+    var blob=new Blob([JSON.stringify(STATE,null,2)],{type:'application/json'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mof_practice_config.json';a.click();
+    toast('⬇️ Config exported');
+  }catch(e){toast('Export not available in this preview');}
+}
+
+// ════════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════════
+STATE=demoEnterprise();
+wizRender();
+</script>
+</body>
+</html>
