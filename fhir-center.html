@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CareSync Pro — FHIR R4 Document &amp; Interop Center</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0b1e3d;--navy2:#102550;--navy3:#163070;
+  --blue:#1a6ef5;--blue2:#3b82f6;--blue-lt:#dbeafe;--blue-xlt:#eff6ff;
+  --teal:#0d9488;--teal-lt:#ccfbf1;--teal2:#0f766e;
+  --green:#15803d;--green-lt:#dcfce7;
+  --amber:#b45309;--amber-lt:#fef3c7;
+  --red:#dc2626;--red-lt:#fee2e2;
+  --purple:#5b21b6;--purple2:#7c3aed;--purple-lt:#ede9fe;
+  --orange:#ea580c;--orange-lt:#ffedd5;
+  --gray0:#f9fafb;--gray1:#f3f4f6;--gray2:#e5e7eb;--gray3:#d1d5db;
+  --gray4:#9ca3af;--gray5:#6b7280;--gray6:#374151;--gray7:#1f2937;--gray8:#111827;
+  --font:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --r:8px;--r2:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+}
+body{font-family:var(--font);background:var(--gray1);color:var(--gray7);font-size:15px;line-height:1.45;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* ═══ TOP NAV ═══ */
+.tnav{height:58px;background:var(--navy);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06)}
+.tlogo{display:flex;align-items:center;gap:10px;padding-right:14px;border-right:1px solid rgba(255,255,255,.12)}
+.tlogo-box{width:38px;height:38px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px}
+.tlogo-name{font-size:16px;font-weight:700;color:#fff}
+.tlogo-sub{font-size:11px;color:rgba(255,255,255,.55)}
+.tmodule{padding:6px 15px;border:1.5px solid rgba(255,255,255,.28);border-radius:20px;font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,.1)}
+.tnav-links{display:flex;gap:4px}
+.tnav-link{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,.75);cursor:pointer;text-decoration:none;transition:all .12s;border:none;background:none}
+.tnav-link:hover{background:rgba(255,255,255,.12);color:#fff}
+.tnav-link.cur{background:rgba(26,110,245,.25);color:#fff;font-weight:600}
+.tsp{flex:1}
+.tenant-sw{display:flex;align-items:center;gap:8px;padding:7px 13px;border-radius:9px;background:rgba(255,255,255,.09);cursor:pointer;border:1px solid rgba(255,255,255,.13);transition:all .13s}
+.tenant-sw:hover{background:rgba(255,255,255,.16)}
+.tenant-sw .t-lbl{font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;line-height:1}
+.tenant-sw .t-val{font-size:13px;color:#fff;font-weight:600;line-height:1.3}
+.role-chip{display:flex;align-items:center;gap:9px;padding:7px 13px;border-radius:9px;background:rgba(26,110,245,.22);cursor:pointer;border:1px solid rgba(26,110,245,.5);transition:all .13s}
+.role-chip:hover{background:rgba(26,110,245,.34)}
+.role-chip .rc-av{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.role-chip .rc-name{font-size:13px;color:#fff;font-weight:600;line-height:1.2}
+.role-chip .rc-role{font-size:10.5px;color:rgba(255,255,255,.7);line-height:1.2}
+
+/* ═══ VOIP BAR ═══ */
+.voip{height:38px;background:var(--navy2);display:flex;align-items:center;padding:0 16px;gap:14px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.05)}
+.voip-status{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#fff;font-weight:600}
+.voip-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.25)}
+.voip-stat{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.78);cursor:pointer;padding:3px 9px;border-radius:7px;transition:all .12s}
+.voip-stat:hover{background:rgba(255,255,255,.1);color:#fff}
+.voip-stat b{color:#fff;font-family:var(--mono)}
+.voip-sp{flex:1}
+.voip-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(255,255,255,.8);cursor:pointer;border:none;background:rgba(255,255,255,.07);transition:all .12s}
+.voip-ic:hover{background:var(--blue);color:#fff}
+
+/* ═══ BODY LAYOUT ═══ */
+.shell{flex:1;display:flex;overflow:hidden;min-height:0}
+.main{flex:1;overflow-y:auto;padding:22px 26px;min-width:0}
+
+/* ═══ PAGE HEADER ═══ */
+.pg-hdr{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.pg-title{font-size:26px;font-weight:700;color:var(--navy);line-height:1.2}
+.pg-sub{font-size:14px;color:var(--gray6);margin-top:5px;max-width:840px}
+.pg-actions{margin-left:auto;display:flex;gap:9px;flex-wrap:wrap;align-items:flex-start}
+
+/* ═══ BANNER ═══ */
+.banner{display:flex;gap:13px;align-items:flex-start;background:var(--blue-xlt);border:1px solid var(--blue-lt);border-left:4px solid var(--blue);border-radius:var(--r);padding:14px 16px;margin-bottom:20px}
+.banner .b-ic{font-size:22px;line-height:1}
+.banner .b-txt{font-size:14px;color:var(--gray7)}
+.banner .b-txt b{color:var(--navy)}
+.gate-flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;font-weight:700}
+.gate-node{padding:5px 11px;border-radius:8px;background:#fff;border:1.5px solid var(--gray3);color:var(--gray7)}
+.gate-node.ext{border-color:var(--blue);color:var(--blue)}
+.gate-node.intake{border-color:var(--amber);color:var(--amber);background:var(--amber-lt)}
+.gate-node.emr{border-color:var(--green);color:var(--green);background:var(--green-lt)}
+.gate-arrow{color:var(--gray4);font-weight:700}
+
+/* ═══ KPI TILES ═══ */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+.kpi-tile{background:#fff;border:1px solid var(--gray2);border-radius:var(--r2);padding:16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi-accent{position:absolute;top:0;left:0;right:0;height:4px}
+.kpi-ic{font-size:20px;margin-bottom:6px}
+.kpi-val{font-size:32px;font-weight:700;font-family:var(--mono);color:var(--navy);line-height:1;letter-spacing:-.5px}
+.kpi-lbl{font-size:12.5px;font-weight:600;color:var(--gray6);margin-top:6px}
+.kpi-sub{font-size:11.5px;color:var(--gray5);margin-top:3px}
+
+/* ═══ BUTTONS ═══ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 18px;border-radius:9px;font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;border:1.5px solid var(--gray3);background:#fff;color:var(--gray7);transition:all .13s}
+.btn:hover{background:var(--gray1);border-color:var(--gray4)}
+.btn-pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-pri:hover{background:#1559cc;border-color:#1559cc}
+.btn-green{background:var(--green);border-color:var(--green);color:#fff}
+.btn-green:hover{background:#0f6b30}
+.btn-danger{background:var(--red);border-color:var(--red);color:#fff}
+.btn-danger:hover{background:#b91c1c}
+.btn-amber{background:var(--amber);border-color:var(--amber);color:#fff}
+.btn-amber:hover{background:#92400e}
+.btn-teal{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn-teal:hover{background:var(--teal2)}
+.btn-purple{background:var(--purple2);border-color:var(--purple2);color:#fff}
+.btn-purple:hover{background:var(--purple)}
+.btn-sm{min-height:34px;padding:0 13px;font-size:13.5px;border-radius:8px}
+.btn-xs{min-height:28px;padding:0 10px;font-size:12.5px;border-radius:7px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* ═══ LIST TOOLS ═══ */
+.list-tools{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-box{position:relative;flex:1;min-width:200px}
+.search-box input{width:100%;height:42px;padding:0 14px 0 38px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:15px;color:var(--gray7)}
+.search-box input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-lt)}
+.search-box .s-ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--gray5)}
+.filter-sel{height:42px;padding:0 12px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:14px;font-weight:600;color:var(--gray7);background:#fff;cursor:pointer}
+.filter-sel:focus{outline:none;border-color:var(--blue)}
+
+/* ═══ EXCHANGE TABLE ═══ */
+.ptable-wrap{background:#fff;border:1px solid var(--gray2);border-radius:var(--r2);box-shadow:var(--shadow);overflow:hidden}
+.ptable-hdr{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--gray2);background:var(--gray0);flex-wrap:wrap}
+.ptable-title{font-size:17px;font-weight:700;color:var(--navy)}
+.ptable-badge{font-size:11.5px;font-weight:700;padding:3px 11px;border-radius:10px;background:var(--blue-lt);color:var(--navy3)}
+.ptable-inner{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:960px}
+thead th{padding:11px 14px;font-size:13px;font-weight:700;color:var(--gray7);background:var(--gray0);border-bottom:2px solid var(--gray2);text-align:left;white-space:nowrap}
+thead th.center{text-align:center}
+tbody tr{border-bottom:1px solid var(--gray1);transition:background .1s}
+tbody tr:hover{background:var(--blue-xlt)}
+tbody tr.arch-row{background:var(--gray0);opacity:.88}
+tbody tr.promoted-row{background:var(--green-lt)}
+tbody tr.error-row{background:var(--red-lt)}
+tbody td{padding:12px 14px;font-size:14px;vertical-align:top}
+tbody td.center{text-align:center}
+.pt-name{font-size:15px;font-weight:700;color:var(--navy)}
+.pt-mrn{font-size:12px;font-family:var(--mono);color:var(--gray5);margin-top:2px}
+.pt-age{font-size:12.5px;color:var(--gray6);margin-top:2px}
+.ex-summary{font-size:12.5px;color:var(--gray6);margin-top:4px;max-width:300px}
+
+/* ═══ RESOURCE / CODE CHIPS ═══ */
+.res-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 9px;border-radius:8px;font-family:var(--mono);background:var(--navy);color:#fff;cursor:help}
+.dir-chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:3px 9px;border-radius:8px}
+.dir-in{background:var(--teal-lt);color:var(--teal2)}
+.dir-out{background:var(--purple-lt);color:var(--purple)}
+.code-pill{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:7px;font-family:var(--mono);background:var(--gray1);color:var(--gray7);cursor:help}
+
+/* ═══ TOOLTIP ═══ */
+[data-tip]{position:relative}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:130%;left:50%;transform:translateX(-50%);background:var(--gray8);color:#fff;font-size:12px;font-weight:400;padding:8px 12px;border-radius:7px;white-space:normal;width:250px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.2);line-height:1.5;font-family:var(--font)}
+.tip{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--gray2);color:var(--gray6);font-size:11px;font-weight:700;cursor:help;margin-left:5px;vertical-align:middle}
+
+/* ═══ BADGES / PILLS ═══ */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:11px}
+.pill-green{background:var(--green-lt);color:var(--green)}
+.pill-amber{background:var(--amber-lt);color:var(--amber)}
+.pill-red{background:var(--red-lt);color:var(--red)}
+.pill-gray{background:var(--gray1);color:var(--gray6)}
+.pill-blue{background:var(--blue-lt);color:var(--navy3)}
+.pill-purple{background:var(--purple-lt);color:var(--purple)}
+.pill-teal{background:var(--teal-lt);color:var(--teal2)}
+
+/* ═══ MATCH STATUS ═══ */
+.match-ok{font-size:12px;color:var(--green);font-weight:700}
+.match-none{font-size:12px;color:var(--red);font-weight:700}
+
+/* ═══ MODAL ═══ */
+.modal-bg{position:fixed;inset:0;background:rgba(11,30,61,.52);display:none;align-items:center;justify-content:center;z-index:200;padding:18px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:660px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+.modal-hdr{display:flex;align-items:center;gap:10px;padding:18px 22px;border-bottom:1px solid var(--gray2);position:sticky;top:0;background:#fff;z-index:5}
+.modal-title{font-size:19px;font-weight:700;color:var(--navy);flex:1}
+.modal-x{width:34px;height:34px;border-radius:8px;border:none;background:var(--gray1);color:var(--gray6);font-size:18px;cursor:pointer;flex-shrink:0}
+.modal-x:hover{background:var(--gray2)}
+.modal-body{padding:20px 22px}
+.modal-foot{padding:16px 22px;border-top:1px solid var(--gray2);display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#fff;flex-wrap:wrap}
+.fld{margin-bottom:15px}
+.fld label{display:block;font-size:13px;font-weight:600;color:var(--gray7);margin-bottom:6px}
+.fld input,.fld textarea,.fld select{width:100%;padding:11px 13px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:15px;color:var(--gray7)}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-lt)}
+.fld-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ═══ FHIR JSON VIEWER (light, AAA) ═══ */
+.fhir-json{font-family:var(--mono);font-size:12.5px;background:var(--gray0);color:var(--gray8);border:1px solid var(--gray2);border-radius:10px;padding:14px 16px;overflow-x:auto;line-height:1.55;white-space:pre;margin-bottom:14px}
+.meta-row{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--gray2);font-size:13.5px}
+.meta-row:last-child{border-bottom:none}
+.meta-row .mk{font-weight:700;color:var(--gray6);min-width:120px}
+.meta-row .mv{color:var(--gray8)}
+.validate-note{border-radius:8px;padding:11px 13px;font-size:12.5px;margin-bottom:14px;line-height:1.5}
+.vn-pass{background:var(--green-lt);border:1px solid #86efac;color:var(--green)}
+.vn-warn{background:var(--amber-lt);border:1px solid #fde68a;color:var(--amber)}
+.vn-error{background:var(--red-lt);border:1px solid #fecaca;color:var(--red)}
+.gate-note{background:var(--green-lt);border:1px solid #86efac;border-radius:8px;padding:11px 13px;font-size:12.5px;color:var(--green);margin-bottom:6px;line-height:1.5}
+
+/* ═══ AI SUGGESTION BOX ═══ */
+.ai-box{background:var(--purple-lt);border:1.5px solid #c4b5fd;border-radius:var(--r2);padding:15px 18px;margin-bottom:14px}
+.ai-box-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ai-box-ic{font-size:18px}
+.ai-box-title{font-size:14px;font-weight:700;color:var(--purple)}
+.ai-box-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--purple);color:#fff;margin-left:auto}
+.ai-box-body{font-size:14px;color:var(--gray7);line-height:1.55}
+.ai-box-foot{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}
+.ai-rec-row{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px dashed #c4b5fd}
+.ai-rec-row:last-child{border-bottom:none}
+.ai-rec-tag{font-size:11px;font-weight:700;color:#fff;background:var(--purple2);padding:2px 7px;border-radius:6px;flex-shrink:0;font-family:var(--mono)}
+
+/* ═══ TOAST ═══ */
+.toast-wrap{position:fixed;bottom:22px;right:22px;z-index:300;display:flex;flex-direction:column;gap:10px}
+.toast{display:flex;align-items:center;gap:10px;background:var(--gray8);color:#fff;padding:13px 17px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:tin .2s ease;max-width:360px}
+.toast.green{background:var(--green)}.toast.red{background:var(--red)}.toast.amber{background:var(--amber)}.toast.blue{background:var(--blue)}.toast.purple{background:var(--purple2)}
+@keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ ROLE OPTS (modal) ═══ */
+.role-opt{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1.5px solid var(--gray2);border-radius:10px;cursor:pointer;margin-bottom:9px;transition:all .12s}
+.role-opt:hover{border-color:var(--blue);background:var(--blue-xlt)}
+.role-opt .ro-av{width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.role-opt .ro-name{font-size:15px;font-weight:600;color:var(--gray8)}
+.role-opt .ro-tier{font-size:12.5px;color:var(--gray6)}
+
+/* ═══ ARCHIVE REASON BADGE ═══ */
+.arch-reason{font-size:12px;color:var(--amber);font-weight:500;margin-top:3px;font-style:italic}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(3,1fr)}
+  .main{padding:18px 14px}
+  .tnav-links{display:none}
+}
+@media(max-width:600px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .kpi-val{font-size:26px}
+  .pg-title{font-size:21px}
+  .main{padding:14px 12px}
+  .tlogo-sub,.tmodule{display:none}
+  .tenant-sw .t-lbl{display:none}
+  .fld-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOP NAV ═══ -->
+<div class="tnav">
+  <div class="tlogo">
+    <div class="tlogo-box">&#x2764;&#xFE0F;</div>
+    <div>
+      <div class="tlogo-name">CareSync Pro</div>
+      <div class="tlogo-sub">Medical Office Force</div>
+    </div>
+  </div>
+  <div class="tmodule">&#x1F517; FHIR R4 Interop Center</div>
+  <div class="tnav-links">
+    <a class="tnav-link" href="appointment-dashboard.html">&#x1F4CB; Appointments</a>
+    <a class="tnav-link" href="quality-tracker.html">&#x1F4CA; Quality &amp; HCC</a>
+    <a class="tnav-link" href="encounter.html">&#x1F4DD; Encounter</a>
+    <a class="tnav-link" href="awv.html">&#x1FA7A; AWV</a>
+    <a class="tnav-link" href="patient-portal.html">&#x1F464; Portal</a>
+    <a class="tnav-link cur" href="fhir-center.html">&#x1F517; FHIR</a>
+  </div>
+  <div class="tsp"></div>
+  <div class="tenant-sw" onclick="openTenantModal()">
+    <span style="font-size:16px">&#x1F3E2;</span>
+    <div>
+      <div class="t-lbl">Tenant</div>
+      <div class="t-val" id="tenantLabel">Athens Heart Center &#x25B8; AHC Main</div>
+    </div>
+  </div>
+  <div class="role-chip" onclick="openRoleModal()">
+    <div class="rc-av" id="roleAv">RP</div>
+    <div>
+      <div class="rc-name" id="roleName">Dr. Raj Patel</div>
+      <div class="rc-role" id="roleTier">Physician &#xB7; Tier 4</div>
+    </div>
+    <span style="color:rgba(255,255,255,.6);font-size:12px">&#x25BE;</span>
+  </div>
+</div>
+
+<!-- ═══ VOIP BAR ═══ -->
+<div class="voip">
+  <div class="voip-status"><span class="voip-dot"></span>VoIP Online</div>
+  <div class="voip-stat" onclick="voipAction('Voicemails')"><span>Voicemails</span> <b>3</b></div>
+  <div class="voip-stat" onclick="voipAction('Missed Calls')"><span>Missed</span> <b>1</b></div>
+  <div class="voip-sp"></div>
+  <button class="voip-ic" onclick="voipAction('Dialer')" title="Dialer">&#x1F4DE;</button>
+  <button class="voip-ic" onclick="voipAction('Hold')" title="Hold">&#x23F8;&#xFE0F;</button>
+  <button class="voip-ic" onclick="voipAction('Transfer')" title="Transfer">&#x21AA;&#xFE0F;</button>
+</div>
+
+<!-- ═══ SHELL ═══ -->
+<div class="shell">
+<div class="main" id="mainContent">
+
+  <!-- PAGE HEADER -->
+  <div class="pg-hdr">
+    <div>
+      <div class="pg-title">&#x1F517; FHIR R4 Document &amp; Interop Center</div>
+      <div class="pg-sub">HL7&reg; <b>FHIR R4</b> (4.0.1) exchange hub on <b>US Core 6.1.0</b> profiles. Inbound resources from HIEs, labs and referrals are validated and <b>staged</b> &mdash; they reconcile into the chart only after a human promotes them, exactly like the portal gate. Outbound CCD / referral bundles are signed and tracked. Every code stays structured (LOINC / SNOMED / RxNorm / ICD-10).</div>
+    </div>
+    <div class="pg-actions">
+      <button class="btn btn-purple btn-sm" onclick="runAiReconcile()" id="aiReconcileBtn">&#x1F916; AI Reconcile</button>
+      <button class="btn btn-pri" onclick="openAddExchange()" id="addExchangeBtn">+ New Exchange</button>
+    </div>
+  </div>
+
+  <!-- BANNER -->
+  <div class="banner">
+    <div class="b-ic">&#x1F517;</div>
+    <div class="b-txt"><b>Interop is untrusted input too.</b> An inbound <span class="code-pill" data-tip="FHIR R4 resource conveying a clinical document, e.g. a CCD / discharge summary">DocumentReference</span> or <span class="code-pill" data-tip="A collection of FHIR resources exchanged together">Bundle</span> can carry a wrong patient match or a non-conformant code &mdash; so it lands in the same staging gate, never an automatic chart write.
+      <div class="gate-flow">
+        <span class="gate-node ext">&#x1F310; External (HIE / Lab / Referral)</span>
+        <span class="gate-arrow">&#x2192;</span>
+        <span class="gate-node">&#x2713; US Core validate</span>
+        <span class="gate-arrow">&#x2192;</span>
+        <span class="gate-node intake">&#x1F4E5; Stage (pending reconcile)</span>
+        <span class="gate-arrow">&#x2192;</span>
+        <span class="gate-node emr">&#x1F4CB; EMR (audited write)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI TILES -->
+  <div class="kpi-grid">
+    <div class="kpi-tile"><div class="kpi-accent" style="background:var(--teal)"></div><div class="kpi-ic">&#x1F4E5;</div><div class="kpi-val" id="kpiInbound">0</div><div class="kpi-lbl">Inbound to Reconcile</div><div class="kpi-sub">Validated &amp; staged</div></div>
+    <div class="kpi-tile"><div class="kpi-accent" style="background:var(--blue)"></div><div class="kpi-ic">&#x2705;</div><div class="kpi-val" id="kpiValidated">0</div><div class="kpi-lbl">US Core Valid</div><div class="kpi-sub">Profile-conformant</div></div>
+    <div class="kpi-tile"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-ic">&#x1F4CB;</div><div class="kpi-val" id="kpiReconciled">0</div><div class="kpi-lbl">Reconciled to EMR</div><div class="kpi-sub">Audited writes</div></div>
+    <div class="kpi-tile"><div class="kpi-accent" style="background:var(--purple)"></div><div class="kpi-ic">&#x1F4E4;</div><div class="kpi-val" id="kpiSent">0</div><div class="kpi-lbl">Outbound Sent</div><div class="kpi-sub">CCD / referral</div></div>
+    <div class="kpi-tile"><div class="kpi-accent" style="background:var(--red)"></div><div class="kpi-ic">&#x26A0;&#xFE0F;</div><div class="kpi-val" id="kpiErrors">0</div><div class="kpi-lbl">Validation Errors</div><div class="kpi-sub">Non-conformant</div></div>
+  </div>
+
+  <!-- EXCHANGE LOG CARD -->
+  <div class="ptable-wrap">
+    <div class="ptable-hdr">
+      <div class="ptable-title">FHIR Exchange Log<span class="tip" data-tip="Every inbound and outbound FHIR R4 transaction. Inbound resources stage for reconciliation; outbound are tracked through send. View JSON to inspect the raw resource.">i</span></div>
+      <span class="ptable-badge" id="exBadge">0 exchanges</span>
+      <div style="flex:1"></div>
+      <div class="list-tools" style="margin:0">
+        <div class="search-box" style="min-width:160px"><span class="s-ic">&#x1F50D;</span><input id="exSearch" type="text" placeholder="Search exchanges&#x2026;" oninput="renderExchange()"></div>
+        <select class="filter-sel" id="exStatus" onchange="renderExchange()">
+          <option value="all">All</option>
+          <option value="active" selected>Active</option>
+          <option value="archived">Archived</option>
+        </select>
+        <select class="filter-sel" id="exDir" onchange="renderExchange()">
+          <option value="all">All directions</option>
+          <option value="inbound">Inbound</option>
+          <option value="outbound">Outbound</option>
+        </select>
+        <select class="filter-sel" id="exState" onchange="renderExchange()">
+          <option value="all">All states</option>
+          <option value="staged">Staged</option>
+          <option value="reconciled">Reconciled</option>
+          <option value="sent">Sent</option>
+          <option value="error">Error</option>
+        </select>
+      </div>
+    </div>
+    <div class="ptable-inner">
+      <table>
+        <thead>
+          <tr>
+            <th>Patient / Match</th>
+            <th>Resource<span class="tip" data-tip="FHIR R4 resourceType. Hover for the US Core profile it is validated against.">i</span></th>
+            <th class="center">Direction</th>
+            <th>Source / Destination</th>
+            <th>Received</th>
+            <th class="center">State</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="exBody"></tbody>
+      </table>
+    </div>
+    <div style="padding:10px 18px;font-size:12.5px;color:var(--gray5);display:flex;gap:16px;border-top:1px solid var(--gray1);flex-wrap:wrap" id="exFoot"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══ MODAL ═══ -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalCard">
+    <div class="modal-hdr"><div class="modal-title" id="modalTitle">Title</div><button class="modal-x" onclick="closeModal()">&#x2715;</button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ════════════════════════════════════════════════
+   CARESYNC FOUNDATION SPINE — shared utilities
+   ════════════════════════════════════════════════ */
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function $(id){return document.getElementById(id);}
+
+/* cyrb53 hash for audit chain */
+function cyrb53(str,seed){
+  seed=seed||0;
+  var h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;
+  for(var i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}
+  h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);
+  h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);
+  return (4294967296*(2097151&h2)+(h1>>>0)).toString(16).padStart(14,'0');
+}
+
+/* 8-tier RBAC */
+var USERS={
+  super:{name:'Subodh Agrawal, MD',av:'SA',label:'Global SuperAdmin',tier:'Tier 0'},
+  padmin:{name:'Priya Shah',av:'PS',label:'Practice Admin',tier:'Tier 3-P'},
+  md:{name:'Dr. Raj Patel',av:'RP',label:'Physician',tier:'Tier 4'},
+  nurse:{name:'Sarah Kim, MA',av:'SK',label:'Nurse / MA',tier:'Tier 5'},
+  front:{name:'Dana Brooks',av:'DB',label:'Front Desk / Billing',tier:'Tier 6'}
+};
+var PERMS={
+  super:['view','create','edit','archive','restore','sign','prescribe','order','bill','admin','audit_view','tenant_switch','promote'],
+  padmin:['view','create','edit','archive','restore','bill','admin','audit_view','promote'],
+  md:['view','create','edit','archive','restore','sign','prescribe','order','bill','audit_view','promote'],
+  nurse:['view','create','edit','archive','restore','order','promote'],
+  front:['view','create','edit','archive','restore']
+};
+var currentRole='md';
+function can(action){return (PERMS[currentRole]||[]).indexOf(action)>=0;}
+
+/* Audit chain */
+var auditChain=[];
+var GENESIS='00000000000000';
+function logAudit(action,detail){
+  var prev=auditChain.length?auditChain[auditChain.length-1].hash:GENESIS;
+  var seq=auditChain.length+1;
+  var ts=new Date().toISOString().replace('T',' ').slice(0,19);
+  var u=USERS[currentRole];
+  var payload=[prev,seq,ts,u.name,currentRole,action,detail].join('|');
+  auditChain.push({seq:seq,ts:ts,actor:u.name,role:currentRole,action:action,detail:detail,prevHash:prev,hash:cyrb53(payload)});
+}
+
+/* AI interaction log */
+var aiLog=[];
+function logAI(prompt,response,context){
+  aiLog.push({ts:new Date().toISOString(),role:currentRole,actor:USERS[currentRole].name,prompt:prompt,response:response,context:context||''});
+  logAudit('AI_INTERACTION','AI call logged: '+prompt.slice(0,60)+'...');
+}
+
+/* Toast */
+function toast(msg,type,dur){
+  var w=$('toastWrap');
+  var d=document.createElement('div');
+  d.className='toast'+(type?' '+type:'');
+  d.textContent=msg;
+  w.appendChild(d);
+  setTimeout(function(){d.remove();},dur||3400);
+}
+
+/* Modal */
+function openModal(title,body,foot){
+  $('modalTitle').innerHTML=title;
+  $('modalBody').innerHTML=body;
+  $('modalFoot').innerHTML=foot||'<button class="btn" onclick="closeModal()">Close</button>';
+  $('modalBg').classList.add('open');
+}
+function closeModal(){$('modalBg').classList.remove('open');}
+
+/* VoIP */
+function voipAction(action){toast('VoIP: '+action+' (demo)','blue');}
+
+/* Tenant modal */
+function openTenantModal(){
+  openModal('Switch Tenant',
+    '<div class="fld"><label>Group &rsaquo; Organization</label>'
+    +'<select id="tenSel">'
+    +'<option value="Athens Heart Center &rsaquo; AHC Main">Athens Heart Center &rsaquo; AHC Main</option>'
+    +'<option value="Athens Heart Center &rsaquo; Watkinsville">Athens Heart Center &rsaquo; Watkinsville</option>'
+    +'<option value="Full Family Health &rsaquo; Main">Full Family Health &rsaquo; Main</option>'
+    +'</select></div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button>'
+    +'<button class="btn btn-pri" onclick="applyTenant()">Switch</button>');
+}
+function applyTenant(){
+  var v=$('tenSel').value;
+  $('tenantLabel').textContent=v;
+  logAudit('TENANT_SWITCH','Switched to tenant: '+v);
+  closeModal();toast('Tenant switched to '+v,'blue');
+}
+
+/* Role modal */
+function openRoleModal(){
+  var body=Object.keys(USERS).map(function(k){
+    var u=USERS[k];
+    return '<div class="role-opt" onclick="switchRole(\''+k+'\')"><div class="ro-av">'+esc(u.av)+'</div><div><div class="ro-name">'+esc(u.name)+'</div><div class="ro-tier">'+esc(u.label)+' &middot; '+esc(u.tier)+'</div></div></div>';
+  }).join('');
+  openModal('Switch Role (RBAC demo)',body,'<button class="btn" onclick="closeModal()">Close</button>');
+}
+function switchRole(k){
+  if(!USERS[k])return;
+  currentRole=k;var u=USERS[k];
+  $('roleAv').textContent=u.av;$('roleName').textContent=u.name;$('roleTier').textContent=u.label+' · '+u.tier;
+  logAudit('ROLE_SWITCH','Active role changed to '+u.label);
+  closeModal();renderExchange();applyRbacUI();
+  toast('Now acting as '+u.label,'blue');
+}
+function applyRbacUI(){
+  var addBtn=$('addExchangeBtn');
+  if(addBtn) addBtn.style.display=can('create')?'inline-flex':'none';
+  var aiBtn=$('aiReconcileBtn');
+  if(aiBtn) aiBtn.style.display=can('edit')?'inline-flex':'none';
+}
+
+
+/* ════════════════════════════════════════════════
+   FHIR EXCHANGE DATA — Athens Heart Center R4 interop
+   ════════════════════════════════════════════════ */
+/* dir: inbound | outbound
+   state: staged | reconciled | sent | error
+   clinical: true => reconcile requires a clinician */
+var RES_META={
+  DocumentReference:{profile:'US Core DocumentReference 6.1.0',ic:'\u{1F4C4}'},
+  Bundle:{profile:'US Core / C-CDA on FHIR Bundle',ic:'\u{1F4E6}'},
+  Condition:{profile:'US Core Condition Problems 6.1.0',ic:'\u{1FA7A}'},
+  MedicationRequest:{profile:'US Core MedicationRequest 6.1.0',ic:'\u{1F48A}'},
+  Observation:{profile:'US Core Lab Result Observation 6.1.0',ic:'\u{1F9EA}'},
+  AllergyIntolerance:{profile:'US Core AllergyIntolerance 6.1.0',ic:'⚠️'},
+  Coverage:{profile:'US Core Coverage / CARIN BB',ic:'\u{1F4B3}'}
+};
+
+var exchanges=[
+  {
+    id:'FHIR-7001',res:'Observation',dir:'inbound',clinical:true,
+    patient:'Harold Branson',mrn:'AHC-04417',matched:true,
+    partner:'LabCorp (via Georgia HIE)',received:'2026-06-21 07:02',
+    state:'staged',validation:'pass',
+    summary:'HbA1c result 8.1% — flows to the open care gap',
+    json:[
+      '{',
+      '  "resourceType": "Observation",',
+      '  "meta": { "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"] },',
+      '  "status": "final",',
+      '  "category": [{ "coding": [{ "system": "observation-category", "code": "laboratory" }] }],',
+      '  "code": { "coding": [{ "system": "http://loinc.org", "code": "4548-4", "display": "Hemoglobin A1c/Hemoglobin.total" }] },',
+      '  "subject": { "reference": "Patient/AHC-04417", "display": "Harold Branson" },',
+      '  "effectiveDateTime": "2026-06-20",',
+      '  "valueQuantity": { "value": 8.1, "unit": "%", "system": "http://unitsofmeasure.org", "code": "%" },',
+      '  "interpretation": [{ "coding": [{ "code": "H", "display": "High" }] }]',
+      '}'
+    ]
+  },
+  {
+    id:'FHIR-7002',res:'DocumentReference',dir:'inbound',clinical:false,
+    patient:'Dorothy Weston',mrn:'AHC-03891',matched:true,
+    partner:'St. Mary’s Hospital (discharge)',received:'2026-06-21 06:30',
+    state:'staged',validation:'warn',
+    summary:'Cardiology discharge summary (CCD) after CHF admission',
+    json:[
+      '{',
+      '  "resourceType": "DocumentReference",',
+      '  "meta": { "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-documentreference"] },',
+      '  "status": "current",',
+      '  "type": { "coding": [{ "system": "http://loinc.org", "code": "18842-5", "display": "Discharge summary" }] },',
+      '  "subject": { "reference": "Patient/AHC-03891", "display": "Dorothy Weston" },',
+      '  "date": "2026-06-20T22:14:00Z",',
+      '  "content": [{ "attachment": { "contentType": "text/xml", "title": "C-CDA Discharge Summary" } }]',
+      '  // WARN: author.telecom missing — US Core MustSupport, accept with flag',
+      '}'
+    ]
+  },
+  {
+    id:'FHIR-7003',res:'AllergyIntolerance',dir:'inbound',clinical:true,
+    patient:'Harold Branson',mrn:'AHC-04417',matched:true,
+    partner:'Georgia HIE reconciliation feed',received:'2026-06-21 05:48',
+    state:'staged',validation:'pass',
+    summary:'Sulfonamide allergy — must reconcile vs furosemide order',
+    json:[
+      '{',
+      '  "resourceType": "AllergyIntolerance",',
+      '  "meta": { "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-allergyintolerance"] },',
+      '  "clinicalStatus": { "coding": [{ "code": "active" }] },',
+      '  "code": { "coding": [{ "system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "10180", "display": "Sulfonamide" }] },',
+      '  "patient": { "reference": "Patient/AHC-04417", "display": "Harold Branson" },',
+      '  "reaction": [{ "manifestation": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "247472004", "display": "Hives" }] }] }]',
+      '}'
+    ]
+  },
+  {
+    id:'FHIR-7004',res:'Condition',dir:'inbound',clinical:true,
+    patient:'Marcus Reid',mrn:'AHC-05102',matched:true,
+    partner:'Referring PCP (Direct message)',received:'2026-06-20 18:11',
+    state:'staged',validation:'pass',
+    summary:'Problem: HFrEF — supports HCC recapture if MEAT documented',
+    json:[
+      '{',
+      '  "resourceType": "Condition",',
+      '  "meta": { "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-problems-health-concerns"] },',
+      '  "clinicalStatus": { "coding": [{ "code": "active" }] },',
+      '  "category": [{ "coding": [{ "code": "problem-list-item" }] }],',
+      '  "code": { "coding": [{ "system": "http://hl7.org/fhir/sid/icd-10-cm", "code": "I50.22", "display": "Chronic systolic (congestive) heart failure" }] },',
+      '  "subject": { "reference": "Patient/AHC-05102", "display": "Marcus Reid" }',
+      '}'
+    ]
+  },
+  {
+    id:'FHIR-7005',res:'Coverage',dir:'inbound',clinical:false,
+    patient:'Gloria Huang',mrn:'AHC-01558',matched:true,
+    partner:'Humana (X12 271 → FHIR)',received:'2026-06-20 16:25',
+    state:'staged',validation:'pass',
+    summary:'Active secondary coverage confirmed — token only, no card',
+    json:[
+      '{',
+      '  "resourceType": "Coverage",',
+      '  "meta": { "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-coverage"] },',
+      '  "status": "active",',
+      '  "subscriber": { "reference": "Patient/AHC-01558" },',
+      '  "payor": [{ "display": "Humana Medicare Advantage" }],',
+      '  "class": [{ "type": { "coding": [{ "code": "plan" }] }, "value": "MA-PD" }]',
+      '  // card image NOT included — PCI SAQ A vault token referenced only',
+      '}'
+    ]
+  },
+  {
+    id:'FHIR-7006',res:'Bundle',dir:'inbound',clinical:false,
+    patient:'Unknown / unmatched',mrn:'',matched:false,
+    partner:'Out-of-network referral',received:'2026-06-20 09:40',
+    state:'error',validation:'error',
+    summary:'Referral bundle — patient identifier does not match any chart',
+    json:[
+      '{',
+      '  "resourceType": "Bundle",',
+      '  "type": "document",',
+      '  "entry": [{ "resource": { "resourceType": "Patient", "name": [{ "text": "J. Okafor" }] } }]',
+      '  // ERROR: no deterministic Patient match (MPI miss). Cannot stage to a chart.',
+      '}'
+    ]
+  },
+  {
+    id:'FHIR-7007',res:'MedicationRequest',dir:'outbound',clinical:true,
+    patient:'Evelyn Moss',mrn:'AHC-02744',matched:true,
+    partner:'Surescripts (eRx)',received:'2026-06-20 08:05',
+    state:'sent',validation:'pass',
+    summary:'Warfarin 5mg renewal transmitted to pharmacy',
+    json:[
+      '{',
+      '  "resourceType": "MedicationRequest",',
+      '  "meta": { "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-medicationrequest"] },',
+      '  "status": "active",',
+      '  "intent": "order",',
+      '  "medicationCodeableConcept": { "coding": [{ "system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "855332", "display": "Warfarin Sodium 5 MG Oral Tablet" }] },',
+      '  "subject": { "reference": "Patient/AHC-02744", "display": "Evelyn Moss" },',
+      '  "authoredOn": "2026-06-20"',
+      '}'
+    ]
+  },
+  {
+    id:'FHIR-7008',res:'DocumentReference',dir:'outbound',clinical:false,
+    patient:'Thomas Park',mrn:'AHC-06237',matched:true,
+    partner:'Cardiology referral (Direct)',received:'2026-06-19 15:20',
+    state:'sent',validation:'pass',
+    summary:'CCD summary-of-care sent with referral',
+    json:[
+      '{',
+      '  "resourceType": "DocumentReference",',
+      '  "status": "current",',
+      '  "type": { "coding": [{ "system": "http://loinc.org", "code": "34133-9", "display": "Summarization of episode note (CCD)" }] },',
+      '  "subject": { "reference": "Patient/AHC-06237", "display": "Thomas Park" },',
+      '  "date": "2026-06-19T15:20:00Z"',
+      '}'
+    ]
+  },
+  {
+    id:'FHIR-7009',res:'Observation',dir:'inbound',clinical:true,
+    patient:'Evelyn Moss',mrn:'AHC-02744',matched:true,
+    partner:'Quest Diagnostics',received:'2026-06-18 11:02',
+    state:'reconciled',validation:'pass',
+    summary:'INR 2.4 result — reconciled into chart (in range)',
+    json:[
+      '{',
+      '  "resourceType": "Observation",',
+      '  "status": "final",',
+      '  "code": { "coding": [{ "system": "http://loinc.org", "code": "6301-6", "display": "INR in Platelet poor plasma" }] },',
+      '  "subject": { "reference": "Patient/AHC-02744", "display": "Evelyn Moss" },',
+      '  "valueQuantity": { "value": 2.4, "unit": "{INR}" }',
+      '}'
+    ]
+  }
+];
+exchanges.forEach(function(ex){ex.status='active';});
+var exSeq=7009;
+
+
+/* ════════════════════════════════════════════════
+   EXCHANGE RENDER
+   ════════════════════════════════════════════════ */
+function dirChip(dir){
+  return dir==='inbound'
+    ?'<span class="dir-chip dir-in">&#x2B07;&#xFE0F; Inbound</span>'
+    :'<span class="dir-chip dir-out">&#x2B06;&#xFE0F; Outbound</span>';
+}
+function statePill(st){
+  if(st==='reconciled') return '<span class="pill pill-green">✅ Reconciled</span>';
+  if(st==='sent') return '<span class="pill pill-purple">\u{1F4E4} Sent</span>';
+  if(st==='error') return '<span class="pill pill-red">⚠️ Error</span>';
+  return '<span class="pill pill-amber">\u{1F4E5} Staged</span>';
+}
+function validationPill(v){
+  if(v==='pass') return '<span class="pill pill-green">✓ US Core valid</span>';
+  if(v==='warn') return '<span class="pill pill-amber">▲ Valid w/ warnings</span>';
+  return '<span class="pill pill-red">✕ Non-conformant</span>';
+}
+
+function renderExchange(){
+  var q=($('exSearch').value||'').toLowerCase().trim();
+  var st=$('exStatus').value;
+  var dir=$('exDir').value;
+  var state=$('exState').value;
+  var rows=exchanges.filter(function(ex){
+    if(st!=='all'&&ex.status!==st) return false;
+    if(dir!=='all'&&ex.dir!==dir) return false;
+    if(state!=='all'&&ex.state!==state) return false;
+    if(q&&(ex.patient+' '+ex.mrn+' '+ex.res+' '+ex.partner+' '+ex.summary+' '+ex.id).toLowerCase().indexOf(q)<0) return false;
+    return true;
+  });
+
+  var tbody=$('exBody');
+  if(!rows.length){
+    tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:36px;color:var(--gray5);font-size:14px;">\u{1F4ED} No exchanges match this filter.</td></tr>';
+  }else{
+    tbody.innerHTML=rows.map(function(ex){
+      var arch=ex.status==='archived';
+      var rm=RES_META[ex.res]||{profile:ex.res,ic:'\u{1F517}'};
+      var rowCls=arch?'arch-row':(ex.state==='reconciled'?'promoted-row':ex.state==='error'?'error-row':'');
+      var archNote=arch?('<div class="arch-reason">\u{1F4C2} Archived '+esc(ex.archTs)+': '+esc(ex.archReason)+'</div>'):'';
+      var matchHtml=ex.matched
+        ?('<div class="pt-mrn">MRN: '+esc(ex.mrn)+'</div><div class="match-ok">✓ Matched (MPI)</div>')
+        :('<div class="match-none">⚠️ No MPI match</div>');
+      var actionBtns='';
+      actionBtns+='<button class="btn btn-xs" onclick="openJson(\''+esc(ex.id)+'\')">{ } JSON</button> ';
+      if(!arch){
+        if(ex.dir==='inbound'&&ex.state==='staged'){
+          actionBtns+='<button class="btn btn-green btn-xs" onclick="openReconcile(\''+esc(ex.id)+'\')">\u{1F4CB} Reconcile</button> ';
+        }else if(ex.dir==='outbound'&&ex.state!=='sent'){
+          actionBtns+='<button class="btn btn-purple btn-xs" onclick="sendExchange(\''+esc(ex.id)+'\')">\u{1F4E4} Send</button> ';
+        }
+        if(can('archive')) actionBtns+='<button class="btn btn-xs" onclick="openArchiveExchange(\''+esc(ex.id)+'\')">\u{1F5C4}️</button>';
+      }else{
+        if(can('restore')) actionBtns+='<button class="btn btn-green btn-xs" onclick="restoreExchange(\''+esc(ex.id)+'\')">↺ Restore</button>';
+      }
+      return '<tr class="'+rowCls+'">'
+        +'<td><div class="pt-name">'+esc(ex.patient)+'</div>'+matchHtml+archNote+'</td>'
+        +'<td><span class="res-chip" data-tip="'+esc(rm.profile)+'">'+rm.ic+' '+esc(ex.res)+'</span>'
+        +'<div class="ex-summary">'+esc(ex.summary)+'</div>'
+        +'<div class="pt-mrn">'+esc(ex.id)+' · '+validationPill(ex.validation)+'</div></td>'
+        +'<td class="center">'+dirChip(ex.dir)+'</td>'
+        +'<td style="font-size:13px">'+esc(ex.partner)+'</td>'
+        +'<td style="font-family:var(--mono);font-size:12.5px;white-space:nowrap">'+esc(ex.received)+'</td>'
+        +'<td class="center">'+statePill(ex.state)+'</td>'
+        +'<td style="white-space:nowrap">'+actionBtns+'</td>'
+        +'</tr>';
+    }).join('');
+  }
+
+  /* KPI rollup */
+  var active=exchanges.filter(function(ex){return ex.status==='active';});
+  var inbound=active.filter(function(ex){return ex.dir==='inbound'&&ex.state==='staged';}).length;
+  var validated=active.filter(function(ex){return ex.validation==='pass';}).length;
+  var reconciled=active.filter(function(ex){return ex.state==='reconciled';}).length;
+  var sent=active.filter(function(ex){return ex.state==='sent';}).length;
+  var errors=active.filter(function(ex){return ex.validation==='error';}).length;
+  $('kpiInbound').textContent=inbound;
+  $('kpiValidated').textContent=validated;
+  $('kpiReconciled').textContent=reconciled;
+  $('kpiSent').textContent=sent;
+  $('kpiErrors').textContent=errors;
+  $('exBadge').textContent=rows.length+' exchange'+(rows.length!==1?'s':'');
+  var actC=exchanges.filter(function(ex){return ex.status==='active';}).length;
+  var arcC=exchanges.filter(function(ex){return ex.status==='archived';}).length;
+  $('exFoot').innerHTML='Showing '+rows.length+' of '+exchanges.length+' &nbsp;&bull;&nbsp; '+actC+' active &nbsp;&bull;&nbsp; \u{1F5C4} '+arcC+' archived &nbsp;&bull;&nbsp; <em>FHIR R4 4.0.1 · US Core 6.1.0 · inbound stages before any chart write</em>';
+}
+
+
+/* ════════════════════════════════════════════════
+   VIEW JSON
+   ════════════════════════════════════════════════ */
+function openJson(id){
+  var ex=exchanges.find(function(x){return x.id===id;});if(!ex)return;
+  var rm=RES_META[ex.res]||{profile:ex.res};
+  var vn=ex.validation==='pass'?'vn-pass':ex.validation==='warn'?'vn-warn':'vn-error';
+  var vmsg=ex.validation==='pass'?'Conforms to '+rm.profile+'. All MustSupport elements present.'
+    :ex.validation==='warn'?'Conforms with warnings against '+rm.profile+'. Optional MustSupport element missing — accepted with flag.'
+    :'Does NOT conform / no patient match. Cannot be staged to a chart until resolved.';
+  var body=''
+    +'<div class="meta-row"><div class="mk">Resource</div><div class="mv"><span class="res-chip" data-tip="'+esc(rm.profile)+'">'+esc(ex.res)+'</span></div></div>'
+    +'<div class="meta-row"><div class="mk">Profile</div><div class="mv">'+esc(rm.profile)+'</div></div>'
+    +'<div class="meta-row"><div class="mk">Direction</div><div class="mv">'+dirChip(ex.dir)+'</div></div>'
+    +'<div class="meta-row"><div class="mk">Partner</div><div class="mv">'+esc(ex.partner)+'</div></div>'
+    +'<div class="meta-row"><div class="mk">Patient</div><div class="mv">'+esc(ex.patient)+(ex.matched?(' · '+esc(ex.mrn)):' · <span style="color:var(--red)">unmatched</span>')+'</div></div>'
+    +'<div class="meta-row"><div class="mk">Received</div><div class="mv" style="font-family:var(--mono)">'+esc(ex.received)+'</div></div>'
+    +'<div style="height:12px"></div>'
+    +'<div class="validate-note '+vn+'"><b>Validation:</b> '+esc(vmsg)+'</div>'
+    +'<div class="fhir-json">'+esc(ex.json.join('\n'))+'</div>';
+  openModal('FHIR R4 Resource &mdash; '+esc(ex.id),body,'<button class="btn" onclick="closeModal()">Close</button>');
+  logAudit('VIEW_FHIR','Viewed '+ex.res+' JSON for exchange '+ex.id+' ('+ex.patient+')');
+}
+
+
+/* ════════════════════════════════════════════════
+   RECONCILE (inbound staging gate) / SEND (outbound)
+   ════════════════════════════════════════════════ */
+function openReconcile(id){
+  var ex=exchanges.find(function(x){return x.id===id;});if(!ex)return;
+  var rm=RES_META[ex.res]||{profile:ex.res};
+  var body=''
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">'
+    +'<span class="res-chip" data-tip="'+esc(rm.profile)+'">'+esc(ex.res)+'</span>'+dirChip(ex.dir)+validationPill(ex.validation)
+    +'<span class="code-pill">'+esc(ex.id)+'</span></div>'
+    +'<div style="font-size:14px;font-weight:700;color:var(--navy)">'+esc(ex.patient)+(ex.matched?(' · '+esc(ex.mrn)):' · <span style="color:var(--red)">unmatched</span>')+'</div>'
+    +'<div style="font-size:12.5px;color:var(--gray5);margin-bottom:12px">From '+esc(ex.partner)+' · received '+esc(ex.received)+'</div>'
+    +'<div class="meta-row"><div class="mk">Will write</div><div class="mv">'+esc(ex.summary)+'</div></div>'
+    +'<div style="height:10px"></div>'
+    +'<div class="fhir-json">'+esc(ex.json.join('\n'))+'</div>';
+  if(ex.clinical){
+    body+='<div class="validate-note vn-warn"><b>&#x26A0;&#xFE0F; Clinical resource:</b> reconciling a '+esc(ex.res)+' alters the problem/med/allergy/result record &mdash; requires a clinician. Verify coding before promote.</div>';
+  }
+  body+='<div class="gate-note"><b>&#x1F6E1;&#xFE0F; Staging gate:</b> <b>Reconcile</b> is the only audited write of this resource into the chart. Nothing is written until you click it.</div>';
+  var foot='<button class="btn" onclick="closeModal()">Close</button>';
+  foot+='<a href="encounter.html" class="btn btn-teal" onclick="openEncounterLink(\''+esc(ex.mrn)+'\',\''+esc(ex.patient)+'\')" style="text-decoration:none">Open in Encounter &#x2192;</a>';
+  foot+='<button class="btn btn-green" onclick="reconcileExchange(\''+esc(ex.id)+'\')">&#x2705; Reconcile to EMR</button>';
+  openModal('Reconcile Inbound Resource',body,foot);
+  logAudit('OPEN_RECONCILE','Opened reconcile for '+ex.id+' ('+ex.res+') — '+ex.patient);
+}
+function reconcileExchange(id){
+  var ex=exchanges.find(function(x){return x.id===id;});if(!ex)return;
+  if(!can('promote')){toast('Your role cannot reconcile to the EMR','amber');return;}
+  if(!ex.matched){toast('Cannot reconcile: no MPI patient match. Resolve identity first.','red');return;}
+  if(ex.validation==='error'){toast('Cannot reconcile a non-conformant resource. Fix validation first.','red');return;}
+  if(ex.clinical && !(can('sign')||can('prescribe'))){toast('Clinical resource — reconcile requires a clinician','amber');return;}
+  ex.state='reconciled';ex.reconciledBy=USERS[currentRole].name;ex.reconciledAt=new Date().toISOString().replace('T',' ').slice(0,16);
+  logAudit('RECONCILE_FHIR','Reconciled '+ex.res+' '+ex.id+' for '+ex.patient+' ('+ex.mrn+') — audited EMR write');
+  closeModal();renderExchange();
+  toast(ex.id+' reconciled to EMR (audited write)','green');
+}
+function sendExchange(id){
+  var ex=exchanges.find(function(x){return x.id===id;});if(!ex)return;
+  if(!can('promote')){toast('Your role cannot send outbound exchanges','amber');return;}
+  ex.state='sent';ex.sentBy=USERS[currentRole].name;
+  logAudit('SEND_FHIR','Transmitted outbound '+ex.res+' '+ex.id+' to '+ex.partner+' for '+ex.patient);
+  renderExchange();
+  toast(ex.id+' transmitted to '+ex.partner,'purple');
+}
+
+
+/* ════════════════════════════════════════════════
+   ADD / ARCHIVE / RESTORE
+   ════════════════════════════════════════════════ */
+function openAddExchange(){
+  if(!can('create')){toast('Your role cannot add exchanges','amber');return;}
+  openModal('Simulate a FHIR Exchange',
+    '<div style="font-size:13px;color:var(--gray6);margin-bottom:12px">Demo helper: mimic a FHIR R4 transaction. Inbound resources land <span class="code-pill">staged</span> for reconciliation; outbound start as drafts to send.</div>'
+    +'<div class="fld-row">'
+    +'<div class="fld"><label>Patient Name</label><input id="neName" placeholder="First Last"></div>'
+    +'<div class="fld"><label>MRN (blank = unmatched)</label><input id="neMrn" placeholder="AHC-XXXXX"></div>'
+    +'</div>'
+    +'<div class="fld-row">'
+    +'<div class="fld"><label>Resource Type</label><select id="neRes">'
+    +'<option value="Observation">Observation (lab result)</option>'
+    +'<option value="DocumentReference">DocumentReference (CCD)</option>'
+    +'<option value="Condition">Condition (problem)</option>'
+    +'<option value="MedicationRequest">MedicationRequest (Rx)</option>'
+    +'<option value="AllergyIntolerance">AllergyIntolerance</option>'
+    +'<option value="Coverage">Coverage (insurance)</option>'
+    +'</select></div>'
+    +'<div class="fld"><label>Direction</label><select id="neDir"><option value="inbound">Inbound</option><option value="outbound">Outbound</option></select></div>'
+    +'</div>'
+    +'<div class="fld-row">'
+    +'<div class="fld"><label>Partner (source / destination)</label><input id="nePartner" placeholder="e.g. Georgia HIE, LabCorp"></div>'
+    +'<div class="fld"><label>Summary</label><input id="neSummary" placeholder="Short description"></div>'
+    +'</div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button>'
+    +'<button class="btn btn-pri" onclick="saveNewExchange()">Add Exchange</button>');
+}
+function saveNewExchange(){
+  var nm=($('neName').value||'').trim();
+  var mrn=($('neMrn').value||'').trim();
+  var res=$('neRes').value;
+  var dir=$('neDir').value;
+  var partner=($('nePartner').value||'').trim()||'External partner';
+  var summary=($('neSummary').value||'').trim()||(res+' exchange');
+  if(!nm){toast('Patient name is required','amber');return;}
+  var id='FHIR-'+String(++exSeq);
+  var clinical=(res==='Condition'||res==='MedicationRequest'||res==='AllergyIntolerance'||res==='Observation');
+  exchanges.unshift({
+    id:id,res:res,dir:dir,clinical:clinical,
+    patient:nm,mrn:mrn,matched:!!mrn,
+    partner:partner,received:new Date().toISOString().replace('T',' ').slice(0,16),
+    state:dir==='inbound'?'staged':'staged',validation:mrn?'pass':'error',status:'active',
+    summary:summary,
+    json:[
+      '{',
+      '  "resourceType": "'+res+'",',
+      '  "subject": { "reference": "Patient/'+(mrn||'UNMATCHED')+'", "display": "'+nm+'" },',
+      '  "text": { "status": "generated", "div": "'+summary+'" }',
+      '}'
+    ]
+  });
+  logAudit('CREATE_FHIR','New '+dir+' '+res+' exchange '+id+' for '+nm+' via '+partner);
+  closeModal();renderExchange();
+  toast(id+' added to exchange log','green');
+}
+
+function openArchiveExchange(id){
+  if(!can('archive')){toast('Your role cannot archive records','amber');return;}
+  var ex=exchanges.find(function(x){return x.id===id;});if(!ex)return;
+  openModal('Archive FHIR Exchange',
+    '<div style="font-size:14px;color:var(--gray6);margin-bottom:14px">Soft-delete <b>'+esc(ex.id)+'</b> ('+esc(ex.res)+' — '+esc(ex.summary)+') from the active log. The exchange record is preserved and can be restored. Reason is written to the tamper-evident audit log.</div>'
+    +'<div class="fld"><label>Reason for archiving (required)</label><textarea id="archReason" rows="3" placeholder="e.g. Duplicate transmission, Test message, Superseded resource"></textarea></div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button>'
+    +'<button class="btn btn-amber" onclick="confirmArchiveExchange(\''+esc(id)+'\')">Archive Exchange</button>');
+}
+function confirmArchiveExchange(id){
+  var ex=exchanges.find(function(x){return x.id===id;});if(!ex)return;
+  var r=($('archReason').value||'').trim();
+  if(!r){toast('A reason is required to archive','amber');return;}
+  ex.status='archived';ex.archReason=r;ex.archTs=new Date().toISOString().replace('T',' ').slice(0,16);
+  logAudit('ARCHIVE_FHIR','Archived exchange '+ex.id+' ('+ex.res+') — reason: '+r);
+  closeModal();renderExchange();
+  toast(ex.id+' archived (recoverable)','blue');
+}
+function restoreExchange(id){
+  if(!can('restore')){toast('Your role cannot restore records','amber');return;}
+  var ex=exchanges.find(function(x){return x.id===id;});if(!ex)return;
+  ex.status='active';delete ex.archReason;delete ex.archTs;
+  logAudit('RESTORE_FHIR','Restored exchange '+ex.id+' ('+ex.res+') from archive');
+  renderExchange();toast(ex.id+' restored to active log','green');
+}
+
+/* ════════════════════════════════════════════════
+   ENCOUNTER LINK (logs + cross-link)
+   ════════════════════════════════════════════════ */
+function openEncounterLink(mrn,name){
+  logAudit('OPEN_ENCOUNTER','Navigating to encounter for '+name+' ('+mrn+') from FHIR Center');
+  /* navigation handled by href="encounter.html" on the anchor */
+}
+
+/* ════════════════════════════════════════════════
+   AI RECONCILIATION (augments, never automates)
+   ════════════════════════════════════════════════ */
+function runAiReconcile(){
+  if(!can('edit')){toast('AI reconcile requires staff access','amber');return;}
+  var staged=exchanges.filter(function(ex){return ex.status==='active'&&ex.dir==='inbound'&&ex.state==='staged';});
+  var recs=[
+    {tag:'MATCH',txt:'FHIR-7001 (HbA1c 8.1%, LOINC 4548-4) for Harold Branson closes the open A1c care gap — suggest reconcile + link to the Quality Tracker gap.'},
+    {tag:'SAFETY',txt:'FHIR-7003 sulfonamide AllergyIntolerance conflicts with the patient’s furosemide order — flag for clinician before reconciling either.'},
+    {tag:'HCC',txt:'FHIR-7004 Condition I50.22 (HFrEF) for Marcus Reid is HCC-eligible — reconcile, then document MEAT in the encounter to make it billable.'},
+    {tag:'DEDUPE',txt:'FHIR-7002 discharge CCD overlaps an existing problem-list entry — review for duplicate before promoting the full document.'},
+    {tag:'BLOCK',txt:'FHIR-7006 Bundle has no MPI match — recommend hold; do not create a chart from an unmatched referral.'}
+  ];
+  var rows=recs.map(function(r){
+    return '<div class="ai-rec-row"><span class="ai-rec-tag">'+esc(r.tag)+'</span><span style="font-size:13.5px">'+esc(r.txt)+'</span></div>';
+  }).join('');
+  var aiSummary='<div class="ai-box">'
+    +'<div class="ai-box-hdr"><span class="ai-box-ic">&#x1F916;</span><span class="ai-box-title">AI Reconciliation — '+staged.length+' staged inbound</span><span class="ai-box-badge">AI draft — clinician review required</span></div>'
+    +'<div class="ai-box-body">The assistant has read the staged inbound resources and proposes matches and risks. It does <b>not</b> reconcile, send, or write anything &mdash; every promotion stays a human click behind the staging gate.<br><br>'
+    +rows
+    +'<br><em style="color:var(--gray5);font-size:13px;">Confirm to log this reconciliation review, or Dismiss. No resource is written either way.</em>'
+    +'</div>'
+    +'<div class="ai-box-foot">'
+    +'<button class="btn btn-green btn-sm" onclick="confirmAiReconcile()">&#x2713; Confirm &amp; Log</button>'
+    +'<button class="btn btn-sm" onclick="dismissAiReconcile()">&#x2715; Dismiss</button>'
+    +'</div>'
+    +'</div>';
+  openModal('AI Reconciliation Review',aiSummary,'<button class="btn" onclick="closeModal()">Close</button>');
+  logAI(
+    'Reconcile '+staged.length+' staged inbound FHIR resources: propose MPI/problem/med matches, flag safety and HCC opportunities',
+    'Flagged 1 care-gap match, 1 allergy-safety conflict, 1 HCC opportunity, 1 dedupe, 1 unmatched block',
+    'athens-heart-center-fhir-r4'
+  );
+}
+function confirmAiReconcile(){
+  logAudit('AI_CONFIRM','Clinician confirmed AI reconciliation review of staged FHIR resources');
+  closeModal();toast('AI reconciliation review confirmed and logged','green');
+}
+function dismissAiReconcile(){
+  logAudit('AI_DISMISS','Clinician dismissed AI reconciliation suggestions');
+  closeModal();toast('AI reconciliation suggestions dismissed and logged','amber');
+}
+
+/* ════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════ */
+(function init(){
+  logAudit('SESSION_START','FHIR R4 Interop Center loaded — Athens Heart Center — US Core 6.1.0');
+  renderExchange();
+  applyRbacUI();
+})();
+
+</script>
+</body>
+</html>
