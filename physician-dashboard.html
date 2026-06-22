@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CareSync Pro — Physician Daily Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0b1e3d;--navy2:#102550;--navy3:#163070;
+  --blue:#1a6ef5;--blue2:#3b82f6;--blue-lt:#dbeafe;--blue-xlt:#eff6ff;
+  --teal:#0d9488;--teal-lt:#ccfbf1;--teal2:#0f766e;
+  --green:#15803d;--green-lt:#dcfce7;
+  --amber:#b45309;--amber-lt:#fef3c7;
+  --red:#dc2626;--red-lt:#fee2e2;
+  --purple:#5b21b6;--purple2:#7c3aed;--purple-lt:#ede9fe;
+  --orange:#ea580c;--orange-lt:#ffedd5;
+  --gray0:#f9fafb;--gray1:#f3f4f6;--gray2:#e5e7eb;--gray3:#d1d5db;
+  --gray4:#9ca3af;--gray5:#6b7280;--gray6:#374151;--gray7:#1f2937;--gray8:#111827;
+  --font:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --r:8px;--r2:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+}
+body{font-family:var(--font);background:var(--gray1);color:var(--gray7);font-size:15px;line-height:1.45;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* ═══ TOP NAV ═══ */
+.tnav{height:58px;background:var(--navy);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06)}
+.tlogo{display:flex;align-items:center;gap:10px;padding-right:14px;border-right:1px solid rgba(255,255,255,.12)}
+.tlogo-box{width:38px;height:38px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px}
+.tlogo-name{font-size:16px;font-weight:700;color:#fff}
+.tlogo-sub{font-size:11px;color:rgba(255,255,255,.55)}
+.tmodule{padding:6px 15px;border:1.5px solid rgba(255,255,255,.28);border-radius:20px;font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,.1)}
+.tnav-links{display:flex;gap:4px;flex-wrap:wrap}
+.tnav-link{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,.75);cursor:pointer;text-decoration:none;transition:all .12s;border:none;background:none}
+.tnav-link:hover{background:rgba(255,255,255,.12);color:#fff}
+.tnav-link.cur{background:rgba(26,110,245,.25);color:#fff;font-weight:600}
+.tsp{flex:1}
+.tenant-sw{display:flex;align-items:center;gap:8px;padding:7px 13px;border-radius:9px;background:rgba(255,255,255,.09);cursor:pointer;border:1px solid rgba(255,255,255,.13);transition:all .13s}
+.tenant-sw:hover{background:rgba(255,255,255,.16)}
+.tenant-sw .t-lbl{font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;line-height:1}
+.tenant-sw .t-val{font-size:13px;color:#fff;font-weight:600;line-height:1.3}
+.role-chip{display:flex;align-items:center;gap:9px;padding:7px 13px;border-radius:9px;background:rgba(26,110,245,.22);cursor:pointer;border:1px solid rgba(26,110,245,.5);transition:all .13s}
+.role-chip:hover{background:rgba(26,110,245,.34)}
+.role-chip .rc-av{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.role-chip .rc-name{font-size:13px;color:#fff;font-weight:600;line-height:1.2}
+.role-chip .rc-role{font-size:10.5px;color:rgba(255,255,255,.7);line-height:1.2}
+
+/* ═══ VOIP BAR ═══ */
+.voip{height:38px;background:var(--navy2);display:flex;align-items:center;padding:0 16px;gap:14px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.05)}
+.voip-status{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#fff;font-weight:600}
+.voip-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.25)}
+.voip-stat{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.78);cursor:pointer;padding:3px 9px;border-radius:7px;transition:all .12s}
+.voip-stat:hover{background:rgba(255,255,255,.1);color:#fff}
+.voip-stat b{color:#fff;font-family:var(--mono)}
+.voip-sp{flex:1}
+.voip-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(255,255,255,.8);cursor:pointer;border:none;background:rgba(255,255,255,.07);transition:all .12s}
+.voip-ic:hover{background:var(--blue);color:#fff}
+
+/* ═══ BODY LAYOUT ═══ */
+.shell{flex:1;display:flex;overflow:hidden;min-height:0}
+.main{flex:1;overflow-y:auto;padding:22px 26px;min-width:0}
+
+/* ═══ PAGE HEADER ═══ */
+.pg-hdr{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.pg-title{font-size:26px;font-weight:700;color:var(--navy);line-height:1.2}
+.pg-sub{font-size:14px;color:var(--gray6);margin-top:5px;max-width:840px}
+.pg-actions{margin-left:auto;display:flex;gap:9px;flex-wrap:wrap;align-items:flex-start}
+
+/* ═══ GREETING BANNER ═══ */
+.banner{display:flex;gap:13px;align-items:flex-start;background:var(--blue-xlt);border:1px solid var(--blue-lt);border-left:4px solid var(--blue);border-radius:var(--r);padding:14px 16px;margin-bottom:20px}
+.banner .b-ic{font-size:22px;line-height:1}
+.banner .b-txt{font-size:14px;color:var(--gray7)}
+.banner .b-txt b{color:var(--navy)}
+
+/* ═══ KPI TILES ═══ */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+.kpi-tile{background:#fff;border:1px solid var(--gray2);border-radius:var(--r2);padding:16px;box-shadow:var(--shadow);position:relative;overflow:hidden;cursor:pointer;transition:all .13s;text-decoration:none;display:block}
+.kpi-tile:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 4px 18px rgba(26,110,245,.16)}
+.kpi-accent{position:absolute;top:0;left:0;right:0;height:4px}
+.kpi-ic{font-size:20px;margin-bottom:6px}
+.kpi-val{font-size:32px;font-weight:700;font-family:var(--mono);color:var(--navy);line-height:1;letter-spacing:-.5px}
+.kpi-lbl{font-size:12.5px;font-weight:600;color:var(--gray6);margin-top:6px}
+.kpi-sub{font-size:11.5px;color:var(--gray5);margin-top:3px}
+
+/* ═══ SECTION TITLE ═══ */
+.sec-title{font-size:18px;font-weight:700;color:var(--navy);margin:6px 0 13px;display:flex;align-items:center;gap:9px}
+.sec-title .tip{margin-left:0}
+
+/* ═══ MODULE HUB ═══ */
+.mod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+.mod-card{display:flex;gap:13px;align-items:flex-start;background:#fff;border:1px solid var(--gray2);border-radius:var(--r2);padding:16px;box-shadow:var(--shadow);text-decoration:none;transition:all .13s;color:inherit}
+.mod-card:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 4px 18px rgba(26,110,245,.16)}
+.mod-ic{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0;color:#fff}
+.mod-name{font-size:16px;font-weight:700;color:var(--navy)}
+.mod-desc{font-size:12.5px;color:var(--gray6);margin-top:3px;line-height:1.45}
+.mod-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:9px;margin-top:7px}
+
+/* ═══ BUTTONS ═══ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 18px;border-radius:9px;font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;border:1.5px solid var(--gray3);background:#fff;color:var(--gray7);transition:all .13s}
+.btn:hover{background:var(--gray1);border-color:var(--gray4)}
+.btn-pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-pri:hover{background:#1559cc;border-color:#1559cc}
+.btn-green{background:var(--green);border-color:var(--green);color:#fff}
+.btn-green:hover{background:#0f6b30}
+.btn-danger{background:var(--red);border-color:var(--red);color:#fff}
+.btn-danger:hover{background:#b91c1c}
+.btn-amber{background:var(--amber);border-color:var(--amber);color:#fff}
+.btn-amber:hover{background:#92400e}
+.btn-teal{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn-teal:hover{background:var(--teal2)}
+.btn-purple{background:var(--purple2);border-color:var(--purple2);color:#fff}
+.btn-purple:hover{background:var(--purple)}
+.btn-sm{min-height:34px;padding:0 13px;font-size:13.5px;border-radius:8px}
+.btn-xs{min-height:28px;padding:0 10px;font-size:12.5px;border-radius:7px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* ═══ LIST TOOLS ═══ */
+.list-tools{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-box{position:relative;flex:1;min-width:200px}
+.search-box input{width:100%;height:42px;padding:0 14px 0 38px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:15px;color:var(--gray7)}
+.search-box input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-lt)}
+.search-box .s-ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--gray5)}
+.filter-sel{height:42px;padding:0 12px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:14px;font-weight:600;color:var(--gray7);background:#fff;cursor:pointer}
+.filter-sel:focus{outline:none;border-color:var(--blue)}
+
+/* ═══ WORKLIST TABLE ═══ */
+.ptable-wrap{background:#fff;border:1px solid var(--gray2);border-radius:var(--r2);box-shadow:var(--shadow);overflow:hidden;margin-bottom:24px}
+.ptable-hdr{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--gray2);background:var(--gray0);flex-wrap:wrap}
+.ptable-title{font-size:17px;font-weight:700;color:var(--navy)}
+.ptable-badge{font-size:11.5px;font-weight:700;padding:3px 11px;border-radius:10px;background:var(--blue-lt);color:var(--navy3)}
+.ptable-inner{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:880px}
+thead th{padding:11px 14px;font-size:13px;font-weight:700;color:var(--gray7);background:var(--gray0);border-bottom:2px solid var(--gray2);text-align:left;white-space:nowrap}
+thead th.center{text-align:center}
+tbody tr{border-bottom:1px solid var(--gray1);transition:background .1s}
+tbody tr:hover{background:var(--blue-xlt)}
+tbody tr.arch-row{background:var(--gray0);opacity:.88}
+tbody tr.done-row{background:var(--green-lt)}
+tbody td{padding:12px 14px;font-size:14px;vertical-align:top}
+tbody td.center{text-align:center}
+.tk-title{font-size:14.5px;font-weight:700;color:var(--navy)}
+.tk-sub{font-size:12.5px;color:var(--gray6);margin-top:2px}
+.tk-mrn{font-size:12px;font-family:var(--mono);color:var(--gray5);margin-top:2px}
+
+/* ═══ TYPE / PRIORITY CHIPS ═══ */
+.type-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 9px;border-radius:8px}
+.t-sign{background:var(--red-lt);color:var(--red)}
+.t-reconcile{background:var(--teal-lt);color:var(--teal2)}
+.t-promote{background:var(--purple-lt);color:var(--purple)}
+.t-awv{background:var(--blue-lt);color:var(--navy3)}
+.t-gap{background:var(--amber-lt);color:var(--amber)}
+.t-message{background:var(--gray1);color:var(--gray6)}
+.prio{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:11px}
+.prio-high{background:var(--red-lt);color:var(--red)}
+.prio-med{background:var(--amber-lt);color:var(--amber)}
+.prio-low{background:var(--gray1);color:var(--gray6)}
+.code-pill{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:7px;font-family:var(--mono);background:var(--gray1);color:var(--gray7);cursor:help}
+
+/* ═══ TOOLTIP ═══ */
+[data-tip]{position:relative}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:130%;left:50%;transform:translateX(-50%);background:var(--gray8);color:#fff;font-size:12px;font-weight:400;padding:8px 12px;border-radius:7px;white-space:normal;width:240px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.2);line-height:1.5;font-family:var(--font)}
+.tip{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--gray2);color:var(--gray6);font-size:11px;font-weight:700;cursor:help;margin-left:5px;vertical-align:middle}
+
+/* ═══ BADGES / PILLS ═══ */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:11px}
+.pill-green{background:var(--green-lt);color:var(--green)}
+.pill-amber{background:var(--amber-lt);color:var(--amber)}
+.pill-red{background:var(--red-lt);color:var(--red)}
+.pill-gray{background:var(--gray1);color:var(--gray6)}
+.pill-blue{background:var(--blue-lt);color:var(--navy3)}
+
+/* ═══ MODAL ═══ */
+.modal-bg{position:fixed;inset:0;background:rgba(11,30,61,.52);display:none;align-items:center;justify-content:center;z-index:200;padding:18px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+.modal-hdr{display:flex;align-items:center;gap:10px;padding:18px 22px;border-bottom:1px solid var(--gray2);position:sticky;top:0;background:#fff;z-index:5}
+.modal-title{font-size:19px;font-weight:700;color:var(--navy);flex:1}
+.modal-x{width:34px;height:34px;border-radius:8px;border:none;background:var(--gray1);color:var(--gray6);font-size:18px;cursor:pointer;flex-shrink:0}
+.modal-x:hover{background:var(--gray2)}
+.modal-body{padding:20px 22px}
+.modal-foot{padding:16px 22px;border-top:1px solid var(--gray2);display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#fff;flex-wrap:wrap}
+.fld{margin-bottom:15px}
+.fld label{display:block;font-size:13px;font-weight:600;color:var(--gray7);margin-bottom:6px}
+.fld input,.fld textarea,.fld select{width:100%;padding:11px 13px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:15px;color:var(--gray7)}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-lt)}
+.fld-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ═══ AI SUGGESTION BOX ═══ */
+.ai-box{background:var(--purple-lt);border:1.5px solid #c4b5fd;border-radius:var(--r2);padding:15px 18px;margin-bottom:14px}
+.ai-box-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ai-box-ic{font-size:18px}
+.ai-box-title{font-size:14px;font-weight:700;color:var(--purple)}
+.ai-box-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--purple);color:#fff;margin-left:auto}
+.ai-box-body{font-size:14px;color:var(--gray7);line-height:1.55}
+.ai-box-foot{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}
+.ai-rec-row{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px dashed #c4b5fd}
+.ai-rec-row:last-child{border-bottom:none}
+.ai-rec-tag{font-size:11px;font-weight:700;color:#fff;background:var(--purple2);padding:2px 7px;border-radius:6px;flex-shrink:0}
+
+/* ═══ TOAST ═══ */
+.toast-wrap{position:fixed;bottom:22px;right:22px;z-index:300;display:flex;flex-direction:column;gap:10px}
+.toast{display:flex;align-items:center;gap:10px;background:var(--gray8);color:#fff;padding:13px 17px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:tin .2s ease;max-width:360px}
+.toast.green{background:var(--green)}.toast.red{background:var(--red)}.toast.amber{background:var(--amber)}.toast.blue{background:var(--blue)}.toast.purple{background:var(--purple2)}
+@keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ ROLE OPTS (modal) ═══ */
+.role-opt{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1.5px solid var(--gray2);border-radius:10px;cursor:pointer;margin-bottom:9px;transition:all .12s}
+.role-opt:hover{border-color:var(--blue);background:var(--blue-xlt)}
+.role-opt .ro-av{width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.role-opt .ro-name{font-size:15px;font-weight:600;color:var(--gray8)}
+.role-opt .ro-tier{font-size:12.5px;color:var(--gray6)}
+
+/* ═══ ARCHIVE REASON BADGE ═══ */
+.arch-reason{font-size:12px;color:var(--amber);font-weight:500;margin-top:3px;font-style:italic}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(3,1fr)}
+  .mod-grid{grid-template-columns:repeat(2,1fr)}
+  .main{padding:18px 14px}
+  .tnav-links{display:none}
+}
+@media(max-width:600px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .mod-grid{grid-template-columns:1fr}
+  .kpi-val{font-size:26px}
+  .pg-title{font-size:21px}
+  .main{padding:14px 12px}
+  .tlogo-sub,.tmodule{display:none}
+  .tenant-sw .t-lbl{display:none}
+  .fld-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOP NAV ═══ -->
+<div class="tnav">
+  <div class="tlogo">
+    <div class="tlogo-box">&#x2764;&#xFE0F;</div>
+    <div>
+      <div class="tlogo-name">CareSync Pro</div>
+      <div class="tlogo-sub">Medical Office Force</div>
+    </div>
+  </div>
+  <div class="tmodule">&#x1FA7A; Physician Dashboard</div>
+  <div class="tnav-links">
+    <a class="tnav-link cur" href="physician-dashboard.html">&#x1FA7A; Dashboard</a>
+    <a class="tnav-link" href="appointment-dashboard.html">&#x1F4CB; Appointments</a>
+    <a class="tnav-link" href="quality-tracker.html">&#x1F4CA; Quality &amp; HCC</a>
+    <a class="tnav-link" href="encounter.html">&#x1F4DD; Encounter</a>
+    <a class="tnav-link" href="awv.html">&#x1FA7A; AWV</a>
+    <a class="tnav-link" href="patient-portal.html">&#x1F464; Portal</a>
+    <a class="tnav-link" href="fhir-center.html">&#x1F517; FHIR</a>
+  </div>
+  <div class="tsp"></div>
+  <div class="tenant-sw" onclick="openTenantModal()">
+    <span style="font-size:16px">&#x1F3E2;</span>
+    <div>
+      <div class="t-lbl">Tenant</div>
+      <div class="t-val" id="tenantLabel">Athens Heart Center &#x25B8; AHC Main</div>
+    </div>
+  </div>
+  <div class="role-chip" onclick="openRoleModal()">
+    <div class="rc-av" id="roleAv">RP</div>
+    <div>
+      <div class="rc-name" id="roleName">Dr. Raj Patel</div>
+      <div class="rc-role" id="roleTier">Physician &#xB7; Tier 4</div>
+    </div>
+    <span style="color:rgba(255,255,255,.6);font-size:12px">&#x25BE;</span>
+  </div>
+</div>
+
+<!-- ═══ VOIP BAR ═══ -->
+<div class="voip">
+  <div class="voip-status"><span class="voip-dot"></span>VoIP Online</div>
+  <div class="voip-stat" onclick="voipAction('Voicemails')"><span>Voicemails</span> <b>3</b></div>
+  <div class="voip-stat" onclick="voipAction('Missed Calls')"><span>Missed</span> <b>1</b></div>
+  <div class="voip-sp"></div>
+  <button class="voip-ic" onclick="voipAction('Dialer')" title="Dialer">&#x1F4DE;</button>
+  <button class="voip-ic" onclick="voipAction('Hold')" title="Hold">&#x23F8;&#xFE0F;</button>
+  <button class="voip-ic" onclick="voipAction('Transfer')" title="Transfer">&#x21AA;&#xFE0F;</button>
+</div>
+
+<!-- ═══ SHELL ═══ -->
+<div class="shell">
+<div class="main" id="mainContent">
+
+  <!-- PAGE HEADER -->
+  <div class="pg-hdr">
+    <div>
+      <div class="pg-title">&#x1FA7A; Good morning, Dr. Patel</div>
+      <div class="pg-sub">Your cockpit for <b>Athens Heart Center &mdash; AHC Main</b>. Everything that needs you today, rolled up from Appointments, the Encounter Engine, Quality &amp; HCC, AWV, Portal Intake, and FHIR &mdash; with one-click deep links into each.</div>
+    </div>
+    <div class="pg-actions">
+      <button class="btn btn-purple btn-sm" onclick="runAiBriefing()" id="aiBriefBtn">&#x1F916; AI Daily Briefing</button>
+      <button class="btn btn-pri" onclick="openAddTask()" id="addTaskBtn">+ Add Task</button>
+    </div>
+  </div>
+
+  <!-- GREETING BANNER -->
+  <div class="banner">
+    <div class="b-ic">&#x2600;&#xFE0F;</div>
+    <div class="b-txt"><b>Saturday, June 21, 2026.</b> 8 appointments on the schedule &middot; 2 notes awaiting your signature &middot; 3 HCCs still need recapture this quarter. The dashboard <b>augments</b> &mdash; nothing is signed, promoted, or billed without your click. Every action is written to the hash-chained audit log.</div>
+  </div>
+
+  <!-- KPI ROLLUP (each tile deep-links) -->
+  <div class="kpi-grid">
+    <a class="kpi-tile" href="appointment-dashboard.html" onclick="logNav('Appointments','KPI:encounters')"><div class="kpi-accent" style="background:var(--navy)"></div><div class="kpi-ic">&#x1F4C5;</div><div class="kpi-val" id="kpiAppts">8</div><div class="kpi-lbl">Today&rsquo;s Appointments</div><div class="kpi-sub">2 checked in &rarr; Appointments</div></a>
+    <a class="kpi-tile" href="encounter.html" onclick="logNav('Encounter','KPI:unsigned')"><div class="kpi-accent" style="background:var(--red)"></div><div class="kpi-ic">&#x270D;&#xFE0F;</div><div class="kpi-val" id="kpiUnsigned">2</div><div class="kpi-lbl">Unsigned Notes</div><div class="kpi-sub">Close out &rarr; Encounter</div></a>
+    <a class="kpi-tile" href="quality-tracker.html" onclick="logNav('Quality','KPI:raf')"><div class="kpi-accent" style="background:var(--teal)"></div><div class="kpi-val-wrap"><div class="kpi-ic">&#x1F4B0;</div><div class="kpi-val" id="kpiRaf">1.46</div></div><div class="kpi-lbl">RAF Captured Today</div><div class="kpi-sub">demo weights &rarr; Quality</div></a>
+    <a class="kpi-tile" href="quality-tracker.html" onclick="logNav('Quality','KPI:gaps')"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-ic">&#x1F4CB;</div><div class="kpi-val" id="kpiGaps">12</div><div class="kpi-lbl">Open Care Gaps</div><div class="kpi-sub">Panel &rarr; Quality &amp; HCC</div></a>
+    <a class="kpi-tile" href="patient-portal.html" onclick="logNav('Portal','KPI:inbox')"><div class="kpi-accent" style="background:var(--purple)"></div><div class="kpi-ic">&#x1F4E5;</div><div class="kpi-val" id="kpiInbox">9</div><div class="kpi-lbl">Inbox to Action</div><div class="kpi-sub">Portal + FHIR staged</div></a>
+  </div>
+
+  <!-- MODULE HUB -->
+  <div class="sec-title">&#x1F9ED; Jump to a module</div>
+  <div class="mod-grid">
+    <a class="mod-card" href="appointment-dashboard.html" onclick="logNav('Appointments','hub')">
+      <div class="mod-ic" style="background:var(--navy)">&#x1F4CB;</div>
+      <div><div class="mod-name">Appointments</div><div class="mod-desc">Today&rsquo;s schedule, check-in, eligibility, copay &mdash; begin an encounter.</div><span class="mod-badge pill-blue">8 today</span></div>
+    </a>
+    <a class="mod-card" href="encounter.html" onclick="logNav('Encounter','hub')">
+      <div class="mod-ic" style="background:var(--blue)">&#x1F4DD;</div>
+      <div><div class="mod-name">AI Encounter Engine</div><div class="mod-desc">6-step encounter: brief &rarr; reconcile &rarr; HCC+MEAT &rarr; SOAP &rarr; orders/E&amp;M &rarr; sign.</div><span class="mod-badge pill-red">2 unsigned</span></div>
+    </a>
+    <a class="mod-card" href="quality-tracker.html" onclick="logNav('Quality','hub')">
+      <div class="mod-ic" style="background:var(--teal)">&#x1F4CA;</div>
+      <div><div class="mod-name">Quality &amp; HCC Tracker</div><div class="mod-desc">RAF recapture, care gaps, MEAT &mdash; the revenue + compliance cockpit.</div><span class="mod-badge pill-amber">3 recapture due</span></div>
+    </a>
+    <a class="mod-card" href="awv.html" onclick="logNav('AWV','hub')">
+      <div class="mod-ic" style="background:var(--green)">&#x1FA7A;</div>
+      <div><div class="mod-name">Annual Wellness Visit</div><div class="mod-desc">Medicare AWV worklist, G0438/G0439, required-element checklist.</div><span class="mod-badge pill-red">4 overdue</span></div>
+    </a>
+    <a class="mod-card" href="patient-portal.html" onclick="logNav('Portal','hub')">
+      <div class="mod-ic" style="background:var(--purple2)">&#x1F464;</div>
+      <div><div class="mod-name">Portal Intake</div><div class="mod-desc">Staging gate: review portal submissions, promote to EMR or reject.</div><span class="mod-badge pill-amber">7 pending</span></div>
+    </a>
+    <a class="mod-card" href="fhir-center.html" onclick="logNav('FHIR','hub')">
+      <div class="mod-ic" style="background:var(--navy3)">&#x1F517;</div>
+      <div><div class="mod-name">FHIR R4 Interop</div><div class="mod-desc">Inbound/outbound exchange, US Core validation, reconcile to chart.</div><span class="mod-badge pill-blue">5 staged</span></div>
+    </a>
+  </div>
+
+  <!-- TODAY'S WORKLIST -->
+  <div class="ptable-wrap">
+    <div class="ptable-hdr">
+      <div class="ptable-title">Today&rsquo;s Worklist<span class="tip" data-tip="A unified task list pulled from every module. Each task deep-links to where you finish it. Mark Done when complete, or Archive with a reason.">i</span></div>
+      <span class="ptable-badge" id="workBadge">0 tasks</span>
+      <div style="flex:1"></div>
+      <div class="list-tools" style="margin:0">
+        <div class="search-box" style="min-width:160px"><span class="s-ic">&#x1F50D;</span><input id="wkSearch" type="text" placeholder="Search tasks&#x2026;" oninput="renderWork()"></div>
+        <select class="filter-sel" id="wkStatus" onchange="renderWork()">
+          <option value="all">All</option>
+          <option value="active" selected>Active</option>
+          <option value="archived">Archived</option>
+        </select>
+        <select class="filter-sel" id="wkPrio" onchange="renderWork()">
+          <option value="all">All priority</option>
+          <option value="high">High</option>
+          <option value="med">Medium</option>
+          <option value="low">Low</option>
+        </select>
+        <select class="filter-sel" id="wkDone" onchange="renderWork()">
+          <option value="all">Open + done</option>
+          <option value="open" selected>Open only</option>
+          <option value="done">Done only</option>
+        </select>
+      </div>
+    </div>
+    <div class="ptable-inner">
+      <table>
+        <thead>
+          <tr>
+            <th>Task</th>
+            <th class="center">Type</th>
+            <th class="center">Priority</th>
+            <th>Due</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="workBody"></tbody>
+      </table>
+    </div>
+    <div style="padding:10px 18px;font-size:12.5px;color:var(--gray5);display:flex;gap:16px;border-top:1px solid var(--gray1);flex-wrap:wrap" id="workFoot"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══ MODAL ═══ -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalCard">
+    <div class="modal-hdr"><div class="modal-title" id="modalTitle">Title</div><button class="modal-x" onclick="closeModal()">&#x2715;</button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ════════════════════════════════════════════════
+   CARESYNC FOUNDATION SPINE — shared utilities
+   ════════════════════════════════════════════════ */
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function $(id){return document.getElementById(id);}
+
+/* cyrb53 hash for audit chain */
+function cyrb53(str,seed){
+  seed=seed||0;
+  var h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;
+  for(var i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}
+  h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);
+  h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);
+  return (4294967296*(2097151&h2)+(h1>>>0)).toString(16).padStart(14,'0');
+}
+
+/* 8-tier RBAC */
+var USERS={
+  super:{name:'Subodh Agrawal, MD',av:'SA',label:'Global SuperAdmin',tier:'Tier 0'},
+  padmin:{name:'Priya Shah',av:'PS',label:'Practice Admin',tier:'Tier 3-P'},
+  md:{name:'Dr. Raj Patel',av:'RP',label:'Physician',tier:'Tier 4'},
+  nurse:{name:'Sarah Kim, MA',av:'SK',label:'Nurse / MA',tier:'Tier 5'},
+  front:{name:'Dana Brooks',av:'DB',label:'Front Desk / Billing',tier:'Tier 6'}
+};
+var PERMS={
+  super:['view','create','edit','archive','restore','sign','prescribe','order','bill','admin','audit_view','tenant_switch'],
+  padmin:['view','create','edit','archive','restore','bill','admin','audit_view'],
+  md:['view','create','edit','archive','restore','sign','prescribe','order','bill','audit_view'],
+  nurse:['view','create','edit','archive','restore','order'],
+  front:['view','create','edit','archive','restore']
+};
+var currentRole='md';
+function can(action){return (PERMS[currentRole]||[]).indexOf(action)>=0;}
+
+/* Audit chain */
+var auditChain=[];
+var GENESIS='00000000000000';
+function logAudit(action,detail){
+  var prev=auditChain.length?auditChain[auditChain.length-1].hash:GENESIS;
+  var seq=auditChain.length+1;
+  var ts=new Date().toISOString().replace('T',' ').slice(0,19);
+  var u=USERS[currentRole];
+  var payload=[prev,seq,ts,u.name,currentRole,action,detail].join('|');
+  auditChain.push({seq:seq,ts:ts,actor:u.name,role:currentRole,action:action,detail:detail,prevHash:prev,hash:cyrb53(payload)});
+}
+
+/* AI interaction log */
+var aiLog=[];
+function logAI(prompt,response,context){
+  aiLog.push({ts:new Date().toISOString(),role:currentRole,actor:USERS[currentRole].name,prompt:prompt,response:response,context:context||''});
+  logAudit('AI_INTERACTION','AI call logged: '+prompt.slice(0,60)+'...');
+}
+
+/* Toast */
+function toast(msg,type,dur){
+  var w=$('toastWrap');
+  var d=document.createElement('div');
+  d.className='toast'+(type?' '+type:'');
+  d.textContent=msg;
+  w.appendChild(d);
+  setTimeout(function(){d.remove();},dur||3400);
+}
+
+/* Modal */
+function openModal(title,body,foot){
+  $('modalTitle').innerHTML=title;
+  $('modalBody').innerHTML=body;
+  $('modalFoot').innerHTML=foot||'<button class="btn" onclick="closeModal()">Close</button>';
+  $('modalBg').classList.add('open');
+}
+function closeModal(){$('modalBg').classList.remove('open');}
+
+/* VoIP */
+function voipAction(action){toast('VoIP: '+action+' (demo)','blue');}
+
+/* Tenant modal */
+function openTenantModal(){
+  openModal('Switch Tenant',
+    '<div class="fld"><label>Group &rsaquo; Organization</label>'
+    +'<select id="tenSel">'
+    +'<option value="Athens Heart Center &rsaquo; AHC Main">Athens Heart Center &rsaquo; AHC Main</option>'
+    +'<option value="Athens Heart Center &rsaquo; Watkinsville">Athens Heart Center &rsaquo; Watkinsville</option>'
+    +'<option value="Full Family Health &rsaquo; Main">Full Family Health &rsaquo; Main</option>'
+    +'</select></div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button>'
+    +'<button class="btn btn-pri" onclick="applyTenant()">Switch</button>');
+}
+function applyTenant(){
+  var v=$('tenSel').value;
+  $('tenantLabel').textContent=v;
+  logAudit('TENANT_SWITCH','Switched to tenant: '+v);
+  closeModal();toast('Tenant switched to '+v,'blue');
+}
+
+/* Role modal */
+function openRoleModal(){
+  var body=Object.keys(USERS).map(function(k){
+    var u=USERS[k];
+    return '<div class="role-opt" onclick="switchRole(\''+k+'\')"><div class="ro-av">'+esc(u.av)+'</div><div><div class="ro-name">'+esc(u.name)+'</div><div class="ro-tier">'+esc(u.label)+' &middot; '+esc(u.tier)+'</div></div></div>';
+  }).join('');
+  openModal('Switch Role (RBAC demo)',body,'<button class="btn" onclick="closeModal()">Close</button>');
+}
+function switchRole(k){
+  if(!USERS[k])return;
+  currentRole=k;var u=USERS[k];
+  $('roleAv').textContent=u.av;$('roleName').textContent=u.name;$('roleTier').textContent=u.label+' · '+u.tier;
+  logAudit('ROLE_SWITCH','Active role changed to '+u.label);
+  closeModal();renderWork();applyRbacUI();
+  toast('Now acting as '+u.label,'blue');
+}
+function applyRbacUI(){
+  var addBtn=$('addTaskBtn');
+  if(addBtn) addBtn.style.display=can('create')?'inline-flex':'none';
+  var aiBtn=$('aiBriefBtn');
+  if(aiBtn) aiBtn.style.display=can('sign')?'inline-flex':'none';
+}
+
+/* Deep-link nav logger (navigation handled by anchor href) */
+function logNav(module,from){
+  logAudit('OPEN_MODULE','Deep-linked to '+module+' from physician dashboard ('+from+')');
+}
+
+
+/* ════════════════════════════════════════════════
+   TODAY'S WORKLIST DATA — rolled up across modules
+   ════════════════════════════════════════════════ */
+/* type: sign | reconcile | promote | awv | gap | message
+   href: deep link to the module that resolves the task */
+var TYPE_META={
+  sign:{cls:'t-sign',ic:'✍️',label:'Sign note'},
+  reconcile:{cls:'t-reconcile',ic:'\u{1F517}',label:'Reconcile'},
+  promote:{cls:'t-promote',ic:'\u{1F4E5}',label:'Promote'},
+  awv:{cls:'t-awv',ic:'\u{1FA7A}',label:'AWV'},
+  gap:{cls:'t-gap',ic:'\u{1F4CB}',label:'Care gap'},
+  message:{cls:'t-message',ic:'\u{1F4AC}',label:'Message'}
+};
+
+var tasks=[
+  {id:'TK-01',type:'sign',title:'Sign encounter note — Harold Branson',sub:'HFpEF + AFib follow-up, SOAP complete, awaiting signature',mrn:'AHC-04417',prio:'high',due:'Today 11:00',href:'encounter.html',link:'Open Encounter',status:'active',done:false},
+  {id:'TK-02',type:'sign',title:'Sign encounter note — Marcus Reid',sub:'HFrEF med-check, E&M 99214 drafted',mrn:'AHC-05102',prio:'high',due:'Today 13:30',href:'encounter.html',link:'Open Encounter',status:'active',done:false},
+  {id:'TK-03',type:'reconcile',title:'Reconcile HbA1c 8.1% (FHIR-7001)',sub:'LOINC 4548-4 inbound from LabCorp — closes A1c care gap',mrn:'AHC-04417',prio:'high',due:'Today',href:'fhir-center.html',link:'Open FHIR',status:'active',done:false},
+  {id:'TK-04',type:'reconcile',title:'Reconcile sulfonamide allergy (FHIR-7003)',sub:'Conflicts with furosemide order — verify before promoting',mrn:'AHC-04417',prio:'high',due:'Today',href:'fhir-center.html',link:'Open FHIR',status:'active',done:false},
+  {id:'TK-05',type:'promote',title:'Promote furosemide refill (INT-5001)',sub:'RxNorm 310429 — clinician reconciliation required (allergy)',mrn:'AHC-04417',prio:'med',due:'Today',href:'patient-portal.html',link:'Open Portal',status:'active',done:false},
+  {id:'TK-06',type:'message',title:'Triage portal message (INT-5002)',sub:'Dorothy Weston — "chest tightness on exertion" — call back',mrn:'AHC-03891',prio:'high',due:'Today 10:00',href:'patient-portal.html',link:'Open Portal',status:'active',done:false},
+  {id:'TK-07',type:'awv',title:'AWV overdue — Dorothy Weston',sub:'G0438 initial never completed — schedule + document elements',mrn:'AHC-03891',prio:'med',due:'This week',href:'awv.html',link:'Open AWV',status:'active',done:false},
+  {id:'TK-08',type:'gap',title:'Recapture HCC — Gloria Huang',sub:'I35.1 + I50.32 not recaptured; echo 14 months overdue',mrn:'AHC-01558',prio:'med',due:'This quarter',href:'quality-tracker.html',link:'Open Quality',status:'active',done:false},
+  {id:'TK-09',type:'awv',title:'AWV element checklist — Harold Branson',sub:'G0439, 2/8 elements done — finish cognitive + depression screens',mrn:'AHC-04417',prio:'low',due:'This week',href:'awv.html',link:'Open AWV',status:'active',done:false},
+  {id:'TK-10',type:'gap',title:'Reconciled INR 2.4 — Evelyn Moss (done)',sub:'FHIR-7009 reconciled to chart, in range, no action',mrn:'AHC-02744',prio:'low',due:'Yesterday',href:'fhir-center.html',link:'Open FHIR',status:'active',done:true}
+];
+var tkSeq=10;
+
+
+/* ════════════════════════════════════════════════
+   WORKLIST RENDER
+   ════════════════════════════════════════════════ */
+function prioPill(p){
+  if(p==='high') return '<span class="prio prio-high">&#x25CF; High</span>';
+  if(p==='med') return '<span class="prio prio-med">&#x25CF; Medium</span>';
+  return '<span class="prio prio-low">&#x25CF; Low</span>';
+}
+
+function renderWork(){
+  var q=($('wkSearch').value||'').toLowerCase().trim();
+  var st=$('wkStatus').value;
+  var prio=$('wkPrio').value;
+  var dn=$('wkDone').value;
+  var rows=tasks.filter(function(t){
+    if(st!=='all'&&t.status!==st) return false;
+    if(prio!=='all'&&t.prio!==prio) return false;
+    if(dn==='open'&&t.done) return false;
+    if(dn==='done'&&!t.done) return false;
+    if(q&&(t.title+' '+t.sub+' '+t.mrn+' '+TYPE_META[t.type].label).toLowerCase().indexOf(q)<0) return false;
+    return true;
+  });
+
+  var tbody=$('workBody');
+  if(!rows.length){
+    tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:36px;color:var(--gray5);font-size:14px;">\u{1F389} Nothing matches this filter &mdash; inbox zero.</td></tr>';
+  }else{
+    tbody.innerHTML=rows.map(function(t){
+      var arch=t.status==='archived';
+      var tm=TYPE_META[t.type];
+      var rowCls=arch?'arch-row':(t.done?'done-row':'');
+      var archNote=arch?('<div class="arch-reason">\u{1F4C2} Archived '+esc(t.archTs)+': '+esc(t.archReason)+'</div>'):'';
+      var donePill=t.done?' <span class="pill pill-green">✓ Done</span>':'';
+      var actionBtns='';
+      actionBtns+='<a href="'+esc(t.href)+'" class="btn btn-pri btn-xs" onclick="logNav(\''+esc(tm.label)+'\',\''+esc(t.id)+'\')" style="text-decoration:none">'+esc(t.link)+' &#x2192;</a> ';
+      if(!arch){
+        if(!t.done) actionBtns+='<button class="btn btn-green btn-xs" onclick="completeTask(\''+esc(t.id)+'\')">✓ Done</button> ';
+        if(can('archive')) actionBtns+='<button class="btn btn-xs" onclick="openArchiveTask(\''+esc(t.id)+'\')">\u{1F5C4}️</button>';
+      }else{
+        if(can('restore')) actionBtns+='<button class="btn btn-green btn-xs" onclick="restoreTask(\''+esc(t.id)+'\')">↺ Restore</button>';
+      }
+      return '<tr class="'+rowCls+'">'
+        +'<td><div class="tk-title">'+esc(t.title)+donePill+'</div>'
+        +'<div class="tk-sub">'+esc(t.sub)+'</div>'
+        +'<div class="tk-mrn">MRN: '+esc(t.mrn)+' · '+esc(t.id)+'</div>'+archNote+'</td>'
+        +'<td class="center"><span class="type-chip '+tm.cls+'">'+tm.ic+' '+tm.label+'</span></td>'
+        +'<td class="center">'+prioPill(t.prio)+'</td>'
+        +'<td style="font-size:13px;white-space:nowrap">'+esc(t.due)+'</td>'
+        +'<td style="white-space:nowrap">'+actionBtns+'</td>'
+        +'</tr>';
+    }).join('');
+  }
+
+  /* rollup */
+  var active=tasks.filter(function(t){return t.status==='active';});
+  var open=active.filter(function(t){return !t.done;});
+  var high=open.filter(function(t){return t.prio==='high';}).length;
+  $('workBadge').textContent=rows.length+' task'+(rows.length!==1?'s':'');
+  var arcC=tasks.filter(function(t){return t.status==='archived';}).length;
+  var doneC=active.filter(function(t){return t.done;}).length;
+  $('workFoot').innerHTML='Showing '+rows.length+' of '+tasks.length+' &nbsp;&bull;&nbsp; '+open.length+' open ('+high+' high) &nbsp;&bull;&nbsp; ✓ '+doneC+' done &nbsp;&bull;&nbsp; \u{1F5C4} '+arcC+' archived &nbsp;&bull;&nbsp; <em>rolled up across all modules</em>';
+}
+
+
+/* ════════════════════════════════════════════════
+   COMPLETE / ADD / ARCHIVE / RESTORE TASK
+   ════════════════════════════════════════════════ */
+function completeTask(id){
+  if(!can('edit')){toast('Your role cannot complete tasks','amber');return;}
+  var t=tasks.find(function(x){return x.id===id;});if(!t)return;
+  t.done=true;
+  logAudit('COMPLETE_TASK','Marked task done: "'+t.title+'" ('+t.id+')');
+  renderWork();toast('Task marked done — '+t.id,'green');
+}
+
+function openAddTask(){
+  if(!can('create')){toast('Your role cannot add tasks','amber');return;}
+  openModal('Add a Task',
+    '<div class="fld"><label>Task title</label><input id="ntTitle" placeholder="e.g. Call patient about lab result"></div>'
+    +'<div class="fld"><label>Detail</label><input id="ntSub" placeholder="Short context"></div>'
+    +'<div class="fld-row">'
+    +'<div class="fld"><label>Type</label><select id="ntType">'
+    +'<option value="sign">Sign note</option>'
+    +'<option value="reconcile">Reconcile (FHIR)</option>'
+    +'<option value="promote">Promote (Portal)</option>'
+    +'<option value="awv">AWV</option>'
+    +'<option value="gap">Care gap</option>'
+    +'<option value="message">Message</option>'
+    +'</select></div>'
+    +'<div class="fld"><label>Priority</label><select id="ntPrio"><option value="high">High</option><option value="med" selected>Medium</option><option value="low">Low</option></select></div>'
+    +'</div>'
+    +'<div class="fld-row">'
+    +'<div class="fld"><label>MRN (optional)</label><input id="ntMrn" placeholder="AHC-XXXXX"></div>'
+    +'<div class="fld"><label>Due</label><input id="ntDue" placeholder="e.g. Today 15:00"></div>'
+    +'</div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button>'
+    +'<button class="btn btn-pri" onclick="saveNewTask()">Add Task</button>');
+}
+function saveNewTask(){
+  var title=($('ntTitle').value||'').trim();
+  var sub=($('ntSub').value||'').trim()||'(no detail)';
+  var type=$('ntType').value;
+  var prio=$('ntPrio').value;
+  var mrn=($('ntMrn').value||'').trim()||'—';
+  var due=($('ntDue').value||'').trim()||'Today';
+  if(!title){toast('Task title is required','amber');return;}
+  var hrefMap={sign:'encounter.html',reconcile:'fhir-center.html',promote:'patient-portal.html',awv:'awv.html',gap:'quality-tracker.html',message:'patient-portal.html'};
+  var linkMap={sign:'Open Encounter',reconcile:'Open FHIR',promote:'Open Portal',awv:'Open AWV',gap:'Open Quality',message:'Open Portal'};
+  var id='TK-'+String(++tkSeq);
+  tasks.unshift({id:id,type:type,title:title,sub:sub,mrn:mrn,prio:prio,due:due,href:hrefMap[type],link:linkMap[type],status:'active',done:false});
+  logAudit('CREATE_TASK','Added task "'+title+'" ('+id+') type '+type+' priority '+prio);
+  closeModal();renderWork();
+  toast('Task added — '+id,'green');
+}
+
+function openArchiveTask(id){
+  if(!can('archive')){toast('Your role cannot archive tasks','amber');return;}
+  var t=tasks.find(function(x){return x.id===id;});if(!t)return;
+  openModal('Archive Task',
+    '<div style="font-size:14px;color:var(--gray6);margin-bottom:14px">Soft-delete <b>'+esc(t.title)+'</b> ('+esc(t.id)+') from the worklist. The task is preserved and can be restored. Reason is written to the tamper-evident audit log.</div>'
+    +'<div class="fld"><label>Reason for archiving (required)</label><textarea id="archReason" rows="3" placeholder="e.g. Duplicate, Handled by phone, No longer needed"></textarea></div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button>'
+    +'<button class="btn btn-amber" onclick="confirmArchiveTask(\''+esc(id)+'\')">Archive Task</button>');
+}
+function confirmArchiveTask(id){
+  var t=tasks.find(function(x){return x.id===id;});if(!t)return;
+  var r=($('archReason').value||'').trim();
+  if(!r){toast('A reason is required to archive','amber');return;}
+  t.status='archived';t.archReason=r;t.archTs=new Date().toISOString().replace('T',' ').slice(0,16);
+  logAudit('ARCHIVE_TASK','Archived task "'+t.title+'" ('+t.id+') — reason: '+r);
+  closeModal();renderWork();
+  toast(t.id+' archived (recoverable)','blue');
+}
+function restoreTask(id){
+  if(!can('restore')){toast('Your role cannot restore tasks','amber');return;}
+  var t=tasks.find(function(x){return x.id===id;});if(!t)return;
+  t.status='active';delete t.archReason;delete t.archTs;
+  logAudit('RESTORE_TASK','Restored task "'+t.title+'" ('+t.id+') from archive');
+  renderWork();toast(t.id+' restored to worklist','green');
+}
+
+
+/* ════════════════════════════════════════════════
+   AI DAILY BRIEFING (augments, never automates)
+   ════════════════════════════════════════════════ */
+function runAiBriefing(){
+  if(!can('sign')){toast('AI briefing requires Physician access','amber');return;}
+  var active=tasks.filter(function(t){return t.status==='active'&&!t.done;});
+  var high=active.filter(function(t){return t.prio==='high';});
+  var recs=[
+    {tag:'FIRST',txt:'Triage INT-5002 (Dorothy Weston, "chest tightness on exertion") before clinic — possible cardiac symptom, call back or work in.'},
+    {tag:'SAFETY',txt:'Before promoting the furosemide refill (INT-5001), reconcile the inbound sulfonamide allergy (FHIR-7003) for Harold Branson.'},
+    {tag:'REVENUE',txt:'Reconcile HbA1c 8.1% (FHIR-7001) — closes a care gap and supports the DM+CKD HCC recapture for AHC-04417.'},
+    {tag:'CLOSE',txt:'2 notes await signature (Branson, Reid). Sign before noon to keep the encounter queue clean.'},
+    {tag:'PREVENT',txt:'4 AWVs overdue this week — Dorothy Weston (G0438) has the highest yield; $0 to patient.'}
+  ];
+  var rows=recs.map(function(r){
+    return '<div class="ai-rec-row"><span class="ai-rec-tag">'+esc(r.tag)+'</span><span style="font-size:13.5px">'+esc(r.txt)+'</span></div>';
+  }).join('');
+  var aiSummary='<div class="ai-box">'
+    +'<div class="ai-box-hdr"><span class="ai-box-ic">&#x1F916;</span><span class="ai-box-title">AI Daily Briefing — '+active.length+' open ('+high.length+' high)</span><span class="ai-box-badge">AI draft — physician review required</span></div>'
+    +'<div class="ai-box-body">A suggested order of attention for today, synthesized across your modules. It does <b>not</b> sign, promote, or bill anything &mdash; every action stays your click.<br><br>'
+    +rows
+    +'<br><em style="color:var(--gray5);font-size:13px;">Confirm to log this briefing as reviewed, or Dismiss.</em>'
+    +'</div>'
+    +'<div class="ai-box-foot">'
+    +'<button class="btn btn-green btn-sm" onclick="confirmAiBriefing()">&#x2713; Confirm &amp; Log</button>'
+    +'<button class="btn btn-sm" onclick="dismissAiBriefing()">&#x2715; Dismiss</button>'
+    +'</div>'
+    +'</div>';
+  openModal('AI Daily Briefing',aiSummary,'<button class="btn" onclick="closeModal()">Close</button>');
+  logAI(
+    'Daily briefing: synthesize '+active.length+' open tasks across appointments/encounter/quality/awv/portal/fhir into a prioritized plan',
+    'Prioritized cardiac-symptom triage, allergy-safety reconcile, A1c/HCC revenue, note signing, AWV prevention',
+    'athens-heart-center-physician-dashboard'
+  );
+}
+function confirmAiBriefing(){
+  logAudit('AI_CONFIRM','Physician confirmed AI daily briefing');
+  closeModal();toast('Daily briefing confirmed and logged','green');
+}
+function dismissAiBriefing(){
+  logAudit('AI_DISMISS','Physician dismissed AI daily briefing');
+  closeModal();toast('Daily briefing dismissed and logged','amber');
+}
+
+/* ════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════ */
+(function init(){
+  logAudit('SESSION_START','Physician dashboard loaded — Dr. Raj Patel — Athens Heart Center AHC Main');
+  renderWork();
+  applyRbacUI();
+})();
+
+</script>
+</body>
+</html>
