@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CareSync Pro — Eligibility &amp; Benefits (270/271)</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0b1e3d;--navy2:#102550;--navy3:#163070;
+  --blue:#1a6ef5;--blue2:#3b82f6;--blue-lt:#dbeafe;--blue-xlt:#eff6ff;
+  --teal:#0d9488;--teal-lt:#ccfbf1;--teal2:#0f766e;
+  --green:#15803d;--green-lt:#dcfce7;
+  --amber:#b45309;--amber-lt:#fef3c7;
+  --red:#dc2626;--red-lt:#fee2e2;
+  --purple:#5b21b6;--purple2:#7c3aed;--purple-lt:#ede9fe;
+  --orange:#ea580c;--orange-lt:#ffedd5;
+  --gray0:#f9fafb;--gray1:#f3f4f6;--gray2:#e5e7eb;--gray3:#d1d5db;
+  --gray4:#9ca3af;--gray5:#6b7280;--gray6:#374151;--gray7:#1f2937;--gray8:#111827;
+  --font:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --r:8px;--r2:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+}
+body{font-family:var(--font);background:var(--gray1);color:var(--gray7);font-size:15px;line-height:1.45;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* ═══ TOP NAV ═══ */
+.tnav{height:58px;background:var(--navy);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06)}
+.tlogo{display:flex;align-items:center;gap:10px;padding-right:14px;border-right:1px solid rgba(255,255,255,.12)}
+.tlogo-box{width:38px;height:38px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px}
+.tlogo-name{font-size:16px;font-weight:700;color:#fff}
+.tlogo-sub{font-size:11px;color:rgba(255,255,255,.55)}
+.tmodule{padding:6px 15px;border:1.5px solid rgba(255,255,255,.28);border-radius:20px;font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,.1)}
+.tnav-links{display:flex;gap:4px;flex-wrap:wrap}
+.tnav-link{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,.75);cursor:pointer;text-decoration:none;transition:all .12s;border:none;background:none}
+.tnav-link:hover{background:rgba(255,255,255,.12);color:#fff}
+.tnav-link.cur{background:rgba(26,110,245,.25);color:#fff;font-weight:600}
+.tsp{flex:1}
+.tenant-sw{display:flex;align-items:center;gap:8px;padding:7px 13px;border-radius:9px;background:rgba(255,255,255,.09);cursor:pointer;border:1px solid rgba(255,255,255,.13);transition:all .13s}
+.tenant-sw:hover{background:rgba(255,255,255,.16)}
+.tenant-sw .t-lbl{font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;line-height:1}
+.tenant-sw .t-val{font-size:13px;color:#fff;font-weight:600;line-height:1.3}
+.role-chip{display:flex;align-items:center;gap:9px;padding:7px 13px;border-radius:9px;background:rgba(26,110,245,.22);cursor:pointer;border:1px solid rgba(26,110,245,.5);transition:all .13s}
+.role-chip:hover{background:rgba(26,110,245,.34)}
+.role-chip .rc-av{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.role-chip .rc-name{font-size:13px;color:#fff;font-weight:600;line-height:1.2}
+.role-chip .rc-role{font-size:10.5px;color:rgba(255,255,255,.7);line-height:1.2}
+
+/* ═══ VOIP BAR ═══ */
+.voip{height:38px;background:var(--navy2);display:flex;align-items:center;padding:0 16px;gap:14px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.05)}
+.voip-status{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#fff;font-weight:600}
+.voip-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.25)}
+.voip-stat{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.78);cursor:pointer;padding:3px 9px;border-radius:7px;transition:all .12s}
+.voip-stat:hover{background:rgba(255,255,255,.1);color:#fff}
+.voip-stat b{color:#fff;font-family:var(--mono)}
+.voip-sp{flex:1}
+.voip-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(255,255,255,.8);cursor:pointer;border:none;background:rgba(255,255,255,.07);transition:all .12s}
+.voip-ic:hover{background:var(--blue);color:#fff}
+
+/* ═══ BODY LAYOUT ═══ */
+.shell{flex:1;display:flex;overflow:hidden;min-height:0}
+.main{flex:1;overflow-y:auto;padding:22px 26px;min-width:0}
+
+/* ═══ PAGE HEADER ═══ */
+.pg-hdr{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.pg-title{font-size:26px;font-weight:700;color:var(--navy);line-height:1.2}
+.pg-sub{font-size:14px;color:var(--gray6);margin-top:5px;max-width:840px}
+.pg-actions{margin-left:auto;display:flex;gap:9px;flex-wrap:wrap;align-items:flex-start}
+
+/* ═══ BANNER ═══ */
+.banner{display:flex;gap:13px;align-items:flex-start;background:var(--blue-xlt);border:1px solid var(--blue-lt);border-left:4px solid var(--blue);border-radius:var(--r);padding:14px 16px;margin-bottom:20px}
+.banner .b-ic{font-size:22px;line-height:1}
+.banner .b-txt{font-size:14px;color:var(--gray7)}
+.banner .b-txt b{color:var(--navy)}
+.conn-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 11px;border-radius:20px;margin-left:6px}
+.conn-off{background:var(--amber-lt);color:var(--amber)}
+.conn-on{background:var(--green-lt);color:var(--green)}
+
+/* ═══ KPI TILES ═══ */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+.kpi-tile{background:#fff;border:1px solid var(--gray2);border-radius:var(--r2);padding:16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi-accent{position:absolute;top:0;left:0;right:0;height:4px}
+.kpi-ic{font-size:20px;margin-bottom:6px}
+.kpi-val{font-size:32px;font-weight:700;font-family:var(--mono);color:var(--navy);line-height:1;letter-spacing:-.5px}
+.kpi-val.money{font-size:27px}
+.kpi-lbl{font-size:12.5px;font-weight:600;color:var(--gray6);margin-top:6px}
+.kpi-sub{font-size:11.5px;color:var(--gray5);margin-top:3px}
+
+/* ═══ BUTTONS ═══ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 18px;border-radius:9px;font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;border:1.5px solid var(--gray3);background:#fff;color:var(--gray7);transition:all .13s}
+.btn:hover{background:var(--gray1);border-color:var(--gray4)}
+.btn-pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-pri:hover{background:#1559cc;border-color:#1559cc}
+.btn-green{background:var(--green);border-color:var(--green);color:#fff}
+.btn-green:hover{background:#0f6b30}
+.btn-danger{background:var(--red);border-color:var(--red);color:#fff}
+.btn-danger:hover{background:#b91c1c}
+.btn-amber{background:var(--amber);border-color:var(--amber);color:#fff}
+.btn-amber:hover{background:#92400e}
+.btn-teal{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn-teal:hover{background:var(--teal2)}
+.btn-purple{background:var(--purple2);border-color:var(--purple2);color:#fff}
+.btn-purple:hover{background:var(--purple)}
+.btn-sm{min-height:34px;padding:0 13px;font-size:13.5px;border-radius:8px}
+.btn-xs{min-height:28px;padding:0 10px;font-size:12.5px;border-radius:7px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* ═══ LIST TOOLS ═══ */
+.list-tools{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-box{position:relative;flex:1;min-width:200px}
+.search-box input{width:100%;height:42px;padding:0 14px 0 38px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:15px;color:var(--gray7)}
+.search-box input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-lt)}
+.search-box .s-ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--gray5)}
+.filter-sel{height:42px;padding:0 12px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:14px;font-weight:600;color:var(--gray7);background:#fff;cursor:pointer}
+.filter-sel:focus{outline:none;border-color:var(--blue)}
+
+/* ═══ TABLE ═══ */
+.ptable-wrap{background:#fff;border:1px solid var(--gray2);border-radius:var(--r2);box-shadow:var(--shadow);overflow:hidden}
+.ptable-hdr{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--gray2);background:var(--gray0);flex-wrap:wrap}
+.ptable-title{font-size:17px;font-weight:700;color:var(--navy)}
+.ptable-badge{font-size:11.5px;font-weight:700;padding:3px 11px;border-radius:10px;background:var(--blue-lt);color:var(--navy3)}
+.ptable-inner{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:980px}
+thead th{padding:11px 14px;font-size:13px;font-weight:700;color:var(--gray7);background:var(--gray0);border-bottom:2px solid var(--gray2);text-align:left;white-space:nowrap}
+thead th.center{text-align:center}
+thead th.right{text-align:right}
+tbody tr{border-bottom:1px solid var(--gray1);transition:background .1s}
+tbody tr:hover{background:var(--blue-xlt)}
+tbody tr.arch-row{background:var(--gray0);opacity:.88}
+tbody tr.inactive-row{background:var(--red-lt)}
+tbody td{padding:12px 14px;font-size:14px;vertical-align:top}
+tbody td.center{text-align:center}
+tbody td.right{text-align:right;font-family:var(--mono);font-weight:600}
+.pt-name{font-size:15px;font-weight:700;color:var(--navy)}
+.pt-mrn{font-size:12px;font-family:var(--mono);color:var(--gray5);margin-top:2px}
+.pt-age{font-size:12.5px;color:var(--gray6);margin-top:2px}
+
+/* ═══ CODE / STATUS CHIPS ═══ */
+.code-pill{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:7px;font-family:var(--mono);background:var(--gray1);color:var(--gray7);cursor:help}
+.stc-chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:3px 8px;border-radius:8px;font-family:var(--mono);background:var(--teal-lt);color:var(--teal2);cursor:help}
+
+/* ═══ TOOLTIP ═══ */
+[data-tip]{position:relative}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:130%;left:50%;transform:translateX(-50%);background:var(--gray8);color:#fff;font-size:12px;font-weight:400;padding:8px 12px;border-radius:7px;white-space:normal;width:250px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.2);line-height:1.5;font-family:var(--font)}
+.tip{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--gray2);color:var(--gray6);font-size:11px;font-weight:700;cursor:help;margin-left:5px;vertical-align:middle}
+
+/* ═══ BADGES / PILLS ═══ */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:11px}
+.pill-green{background:var(--green-lt);color:var(--green)}
+.pill-amber{background:var(--amber-lt);color:var(--amber)}
+.pill-red{background:var(--red-lt);color:var(--red)}
+.pill-gray{background:var(--gray1);color:var(--gray6)}
+.pill-blue{background:var(--blue-lt);color:var(--navy3)}
+.pill-purple{background:var(--purple-lt);color:var(--purple)}
+
+/* ═══ RESPONSIBILITY BARS ═══ */
+.resp-wrap{display:flex;flex-direction:column;gap:3px;min-width:130px}
+.resp-bar-bg{height:7px;background:var(--gray2);border-radius:4px;overflow:hidden}
+.resp-bar-fill{height:100%;border-radius:4px}
+.resp-nums{display:flex;justify-content:space-between;font-size:11px;font-family:var(--mono);color:var(--gray6)}
+
+/* ═══ MODAL ═══ */
+.modal-bg{position:fixed;inset:0;background:rgba(11,30,61,.52);display:none;align-items:center;justify-content:center;z-index:200;padding:18px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+.modal-hdr{display:flex;align-items:center;gap:10px;padding:18px 22px;border-bottom:1px solid var(--gray2);position:sticky;top:0;background:#fff;z-index:5}
+.modal-title{font-size:19px;font-weight:700;color:var(--navy);flex:1}
+.modal-x{width:34px;height:34px;border-radius:8px;border:none;background:var(--gray1);color:var(--gray6);font-size:18px;cursor:pointer;flex-shrink:0}
+.modal-x:hover{background:var(--gray2)}
+.modal-body{padding:20px 22px}
+.modal-foot{padding:16px 22px;border-top:1px solid var(--gray2);display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#fff;flex-wrap:wrap}
+.fld{margin-bottom:15px}
+.fld label{display:block;font-size:13px;font-weight:600;color:var(--gray7);margin-bottom:6px}
+.fld input,.fld textarea,.fld select{width:100%;padding:11px 13px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:15px;color:var(--gray7)}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-lt)}
+.fld-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ═══ 271 RESULT ═══ */
+.elig-hero{display:flex;align-items:center;gap:13px;border-radius:11px;padding:14px 16px;margin-bottom:14px}
+.elig-hero.active{background:var(--green-lt);border:1px solid #86efac}
+.elig-hero.inactive{background:var(--red-lt);border:1px solid #fecaca}
+.elig-hero .eh-ic{font-size:30px}
+.elig-hero .eh-status{font-size:18px;font-weight:700}
+.elig-hero.active .eh-status{color:var(--green)}
+.elig-hero.inactive .eh-status{color:var(--red)}
+.elig-hero .eh-sub{font-size:12.5px;color:var(--gray6)}
+.money-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.money-card{background:var(--gray0);border:1px solid var(--gray2);border-radius:10px;padding:12px 14px}
+.money-card .mc-lbl{font-size:12px;font-weight:600;color:var(--gray6)}
+.money-card .mc-val{font-size:20px;font-weight:700;font-family:var(--mono);color:var(--navy);margin-top:3px}
+.money-card .mc-sub{font-size:11.5px;color:var(--gray5);margin-top:3px}
+.meta-row{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--gray2);font-size:13.5px}
+.meta-row:last-child{border-bottom:none}
+.meta-row .mk{font-weight:700;color:var(--gray6);min-width:130px}
+.meta-row .mv{color:var(--gray8)}
+.benefit-row{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px dashed var(--gray2);font-size:13px}
+.benefit-row:last-child{border-bottom:none}
+.note-box{border-radius:8px;padding:11px 13px;font-size:12.5px;margin:6px 0 14px;line-height:1.5}
+.nb-info{background:var(--blue-xlt);border:1px solid var(--blue-lt);color:var(--navy3)}
+.nb-warn{background:var(--amber-lt);border:1px solid #fde68a;color:var(--amber)}
+
+/* ═══ AI SUGGESTION BOX ═══ */
+.ai-box{background:var(--purple-lt);border:1.5px solid #c4b5fd;border-radius:var(--r2);padding:15px 18px;margin-bottom:14px}
+.ai-box-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ai-box-ic{font-size:18px}
+.ai-box-title{font-size:14px;font-weight:700;color:var(--purple)}
+.ai-box-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--purple);color:#fff;margin-left:auto}
+.ai-box-body{font-size:14px;color:var(--gray7);line-height:1.55}
+.ai-box-foot{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}
+.ai-rec-row{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px dashed #c4b5fd}
+.ai-rec-row:last-child{border-bottom:none}
+.ai-rec-tag{font-size:11px;font-weight:700;color:#fff;background:var(--purple2);padding:2px 7px;border-radius:6px;flex-shrink:0;font-family:var(--mono)}
+
+/* ═══ TOAST ═══ */
+.toast-wrap{position:fixed;bottom:22px;right:22px;z-index:300;display:flex;flex-direction:column;gap:10px}
+.toast{display:flex;align-items:center;gap:10px;background:var(--gray8);color:#fff;padding:13px 17px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:tin .2s ease;max-width:360px}
+.toast.green{background:var(--green)}.toast.red{background:var(--red)}.toast.amber{background:var(--amber)}.toast.blue{background:var(--blue)}.toast.purple{background:var(--purple2)}
+@keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ ROLE OPTS (modal) ═══ */
+.role-opt{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1.5px solid var(--gray2);border-radius:10px;cursor:pointer;margin-bottom:9px;transition:all .12s}
+.role-opt:hover{border-color:var(--blue);background:var(--blue-xlt)}
+.role-opt .ro-av{width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.role-opt .ro-name{font-size:15px;font-weight:600;color:var(--gray8)}
+.role-opt .ro-tier{font-size:12.5px;color:var(--gray6)}
+
+/* ═══ ARCHIVE REASON BADGE ═══ */
+.arch-reason{font-size:12px;color:var(--amber);font-weight:500;margin-top:3px;font-style:italic}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(3,1fr)}
+  .main{padding:18px 14px}
+  .tnav-links{display:none}
+}
+@media(max-width:600px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .kpi-val{font-size:25px}
+  .kpi-val.money{font-size:21px}
+  .pg-title{font-size:21px}
+  .main{padding:14px 12px}
+  .tlogo-sub,.tmodule{display:none}
+  .tenant-sw .t-lbl{display:none}
+  .fld-row,.money-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOP NAV ═══ -->
+<div class="tnav">
+  <div class="tlogo">
+    <div class="tlogo-box">&#x2764;&#xFE0F;</div>
+    <div>
+      <div class="tlogo-name">CareSync Pro</div>
+      <div class="tlogo-sub">Medical Office Force</div>
+    </div>
+  </div>
+  <div class="tmodule">&#x1F6E1;&#xFE0F; Eligibility &amp; Benefits</div>
+  <div class="tnav-links">
+    <a class="tnav-link" href="physician-dashboard.html">&#x1FA7A; Dashboard</a>
+    <a class="tnav-link" href="appointment-dashboard.html">&#x1F4CB; Appointments</a>
+    <a class="tnav-link" href="billing-dashboard.html">&#x1F4B3; Billing</a>
+    <a class="tnav-link cur" href="eligibility.html">&#x1F6E1;&#xFE0F; Eligibility</a>
+  </div>
+  <div class="tsp"></div>
+  <div class="tenant-sw" onclick="openTenantModal()">
+    <span style="font-size:16px">&#x1F3E2;</span>
+    <div>
+      <div class="t-lbl">Tenant</div>
+      <div class="t-val" id="tenantLabel">Athens Heart Center &#x25B8; AHC Main</div>
+    </div>
+  </div>
+  <div class="role-chip" onclick="openRoleModal()">
+    <div class="rc-av" id="roleAv">RP</div>
+    <div>
+      <div class="rc-name" id="roleName">Dr. Raj Patel</div>
+      <div class="rc-role" id="roleTier">Physician &#xB7; Tier 4</div>
+    </div>
+    <span style="color:rgba(255,255,255,.6);font-size:12px">&#x25BE;</span>
+  </div>
+</div>
+
+<!-- ═══ VOIP BAR ═══ -->
+<div class="voip">
+  <div class="voip-status"><span class="voip-dot"></span>VoIP Online</div>
+  <div class="voip-stat" onclick="voipAction('Voicemails')"><span>Voicemails</span> <b>3</b></div>
+  <div class="voip-stat" onclick="voipAction('Missed Calls')"><span>Missed</span> <b>1</b></div>
+  <div class="voip-sp"></div>
+  <button class="voip-ic" onclick="voipAction('Dialer')" title="Dialer">&#x1F4DE;</button>
+  <button class="voip-ic" onclick="voipAction('Hold')" title="Hold">&#x23F8;&#xFE0F;</button>
+  <button class="voip-ic" onclick="voipAction('Transfer')" title="Transfer">&#x21AA;&#xFE0F;</button>
+</div>
+
+<!-- ═══ SHELL ═══ -->
+<div class="shell">
+<div class="main" id="mainContent">
+
+  <!-- PAGE HEADER -->
+  <div class="pg-hdr">
+    <div>
+      <div class="pg-title">&#x1F6E1;&#xFE0F; Eligibility &amp; Benefits <span style="font-size:15px;font-weight:600;color:var(--gray5)">(270/271)</span></div>
+      <div class="pg-sub">Real-time coverage verification. We send an <span class="code-pill" data-tip="ASC X12N 270 — Health Care Eligibility Benefit Inquiry">270</span> inquiry and read back the <span class="code-pill" data-tip="ASC X12N 271 — Eligibility Benefit Response: active coverage, copay, deductible, OOP, coinsurance, prior-auth">271</span> response &mdash; copay, deductible, out-of-pocket and prior-auth &mdash; before the visit, so the front desk collects the right amount.</div>
+    </div>
+    <div class="pg-actions">
+      <button class="btn btn-purple btn-sm" onclick="runAiElig()" id="aiEligBtn">&#x1F916; AI Coverage Review</button>
+      <button class="btn btn-teal btn-sm" onclick="batchCheck()" id="batchBtn">&#x21BB; Check All Today</button>
+      <button class="btn btn-pri" onclick="openAddElig()" id="addEligBtn">+ Add Inquiry</button>
+    </div>
+  </div>
+
+  <!-- BANNER -->
+  <div class="banner">
+    <div class="b-ic">&#x1F50C;</div>
+    <div class="b-txt"><b>Clearinghouse:</b> Waystar <span class="conn-pill conn-off" id="connPill">&#x25CB; Demo mode &mdash; not connected</span><br>
+      Running in demo mode &mdash; responses are synthesized locally. To go live, deploy the <span class="code-pill">/api/waystar/eligibility</span> serverless proxy and set the Waystar credentials in Vercel env vars. The browser never holds clearinghouse credentials; the 270 is sent server-side.</div>
+  </div>
+
+  <!-- KPI TILES -->
+  <div class="kpi-grid">
+    <div class="kpi-tile"><div class="kpi-accent" style="background:var(--navy)"></div><div class="kpi-ic">&#x2705;</div><div class="kpi-val" id="kpiChecked">0</div><div class="kpi-lbl">Verified Today</div><div class="kpi-sub">271 received</div></div>
+    <div class="kpi-tile"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-ic">&#x1F6E1;&#xFE0F;</div><div class="kpi-val" id="kpiActive">0</div><div class="kpi-lbl">Active Coverage</div><div class="kpi-sub">Good to see</div></div>
+    <div class="kpi-tile"><div class="kpi-accent" style="background:var(--red)"></div><div class="kpi-ic">&#x26D4;</div><div class="kpi-val" id="kpiInactive">0</div><div class="kpi-lbl">Inactive / Issue</div><div class="kpi-sub">Resolve before visit</div></div>
+    <div class="kpi-tile"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-ic">&#x1F511;</div><div class="kpi-val" id="kpiPa">0</div><div class="kpi-lbl">Prior-Auth Required</div><div class="kpi-sub">Flag for referral</div></div>
+    <div class="kpi-tile"><div class="kpi-accent" style="background:var(--teal)"></div><div class="kpi-ic">&#x1F4B5;</div><div class="kpi-val money" id="kpiResp">$0</div><div class="kpi-lbl">Est. Copay Due</div><div class="kpi-sub">Today, active patients</div></div>
+  </div>
+
+  <!-- INQUIRY TABLE -->
+  <div class="ptable-wrap">
+    <div class="ptable-hdr">
+      <div class="ptable-title">Eligibility Worklist<span class="tip" data-tip="Today's patients needing a 270/271 check. Run a check to pull live benefits, then View 271 for the full breakdown. Results feed the copay shown in Billing.">i</span></div>
+      <span class="ptable-badge" id="eligBadge">0 inquiries</span>
+      <div style="flex:1"></div>
+      <div class="list-tools" style="margin:0">
+        <div class="search-box" style="min-width:160px"><span class="s-ic">&#x1F50D;</span><input id="elSearch" type="text" placeholder="Search patients&#x2026;" oninput="renderElig()"></div>
+        <select class="filter-sel" id="elStatus" onchange="renderElig()">
+          <option value="all">All</option>
+          <option value="active" selected>Active</option>
+          <option value="archived">Archived</option>
+        </select>
+        <select class="filter-sel" id="elCov" onchange="renderElig()">
+          <option value="all">All coverage</option>
+          <option value="unchecked">Not checked</option>
+          <option value="covered">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+    </div>
+    <div class="ptable-inner">
+      <table>
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Payer / Plan</th>
+            <th>Service Type<span class="tip" data-tip="X12 Service Type Code (STC). 30 = health benefit plan coverage (general). 98 = professional (physician) visit, office.">i</span></th>
+            <th class="center">Coverage</th>
+            <th>Patient Responsibility</th>
+            <th>Last 271</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="eligBody"></tbody>
+      </table>
+    </div>
+    <div style="padding:10px 18px;font-size:12.5px;color:var(--gray5);display:flex;gap:16px;border-top:1px solid var(--gray1);flex-wrap:wrap" id="eligFoot"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══ MODAL ═══ -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalCard">
+    <div class="modal-hdr"><div class="modal-title" id="modalTitle">Title</div><button class="modal-x" onclick="closeModal()">&#x2715;</button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ════════════════════════════════════════════════
+   CARESYNC FOUNDATION SPINE — shared utilities
+   ════════════════════════════════════════════════ */
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function $(id){return document.getElementById(id);}
+
+/* cyrb53 hash for audit chain */
+function cyrb53(str,seed){
+  seed=seed||0;
+  var h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;
+  for(var i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}
+  h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);
+  h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);
+  return (4294967296*(2097151&h2)+(h1>>>0)).toString(16).padStart(14,'0');
+}
+
+/* 8-tier RBAC */
+var USERS={
+  super:{name:'Subodh Agrawal, MD',av:'SA',label:'Global SuperAdmin',tier:'Tier 0'},
+  padmin:{name:'Priya Shah',av:'PS',label:'Practice Admin',tier:'Tier 3-P'},
+  md:{name:'Dr. Raj Patel',av:'RP',label:'Physician',tier:'Tier 4'},
+  nurse:{name:'Sarah Kim, MA',av:'SK',label:'Nurse / MA',tier:'Tier 5'},
+  front:{name:'Dana Brooks',av:'DB',label:'Front Desk / Billing',tier:'Tier 6'}
+};
+var PERMS={
+  super:['view','create','edit','archive','restore','sign','prescribe','order','bill','admin','audit_view','tenant_switch'],
+  padmin:['view','create','edit','archive','restore','bill','admin','audit_view'],
+  md:['view','create','edit','archive','restore','sign','prescribe','order','bill','audit_view'],
+  nurse:['view','create','edit','archive','restore','order'],
+  front:['view','create','edit','archive','restore']
+};
+var currentRole='md';
+function can(action){return (PERMS[currentRole]||[]).indexOf(action)>=0;}
+
+/* Audit chain */
+var auditChain=[];
+var GENESIS='00000000000000';
+function logAudit(action,detail){
+  var prev=auditChain.length?auditChain[auditChain.length-1].hash:GENESIS;
+  var seq=auditChain.length+1;
+  var ts=new Date().toISOString().replace('T',' ').slice(0,19);
+  var u=USERS[currentRole];
+  var payload=[prev,seq,ts,u.name,currentRole,action,detail].join('|');
+  auditChain.push({seq:seq,ts:ts,actor:u.name,role:currentRole,action:action,detail:detail,prevHash:prev,hash:cyrb53(payload)});
+}
+
+/* AI interaction log */
+var aiLog=[];
+function logAI(prompt,response,context){
+  aiLog.push({ts:new Date().toISOString(),role:currentRole,actor:USERS[currentRole].name,prompt:prompt,response:response,context:context||''});
+  logAudit('AI_INTERACTION','AI call logged: '+prompt.slice(0,60)+'...');
+}
+
+/* Toast */
+function toast(msg,type,dur){
+  var w=$('toastWrap');
+  var d=document.createElement('div');
+  d.className='toast'+(type?' '+type:'');
+  d.textContent=msg;
+  w.appendChild(d);
+  setTimeout(function(){d.remove();},dur||3400);
+}
+
+/* Modal */
+function openModal(title,body,foot){
+  $('modalTitle').innerHTML=title;
+  $('modalBody').innerHTML=body;
+  $('modalFoot').innerHTML=foot||'<button class="btn" onclick="closeModal()">Close</button>';
+  $('modalBg').classList.add('open');
+}
+function closeModal(){$('modalBg').classList.remove('open');}
+
+/* VoIP */
+function voipAction(action){toast('VoIP: '+action+' (demo)','blue');}
+
+/* Tenant modal */
+function openTenantModal(){
+  openModal('Switch Tenant',
+    '<div class="fld"><label>Group &rsaquo; Organization</label>'
+    +'<select id="tenSel">'
+    +'<option value="Athens Heart Center &rsaquo; AHC Main">Athens Heart Center &rsaquo; AHC Main</option>'
+    +'<option value="Athens Heart Center &rsaquo; Watkinsville">Athens Heart Center &rsaquo; Watkinsville</option>'
+    +'<option value="Full Family Health &rsaquo; Main">Full Family Health &rsaquo; Main</option>'
+    +'</select></div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button>'
+    +'<button class="btn btn-pri" onclick="applyTenant()">Switch</button>');
+}
+function applyTenant(){
+  var v=$('tenSel').value;
+  $('tenantLabel').textContent=v;
+  logAudit('TENANT_SWITCH','Switched to tenant: '+v);
+  closeModal();toast('Tenant switched to '+v,'blue');
+}
+
+/* Role modal */
+function openRoleModal(){
+  var body=Object.keys(USERS).map(function(k){
+    var u=USERS[k];
+    return '<div class="role-opt" onclick="switchRole(\''+k+'\')"><div class="ro-av">'+esc(u.av)+'</div><div><div class="ro-name">'+esc(u.name)+'</div><div class="ro-tier">'+esc(u.label)+' &middot; '+esc(u.tier)+'</div></div></div>';
+  }).join('');
+  openModal('Switch Role (RBAC demo)',body,'<button class="btn" onclick="closeModal()">Close</button>');
+}
+function switchRole(k){
+  if(!USERS[k])return;
+  currentRole=k;var u=USERS[k];
+  $('roleAv').textContent=u.av;$('roleName').textContent=u.name;$('roleTier').textContent=u.label+' · '+u.tier;
+  logAudit('ROLE_SWITCH','Active role changed to '+u.label);
+  closeModal();renderElig();applyRbacUI();
+  toast('Now acting as '+u.label,'blue');
+}
+function applyRbacUI(){
+  var addBtn=$('addEligBtn');
+  if(addBtn) addBtn.style.display=can('create')?'inline-flex':'none';
+  var aiBtn=$('aiEligBtn');
+  if(aiBtn) aiBtn.style.display=can('edit')?'inline-flex':'none';
+}
+
+
+/* ════════════════════════════════════════════════
+   WAYSTAR CONNECTOR (demo until env + proxy wired)
+   ════════════════════════════════════════════════ */
+var WAYSTAR={connected:false,endpoint:'/api/waystar/eligibility'};
+
+var STC_META={
+  '30':'Health Benefit Plan Coverage (general)',
+  '98':'Professional (Physician) Visit — Office',
+  'AL':'Vision (Optometry)',
+  'MH':'Mental Health',
+  '88':'Pharmacy'
+};
+
+function money(n){return '$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+/* demo271 — returns the SAME normalized shape the Waystar proxy must map to:
+   { active, plan, member, copay, deductTotal, deductMet, oopTotal, oopMet, coins, paRequired, benefits[] } */
+function demo271(p){
+  return {
+    active:p.seed.active,
+    plan:p.seed.plan,
+    member:p.seed.member,
+    copay:p.seed.copay,
+    deductTotal:p.seed.deductTotal,
+    deductMet:p.seed.deductMet,
+    oopTotal:p.seed.oopTotal,
+    oopMet:p.seed.oopMet,
+    coins:p.seed.coins,
+    paRequired:p.seed.paRequired,
+    benefits:p.seed.benefits
+  };
+}
+
+
+/* ════════════════════════════════════════════════
+   ELIGIBILITY DATA — Athens Heart Center today
+   ════════════════════════════════════════════════ */
+var inquiries=[
+  {
+    id:'AHC-04417',name:'Harold Branson',payer:'Medicare Part B',payerId:'00430',stc:'98',provider:'Dr. Raj Patel',
+    status:'active',checked:true,lastChecked:'2026-06-22 07:10',cov:'covered',
+    seed:{active:true,plan:'Medicare Part B + Medigap Plan G',member:'1EG4-TE5-MK72',copay:0,deductTotal:240,deductMet:240,oopTotal:0,oopMet:0,coins:0,paRequired:false,
+      benefits:[{stc:'98',covered:true,note:'Office visit covered 100% after Part B deductible (met). Medigap G covers the 20%.'},{stc:'30',covered:true,note:'Active Part B coverage on file.'}]}
+  },
+  {
+    id:'AHC-03891',name:'Dorothy Weston',payer:'BCBS GA PPO',payerId:'00128',stc:'98',provider:'Dr. Kim Holloway',
+    status:'active',checked:true,lastChecked:'2026-06-22 07:12',cov:'covered',
+    seed:{active:true,plan:'BCBS GA Blue Open Access PPO',member:'GAB884471203',copay:30,deductTotal:1500,deductMet:640,oopTotal:5000,oopMet:1120,coins:20,paRequired:false,
+      benefits:[{stc:'98',covered:true,note:'Specialist office visit copay $30; deductible does not apply to office visits.'},{stc:'30',covered:true,note:'Active PPO; in-network AHC.'}]}
+  },
+  {
+    id:'AHC-05102',name:'Marcus Reid',payer:'UnitedHealthcare',payerId:'87726',stc:'98',provider:'Dr. Raj Patel',
+    status:'active',checked:false,lastChecked:'',cov:'unchecked',
+    seed:{active:true,plan:'UHC Choice Plus',member:'UHC992300118',copay:40,deductTotal:2000,deductMet:300,oopTotal:6000,oopMet:780,coins:20,paRequired:true,
+      benefits:[{stc:'98',covered:true,note:'Office visit copay $40.'},{stc:'30',covered:true,note:'Active.'},{stc:'98',covered:true,note:'Echocardiogram (93306) requires prior authorization under this plan.'}]}
+  },
+  {
+    id:'AHC-02744',name:'Evelyn Moss',payer:'Medicare Part B',payerId:'00430',stc:'98',provider:'NP Lisa Chen',
+    status:'active',checked:false,lastChecked:'',cov:'unchecked',
+    seed:{active:true,plan:'Medicare Part B (no supplement)',member:'4FK2-RT9-PL31',copay:0,deductTotal:240,deductMet:240,oopTotal:0,oopMet:0,coins:20,paRequired:false,
+      benefits:[{stc:'98',covered:true,note:'Office visit: Part B pays 80% after deductible (met); patient owes 20% coinsurance, no supplement.'},{stc:'30',covered:true,note:'Active Part B.'}]}
+  },
+  {
+    id:'AHC-06237',name:'Thomas Park',payer:'Aetna HMO',payerId:'60054',stc:'98',provider:'Dr. Kim Holloway',
+    status:'active',checked:true,lastChecked:'2026-06-22 07:15',cov:'covered',
+    seed:{active:true,plan:'Aetna Open Access HMO',member:'AET551209934',copay:25,deductTotal:1000,deductMet:1000,oopTotal:4000,oopMet:2200,coins:0,paRequired:false,
+      benefits:[{stc:'98',covered:true,note:'Specialist copay $25; HMO requires PCP referral on file (present).'},{stc:'30',covered:true,note:'Active HMO.'}]}
+  },
+  {
+    id:'AHC-01558',name:'Gloria Huang',payer:'Humana MA-PD',payerId:'61101',stc:'98',provider:'Dr. Raj Patel',
+    status:'active',checked:true,lastChecked:'2026-06-22 07:18',cov:'inactive',
+    seed:{active:false,plan:'Humana Medicare Advantage (TERMED 2026-05-31)',member:'H88210045A',copay:0,deductTotal:0,deductMet:0,oopTotal:0,oopMet:0,coins:0,paRequired:false,
+      benefits:[{stc:'30',covered:false,note:'Coverage TERMINATED 2026-05-31. Patient may have moved to Original Medicare — re-verify before the visit.'}]}
+  },
+  {
+    id:'AHC-07043',name:'Raymond Okonkwo',payer:'Cigna PPO',payerId:'62308',stc:'98',provider:'Dr. Kim Holloway',
+    status:'active',checked:false,lastChecked:'',cov:'unchecked',
+    seed:{active:true,plan:'Cigna Open Access Plus',member:'CIG4471882',copay:40,deductTotal:3000,deductMet:450,oopTotal:7000,oopMet:900,coins:30,paRequired:true,
+      benefits:[{stc:'98',covered:true,note:'Office visit copay $40.'},{stc:'30',covered:true,note:'Active.'},{stc:'98',covered:true,note:'Right heart catheterization (93453) requires prior authorization.'}]}
+  },
+  {
+    id:'AHC-08812',name:'Agnes Thornton',payer:'Medicare Part B',payerId:'00430',stc:'30',provider:'Dr. Raj Patel',
+    status:'archived',archReason:'Patient moved to hospice — eligibility checks discontinued',archTs:'2026-05-14 09:45',
+    checked:true,lastChecked:'2026-05-10 08:00',cov:'covered',
+    seed:{active:true,plan:'Medicare Part B + Hospice benefit',member:'7HP3-XQ2-MN88',copay:0,deductTotal:240,deductMet:240,oopTotal:0,oopMet:0,coins:0,paRequired:false,
+      benefits:[{stc:'30',covered:true,note:'Hospice benefit active under Medicare.'}]}
+  }
+];
+var inqSeq=90000;
+
+
+/* ════════════════════════════════════════════════
+   WORKLIST RENDER
+   ════════════════════════════════════════════════ */
+function covPill(q){
+  if(!q.checked) return '<span class="pill pill-gray">&#x25CB; Not checked</span>';
+  if(q.cov==='inactive') return '<span class="pill pill-red">&#x26D4; Inactive</span>';
+  return '<span class="pill pill-green">&#x2705; Active</span>';
+}
+function respCellHtml(q){
+  if(!q.checked) return '<span style="font-size:12.5px;color:var(--gray5)">Run check to populate</span>';
+  if(q.cov==='inactive') return '<span style="font-size:12.5px;color:var(--red);font-weight:700">No active coverage</span>';
+  var s=q.seed;
+  var pct=s.deductTotal>0?Math.round((s.deductMet/s.deductTotal)*100):100;
+  var color=pct>=100?'var(--green)':pct>=50?'var(--amber)':'var(--blue)';
+  return '<div class="resp-wrap">'
+    +'<div style="font-size:13px;font-weight:700;color:var(--navy);font-family:var(--mono)">Copay '+money(s.copay)+(s.paRequired?' · <span style="color:var(--amber)">PA</span>':'')+'</div>'
+    +'<div class="resp-bar-bg"><div class="resp-bar-fill" style="width:'+pct+'%;background:'+color+'"></div></div>'
+    +'<div class="resp-nums"><span>Deduct '+money(s.deductMet)+'</span><span>of '+money(s.deductTotal)+'</span></div>'
+    +'</div>';
+}
+
+function renderElig(){
+  var q=($('elSearch').value||'').toLowerCase().trim();
+  var st=$('elStatus').value;
+  var cov=$('elCov').value;
+  var rows=inquiries.filter(function(x){
+    if(st!=='all'&&x.status!==st) return false;
+    if(cov==='unchecked'&&x.checked) return false;
+    if(cov==='covered'&&!(x.checked&&x.cov==='covered')) return false;
+    if(cov==='inactive'&&!(x.checked&&x.cov==='inactive')) return false;
+    if(q&&(x.name+' '+x.id+' '+x.payer+' '+x.seed.plan).toLowerCase().indexOf(q)<0) return false;
+    return true;
+  });
+
+  var tbody=$('eligBody');
+  if(!rows.length){
+    tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:36px;color:var(--gray5);font-size:14px;">\u{1F4ED} No inquiries match this filter.</td></tr>';
+  }else{
+    tbody.innerHTML=rows.map(function(x){
+      var arch=x.status==='archived';
+      var rowCls=arch?'arch-row':(x.checked&&x.cov==='inactive'?'inactive-row':'');
+      var archNote=arch?('<div class="arch-reason">\u{1F4C2} Archived '+esc(x.archTs)+': '+esc(x.archReason)+'</div>'):'';
+      var lastTxt=x.checked?esc(x.lastChecked):'<span style="color:var(--gray5)">—</span>';
+      var actionBtns='';
+      if(!arch){
+        actionBtns+='<button class="btn btn-pri btn-xs" onclick="runCheck(\''+esc(x.id)+'\')">&#x21BB; '+(x.checked?'Re-check':'Run 270')+'</button> ';
+        if(x.checked) actionBtns+='<button class="btn btn-xs" onclick="view271(\''+esc(x.id)+'\')">View 271</button> ';
+        if(can('archive')) actionBtns+='<button class="btn btn-xs" onclick="openArchiveElig(\''+esc(x.id)+'\')">\u{1F5C4}️</button>';
+      }else{
+        if(can('restore')) actionBtns+='<button class="btn btn-green btn-xs" onclick="restoreElig(\''+esc(x.id)+'\')">↺ Restore</button>';
+      }
+      return '<tr class="'+rowCls+'">'
+        +'<td><div class="pt-name">'+esc(x.name)+'</div><div class="pt-mrn">MRN: '+esc(x.id)+'</div><div class="pt-age">'+esc(x.provider)+'</div>'+archNote+'</td>'
+        +'<td><div style="font-size:13.5px;font-weight:600">'+esc(x.payer)+'</div><div class="pt-age">'+esc(x.seed.plan)+'</div><div class="pt-mrn" data-tip="Payer ID used to route the 270">Payer ID '+esc(x.payerId)+'</div></td>'
+        +'<td><span class="stc-chip" data-tip="STC '+esc(x.stc)+' — '+esc(STC_META[x.stc]||'Service type')+'">STC '+esc(x.stc)+'</span></td>'
+        +'<td class="center">'+covPill(x)+'</td>'
+        +'<td>'+respCellHtml(x)+'</td>'
+        +'<td style="font-family:var(--mono);font-size:12px;white-space:nowrap">'+lastTxt+'</td>'
+        +'<td style="white-space:nowrap">'+actionBtns+'</td>'
+        +'</tr>';
+    }).join('');
+  }
+
+  /* KPI rollup */
+  var active=inquiries.filter(function(x){return x.status==='active';});
+  var checked=active.filter(function(x){return x.checked;}).length;
+  var act=active.filter(function(x){return x.checked&&x.cov==='covered';}).length;
+  var inact=active.filter(function(x){return x.checked&&x.cov==='inactive';}).length;
+  var pa=active.filter(function(x){return x.checked&&x.cov==='covered'&&x.seed.paRequired;}).length;
+  var resp=active.filter(function(x){return x.checked&&x.cov==='covered';}).reduce(function(s,x){return s+x.seed.copay;},0);
+  $('kpiChecked').textContent=checked;
+  $('kpiActive').textContent=act;
+  $('kpiInactive').textContent=inact;
+  $('kpiPa').textContent=pa;
+  $('kpiResp').textContent=money(resp).replace('.00','');
+  $('eligBadge').textContent=rows.length+' inquir'+(rows.length!==1?'ies':'y');
+  var actC=inquiries.filter(function(x){return x.status==='active';}).length;
+  var arcC=inquiries.filter(function(x){return x.status==='archived';}).length;
+  $('eligFoot').innerHTML='Showing '+rows.length+' of '+inquiries.length+' &nbsp;&bull;&nbsp; '+actC+' active &nbsp;&bull;&nbsp; \u{1F5C4} '+arcC+' archived &nbsp;&bull;&nbsp; <em>270/271 via Waystar · '+(WAYSTAR.connected?'LIVE':'demo mode')+'</em>';
+}
+
+
+/* ════════════════════════════════════════════════
+   RUN CHECK (270 → 271) — demo or live proxy
+   ════════════════════════════════════════════════ */
+function runCheck(id){
+  var x=inquiries.find(function(p){return p.id===id;});if(!x)return;
+  if(!can('view')){toast('Your role cannot run eligibility','amber');return;}
+  /* LIVE PATH (when wired):
+     fetch(WAYSTAR.endpoint,{method:'POST',headers:{'Content-Type':'application/json'},
+       body:JSON.stringify({mrn:x.id,payer:x.payerId,stc:x.stc,patient:x.name})})
+       .then(function(r){return r.json();}).then(function(elig){applyResult(x,elig);});
+     DEMO PATH: */
+  var elig=demo271(x);
+  applyResult(x,elig);
+  logAI(
+    '270 eligibility inquiry: member='+x.id+', payer='+x.payerId+', STC='+x.stc+(WAYSTAR.connected?' [Waystar live]':' [demo]'),
+    '271 received: '+(elig.active?'ACTIVE':'INACTIVE')+', copay '+money(elig.copay)+', deductible '+money(elig.deductMet)+'/'+money(elig.deductTotal)+(elig.paRequired?', PA required':''),
+    'waystar-270-271'
+  );
+  toast('271 received for '+x.name+(elig.active?' — active':' — INACTIVE'),elig.active?'green':'red');
+}
+function applyResult(x,elig){
+  x.checked=true;
+  x.cov=elig.active?'covered':'inactive';
+  x.lastChecked=new Date().toISOString().replace('T',' ').slice(0,16);
+  logAudit('ELIG_CHECK','270/271 for '+x.name+' ('+x.id+') → '+(elig.active?'ACTIVE':'INACTIVE')+', copay '+money(elig.copay));
+  renderElig();
+}
+function batchCheck(){
+  if(!can('view')){toast('Your role cannot run eligibility','amber');return;}
+  var todo=inquiries.filter(function(x){return x.status==='active'&&!x.checked;});
+  if(!todo.length){toast('All active patients already verified today','blue');return;}
+  todo.forEach(function(x){var elig=demo271(x);applyResult(x,elig);});
+  logAudit('ELIG_BATCH','Batch 270/271 ran for '+todo.length+' patients');
+  toast('Verified '+todo.length+' patient'+(todo.length!==1?'s':'')+' (270/271)','green');
+}
+
+
+/* ════════════════════════════════════════════════
+   VIEW 271 RESULT
+   ════════════════════════════════════════════════ */
+function view271(id){
+  var x=inquiries.find(function(p){return p.id===id;});if(!x||!x.checked)return;
+  var s=x.seed;
+  var active=x.cov==='covered';
+  var dPct=s.deductTotal>0?Math.round((s.deductMet/s.deductTotal)*100):100;
+  var oPct=s.oopTotal>0?Math.round((s.oopMet/s.oopTotal)*100):0;
+  var body=''
+    +'<div class="elig-hero '+(active?'active':'inactive')+'">'
+    +'<div class="eh-ic">'+(active?'\u{1F6E1}️':'⛔')+'</div>'
+    +'<div style="flex:1"><div class="eh-status">'+(active?'Active Coverage':'Inactive / Termed')+'</div>'
+    +'<div class="eh-sub">'+esc(s.plan)+' · member '+esc(s.member)+'</div></div>'
+    +'<span class="code-pill" data-tip="X12 271 response">271</span></div>'
+    +'<div class="meta-row"><div class="mk">Patient</div><div class="mv">'+esc(x.name)+' · '+esc(x.id)+'</div></div>'
+    +'<div class="meta-row"><div class="mk">Payer</div><div class="mv">'+esc(x.payer)+' · ID '+esc(x.payerId)+'</div></div>'
+    +'<div class="meta-row"><div class="mk">Service type</div><div class="mv"><span class="stc-chip">STC '+esc(x.stc)+'</span> '+esc(STC_META[x.stc]||'')+'</div></div>'
+    +'<div class="meta-row"><div class="mk">Last verified</div><div class="mv" style="font-family:var(--mono)">'+esc(x.lastChecked)+'</div></div>';
+  if(active){
+    body+='<div style="height:12px"></div><div class="money-grid">'
+      +'<div class="money-card"><div class="mc-lbl">Office Visit Copay</div><div class="mc-val">'+money(s.copay)+'</div><div class="mc-sub">Collect at check-in</div></div>'
+      +'<div class="money-card"><div class="mc-lbl">Coinsurance</div><div class="mc-val">'+s.coins+'%</div><div class="mc-sub">After deductible</div></div>'
+      +'<div class="money-card"><div class="mc-lbl">Deductible</div><div class="mc-val">'+money(s.deductMet)+'</div><div class="mc-sub">of '+money(s.deductTotal)+' ('+dPct+'% met)</div></div>'
+      +'<div class="money-card"><div class="mc-lbl">Out-of-Pocket Max</div><div class="mc-val">'+money(s.oopMet)+'</div><div class="mc-sub">of '+money(s.oopTotal)+' ('+oPct+'% met)</div></div>'
+      +'</div>';
+    if(s.paRequired){body+='<div class="note-box nb-warn"><b>&#x1F511; Prior authorization required</b> for one or more planned services under this plan. Route to the referral/PA queue before the procedure.</div>';}
+    body+='<div style="font-size:13px;font-weight:700;color:var(--gray6);margin-bottom:4px">Benefits (271 detail)</div>';
+    body+=s.benefits.map(function(b){
+      return '<div class="benefit-row"><span class="stc-chip" style="flex-shrink:0">STC '+esc(b.stc)+'</span><span>'+(b.covered?'✅ ':'⛔ ')+esc(b.note)+'</span></div>';
+    }).join('');
+  }else{
+    body+='<div class="note-box nb-warn" style="margin-top:12px"><b>&#x26D4; No active coverage on the 271.</b> '+esc(s.benefits[0]?s.benefits[0].note:'Coverage not active.')+'</div>';
+  }
+  var foot='<button class="btn" onclick="closeModal()">Close</button>'
+    +'<a href="billing-dashboard.html" class="btn btn-teal" onclick="logToBilling(\''+esc(x.id)+'\')" style="text-decoration:none">Send copay to Billing &#x2192;</a>';
+  openModal('271 Benefit Response — '+esc(x.name),body,foot);
+  logAudit('VIEW_271','Viewed 271 for '+x.name+' ('+x.id+')');
+}
+function logToBilling(id){
+  var x=inquiries.find(function(p){return p.id===id;});if(!x)return;
+  logAudit('ELIG_TO_BILLING','Sent verified copay '+money(x.seed.copay)+' for '+x.name+' ('+x.id+') to Billing');
+  /* navigation handled by href="billing-dashboard.html" on the anchor */
+}
+
+
+/* ════════════════════════════════════════════════
+   ADD / ARCHIVE / RESTORE INQUIRY
+   ════════════════════════════════════════════════ */
+function openAddElig(){
+  if(!can('create')){toast('Your role cannot add inquiries','amber');return;}
+  openModal('Add Eligibility Inquiry',
+    '<div class="fld-row">'
+    +'<div class="fld"><label>Patient Name</label><input id="naName" placeholder="First Last"></div>'
+    +'<div class="fld"><label>MRN</label><input id="naMrn" placeholder="AHC-XXXXX"></div>'
+    +'</div>'
+    +'<div class="fld-row">'
+    +'<div class="fld"><label>Payer</label><select id="naPayer"><option value="Medicare Part B|00430">Medicare Part B</option><option value="BCBS GA PPO|00128">BCBS GA PPO</option><option value="Aetna HMO|60054">Aetna HMO</option><option value="UnitedHealthcare|87726">UnitedHealthcare</option><option value="Humana MA-PD|61101">Humana MA-PD</option><option value="Cigna PPO|62308">Cigna PPO</option></select></div>'
+    +'<div class="fld"><label>Service Type (STC)</label><select id="naStc"><option value="98">98 — Office visit</option><option value="30">30 — General coverage</option><option value="MH">MH — Mental health</option><option value="88">88 — Pharmacy</option></select></div>'
+    +'</div>'
+    +'<div class="note-box nb-info"><b>&#x1F4A1;</b> A 270 inquiry will be queued for this patient. In demo mode the 271 is synthesized; once Waystar is wired, this sends a real-time 270.</div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button>'
+    +'<button class="btn btn-pri" onclick="saveNewElig()">Add Inquiry</button>');
+}
+function saveNewElig(){
+  var nm=($('naName').value||'').trim();
+  var mrn=($('naMrn').value||'').trim()||('AHC-0'+String(++inqSeq));
+  var pRaw=$('naPayer').value.split('|');
+  var stc=$('naStc').value;
+  if(!nm){toast('Patient name is required','amber');return;}
+  inquiries.unshift({
+    id:mrn,name:nm,payer:pRaw[0],payerId:pRaw[1],stc:stc,provider:USERS[currentRole].name,
+    status:'active',checked:false,lastChecked:'',cov:'unchecked',
+    seed:{active:true,plan:pRaw[0]+' (verify)',member:'PENDING-270',copay:25,deductTotal:1500,deductMet:0,oopTotal:5000,oopMet:0,coins:20,paRequired:false,
+      benefits:[{stc:stc,covered:true,note:'Run the 270 to populate live benefits.'}]}
+  });
+  logAudit('CREATE_INQUIRY','Added eligibility inquiry for '+nm+' ('+mrn+') payer '+pRaw[0]);
+  closeModal();renderElig();
+  toast('Inquiry added for '+nm,'green');
+}
+
+function openArchiveElig(id){
+  if(!can('archive')){toast('Your role cannot archive inquiries','amber');return;}
+  var x=inquiries.find(function(p){return p.id===id;});if(!x)return;
+  openModal('Archive Eligibility Inquiry',
+    '<div style="font-size:14px;color:var(--gray6);margin-bottom:14px">Soft-delete the inquiry for <b>'+esc(x.name)+'</b> ('+esc(x.id)+'). It is preserved and can be restored. Reason is written to the tamper-evident audit log.</div>'
+    +'<div class="fld"><label>Reason for archiving (required)</label><textarea id="archReason" rows="3" placeholder="e.g. Appointment cancelled, Duplicate, Self-pay"></textarea></div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button>'
+    +'<button class="btn btn-amber" onclick="confirmArchiveElig(\''+esc(id)+'\')">Archive Inquiry</button>');
+}
+function confirmArchiveElig(id){
+  var x=inquiries.find(function(p){return p.id===id;});if(!x)return;
+  var r=($('archReason').value||'').trim();
+  if(!r){toast('A reason is required to archive','amber');return;}
+  x.status='archived';x.archReason=r;x.archTs=new Date().toISOString().replace('T',' ').slice(0,16);
+  logAudit('ARCHIVE_INQUIRY','Archived eligibility inquiry '+x.name+' ('+x.id+') — reason: '+r);
+  closeModal();renderElig();
+  toast(x.name+' inquiry archived (recoverable)','blue');
+}
+function restoreElig(id){
+  if(!can('restore')){toast('Your role cannot restore inquiries','amber');return;}
+  var x=inquiries.find(function(p){return p.id===id;});if(!x)return;
+  x.status='active';delete x.archReason;delete x.archTs;
+  logAudit('RESTORE_INQUIRY','Restored eligibility inquiry '+x.name+' ('+x.id+') from archive');
+  renderElig();toast(x.name+' inquiry restored','green');
+}
+
+
+/* ════════════════════════════════════════════════
+   AI COVERAGE REVIEW (augments, never automates)
+   ════════════════════════════════════════════════ */
+function runAiElig(){
+  if(!can('edit')){toast('AI coverage review requires staff access','amber');return;}
+  var active=inquiries.filter(function(x){return x.status==='active';});
+  var recs=[
+    {tag:'TERMED',txt:'Gloria Huang (AHC-01558): Humana MA-PD shows TERMINATED 2026-05-31. Re-verify before her visit — likely moved to Original Medicare; do not bill the termed plan.'},
+    {tag:'PA',txt:'Marcus Reid (AHC-05102): UHC requires prior auth for echo (93306). Start the PA before scheduling the study or the claim will deny.'},
+    {tag:'PA',txt:'Raymond Okonkwo (AHC-07043): Cigna requires PA for right heart cath (93453). Flag to the referral queue.'},
+    {tag:'COINS',txt:'Evelyn Moss (AHC-02744): Medicare with no supplement — counsel on 20% coinsurance liability for today’s visit.'},
+    {tag:'UNCHECKED',txt:'3 active patients are not yet verified today — run "Check All Today" to clear the worklist before clinic.'}
+  ];
+  var rows=recs.map(function(r){
+    return '<div class="ai-rec-row"><span class="ai-rec-tag">'+esc(r.tag)+'</span><span style="font-size:13.5px">'+esc(r.txt)+'</span></div>';
+  }).join('');
+  var aiSummary='<div class="ai-box">'
+    +'<div class="ai-box-hdr"><span class="ai-box-ic">&#x1F916;</span><span class="ai-box-title">AI Coverage Review — '+active.length+' active patients</span><span class="ai-box-badge">AI draft — staff review required</span></div>'
+    +'<div class="ai-box-body">The assistant read the 271 responses and flags coverage risks before clinic. It does <b>not</b> change coverage or bill anything &mdash; each item is a human follow-up.<br><br>'
+    +rows
+    +'<br><em style="color:var(--gray5);font-size:13px;">Confirm to log the review, or Dismiss.</em>'
+    +'</div>'
+    +'<div class="ai-box-foot">'
+    +'<button class="btn btn-green btn-sm" onclick="confirmAiElig()">&#x2713; Confirm &amp; Log</button>'
+    +'<button class="btn btn-sm" onclick="dismissAiElig()">&#x2715; Dismiss</button>'
+    +'</div>'
+    +'</div>';
+  openModal('AI Coverage Review',aiSummary,'<button class="btn" onclick="closeModal()">Close</button>');
+  logAI(
+    'Coverage review across '+active.length+' active patients: flag termed plans, prior-auth requirements, coinsurance exposure, unverified patients',
+    'Flagged 1 termed plan, 2 prior-auth requirements, 1 coinsurance counsel, 3 unverified',
+    'athens-heart-center-eligibility'
+  );
+}
+function confirmAiElig(){
+  logAudit('AI_CONFIRM','Staff confirmed AI coverage review');
+  closeModal();toast('Coverage review confirmed and logged','green');
+}
+function dismissAiElig(){
+  logAudit('AI_DISMISS','Staff dismissed AI coverage review');
+  closeModal();toast('Coverage review dismissed and logged','amber');
+}
+
+/* ════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════ */
+(function init(){
+  logAudit('SESSION_START','Eligibility & Benefits (270/271) loaded — Athens Heart Center — Waystar '+(WAYSTAR.connected?'LIVE':'demo'));
+  if(WAYSTAR.connected){var cp=$('connPill');cp.className='conn-pill conn-on';cp.innerHTML='&#x25CF; Connected to Waystar';}
+  renderElig();
+  applyRbacUI();
+})();
+
+</script>
+</body>
+</html>
