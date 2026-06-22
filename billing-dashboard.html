@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CareSync Pro — Billing &amp; Claims (837P)</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0b1e3d;--navy2:#102550;--navy3:#163070;
+  --blue:#1a6ef5;--blue2:#3b82f6;--blue-lt:#dbeafe;--blue-xlt:#eff6ff;
+  --teal:#0d9488;--teal-lt:#ccfbf1;--teal2:#0f766e;
+  --green:#15803d;--green-lt:#dcfce7;
+  --amber:#b45309;--amber-lt:#fef3c7;
+  --red:#dc2626;--red-lt:#fee2e2;
+  --purple:#5b21b6;--purple2:#7c3aed;--purple-lt:#ede9fe;
+  --orange:#ea580c;--orange-lt:#ffedd5;
+  --gray0:#f9fafb;--gray1:#f3f4f6;--gray2:#e5e7eb;--gray3:#d1d5db;
+  --gray4:#9ca3af;--gray5:#6b7280;--gray6:#374151;--gray7:#1f2937;--gray8:#111827;
+  --font:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --r:8px;--r2:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+}
+body{font-family:var(--font);background:var(--gray1);color:var(--gray7);font-size:15px;line-height:1.45;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* ═══ TOP NAV ═══ */
+.tnav{height:58px;background:var(--navy);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06)}
+.tlogo{display:flex;align-items:center;gap:10px;padding-right:14px;border-right:1px solid rgba(255,255,255,.12)}
+.tlogo-box{width:38px;height:38px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px}
+.tlogo-name{font-size:16px;font-weight:700;color:#fff}
+.tlogo-sub{font-size:11px;color:rgba(255,255,255,.55)}
+.tmodule{padding:6px 15px;border:1.5px solid rgba(255,255,255,.28);border-radius:20px;font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,.1)}
+.tnav-links{display:flex;gap:4px;flex-wrap:wrap}
+.tnav-link{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,.75);cursor:pointer;text-decoration:none;transition:all .12s;border:none;background:none}
+.tnav-link:hover{background:rgba(255,255,255,.12);color:#fff}
+.tnav-link.cur{background:rgba(26,110,245,.25);color:#fff;font-weight:600}
+.tsp{flex:1}
+.tenant-sw{display:flex;align-items:center;gap:8px;padding:7px 13px;border-radius:9px;background:rgba(255,255,255,.09);cursor:pointer;border:1px solid rgba(255,255,255,.13);transition:all .13s}
+.tenant-sw:hover{background:rgba(255,255,255,.16)}
+.tenant-sw .t-lbl{font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;line-height:1}
+.tenant-sw .t-val{font-size:13px;color:#fff;font-weight:600;line-height:1.3}
+.role-chip{display:flex;align-items:center;gap:9px;padding:7px 13px;border-radius:9px;background:rgba(26,110,245,.22);cursor:pointer;border:1px solid rgba(26,110,245,.5);transition:all .13s}
+.role-chip:hover{background:rgba(26,110,245,.34)}
+.role-chip .rc-av{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.role-chip .rc-name{font-size:13px;color:#fff;font-weight:600;line-height:1.2}
+.role-chip .rc-role{font-size:10.5px;color:rgba(255,255,255,.7);line-height:1.2}
+
+/* ═══ VOIP BAR ═══ */
+.voip{height:38px;background:var(--navy2);display:flex;align-items:center;padding:0 16px;gap:14px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.05)}
+.voip-status{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#fff;font-weight:600}
+.voip-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.25)}
+.voip-stat{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.78);cursor:pointer;padding:3px 9px;border-radius:7px;transition:all .12s}
+.voip-stat:hover{background:rgba(255,255,255,.1);color:#fff}
+.voip-stat b{color:#fff;font-family:var(--mono)}
+.voip-sp{flex:1}
+.voip-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(255,255,255,.8);cursor:pointer;border:none;background:rgba(255,255,255,.07);transition:all .12s}
+.voip-ic:hover{background:var(--blue);color:#fff}
+
+/* ═══ BODY LAYOUT ═══ */
+.shell{flex:1;display:flex;overflow:hidden;min-height:0}
+.main{flex:1;overflow-y:auto;padding:22px 26px;min-width:0}
+
+/* ═══ PAGE HEADER ═══ */
+.pg-hdr{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.pg-title{font-size:26px;font-weight:700;color:var(--navy);line-height:1.2}
+.pg-sub{font-size:14px;color:var(--gray6);margin-top:5px;max-width:840px}
+.pg-actions{margin-left:auto;display:flex;gap:9px;flex-wrap:wrap;align-items:flex-start}
+
+/* ═══ BANNER ═══ */
+.banner{display:flex;gap:13px;align-items:flex-start;background:var(--green-lt);border:1px solid #86efac;border-left:4px solid var(--green);border-radius:var(--r);padding:14px 16px;margin-bottom:20px}
+.banner .b-ic{font-size:22px;line-height:1}
+.banner .b-txt{font-size:14px;color:var(--gray7)}
+.banner .b-txt b{color:var(--navy)}
+
+/* ═══ KPI TILES ═══ */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+.kpi-tile{background:#fff;border:1px solid var(--gray2);border-radius:var(--r2);padding:16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi-accent{position:absolute;top:0;left:0;right:0;height:4px}
+.kpi-ic{font-size:20px;margin-bottom:6px}
+.kpi-val{font-size:32px;font-weight:700;font-family:var(--mono);color:var(--navy);line-height:1;letter-spacing:-.5px}
+.kpi-val.money{font-size:27px}
+.kpi-lbl{font-size:12.5px;font-weight:600;color:var(--gray6);margin-top:6px}
+.kpi-sub{font-size:11.5px;color:var(--gray5);margin-top:3px}
+
+/* ═══ BUTTONS ═══ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 18px;border-radius:9px;font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;border:1.5px solid var(--gray3);background:#fff;color:var(--gray7);transition:all .13s}
+.btn:hover{background:var(--gray1);border-color:var(--gray4)}
+.btn-pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-pri:hover{background:#1559cc;border-color:#1559cc}
+.btn-green{background:var(--green);border-color:var(--green);color:#fff}
+.btn-green:hover{background:#0f6b30}
+.btn-danger{background:var(--red);border-color:var(--red);color:#fff}
+.btn-danger:hover{background:#b91c1c}
+.btn-amber{background:var(--amber);border-color:var(--amber);color:#fff}
+.btn-amber:hover{background:#92400e}
+.btn-teal{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn-teal:hover{background:var(--teal2)}
+.btn-purple{background:var(--purple2);border-color:var(--purple2);color:#fff}
+.btn-purple:hover{background:var(--purple)}
+.btn-sm{min-height:34px;padding:0 13px;font-size:13.5px;border-radius:8px}
+.btn-xs{min-height:28px;padding:0 10px;font-size:12.5px;border-radius:7px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* ═══ LIST TOOLS ═══ */
+.list-tools{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-box{position:relative;flex:1;min-width:200px}
+.search-box input{width:100%;height:42px;padding:0 14px 0 38px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:15px;color:var(--gray7)}
+.search-box input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-lt)}
+.search-box .s-ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--gray5)}
+.filter-sel{height:42px;padding:0 12px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:14px;font-weight:600;color:var(--gray7);background:#fff;cursor:pointer}
+.filter-sel:focus{outline:none;border-color:var(--blue)}
+
+/* ═══ CLAIMS TABLE ═══ */
+.ptable-wrap{background:#fff;border:1px solid var(--gray2);border-radius:var(--r2);box-shadow:var(--shadow);overflow:hidden}
+.ptable-hdr{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--gray2);background:var(--gray0);flex-wrap:wrap}
+.ptable-title{font-size:17px;font-weight:700;color:var(--navy)}
+.ptable-badge{font-size:11.5px;font-weight:700;padding:3px 11px;border-radius:10px;background:var(--green-lt);color:var(--green)}
+.ptable-inner{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:980px}
+thead th{padding:11px 14px;font-size:13px;font-weight:700;color:var(--gray7);background:var(--gray0);border-bottom:2px solid var(--gray2);text-align:left;white-space:nowrap}
+thead th.center{text-align:center}
+thead th.right{text-align:right}
+tbody tr{border-bottom:1px solid var(--gray1);transition:background .1s}
+tbody tr:hover{background:var(--blue-xlt)}
+tbody tr.arch-row{background:var(--gray0);opacity:.88}
+tbody tr.paid-row{background:var(--green-lt)}
+tbody tr.denied-row{background:var(--red-lt)}
+tbody td{padding:12px 14px;font-size:14px;vertical-align:top}
+tbody td.center{text-align:center}
+tbody td.right{text-align:right;font-family:var(--mono);font-weight:600}
+.pt-name{font-size:15px;font-weight:700;color:var(--navy)}
+.pt-mrn{font-size:12px;font-family:var(--mono);color:var(--gray5);margin-top:2px}
+.pt-age{font-size:12.5px;color:var(--gray6);margin-top:2px}
+
+/* ═══ CODE CHIPS ═══ */
+.code-chips{display:flex;flex-wrap:wrap;gap:5px}
+.cpt-chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:3px 8px;border-radius:8px;font-family:var(--mono);background:var(--blue-lt);color:var(--navy3);cursor:help}
+.dx-chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:3px 8px;border-radius:8px;font-family:var(--mono);background:var(--teal-lt);color:var(--teal2);cursor:help}
+.mod-chip{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 6px;border-radius:6px;font-family:var(--mono);background:var(--amber-lt);color:var(--amber);cursor:help}
+.code-pill{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:7px;font-family:var(--mono);background:var(--gray1);color:var(--gray7);cursor:help}
+
+/* ═══ TOOLTIP ═══ */
+[data-tip]{position:relative}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:130%;left:50%;transform:translateX(-50%);background:var(--gray8);color:#fff;font-size:12px;font-weight:400;padding:8px 12px;border-radius:7px;white-space:normal;width:250px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.2);line-height:1.5;font-family:var(--font)}
+.tip{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--gray2);color:var(--gray6);font-size:11px;font-weight:700;cursor:help;margin-left:5px;vertical-align:middle}
+
+/* ═══ BADGES / PILLS ═══ */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:11px}
+.pill-green{background:var(--green-lt);color:var(--green)}
+.pill-amber{background:var(--amber-lt);color:var(--amber)}
+.pill-red{background:var(--red-lt);color:var(--red)}
+.pill-gray{background:var(--gray1);color:var(--gray6)}
+.pill-blue{background:var(--blue-lt);color:var(--navy3)}
+.pill-purple{background:var(--purple-lt);color:var(--purple)}
+.pill-teal{background:var(--teal-lt);color:var(--teal2)}
+.copay-due{font-size:12px;font-weight:700;color:var(--amber);font-family:var(--mono)}
+.copay-paid{font-size:12px;font-weight:700;color:var(--green);font-family:var(--mono)}
+
+/* ═══ MODAL ═══ */
+.modal-bg{position:fixed;inset:0;background:rgba(11,30,61,.52);display:none;align-items:center;justify-content:center;z-index:200;padding:18px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+.modal-hdr{display:flex;align-items:center;gap:10px;padding:18px 22px;border-bottom:1px solid var(--gray2);position:sticky;top:0;background:#fff;z-index:5}
+.modal-title{font-size:19px;font-weight:700;color:var(--navy);flex:1}
+.modal-x{width:34px;height:34px;border-radius:8px;border:none;background:var(--gray1);color:var(--gray6);font-size:18px;cursor:pointer;flex-shrink:0}
+.modal-x:hover{background:var(--gray2)}
+.modal-body{padding:20px 22px}
+.modal-foot{padding:16px 22px;border-top:1px solid var(--gray2);display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#fff;flex-wrap:wrap}
+.fld{margin-bottom:15px}
+.fld label{display:block;font-size:13px;font-weight:600;color:var(--gray7);margin-bottom:6px}
+.fld input,.fld textarea,.fld select{width:100%;padding:11px 13px;border:1.5px solid var(--gray3);border-radius:9px;font-family:var(--font);font-size:15px;color:var(--gray7)}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-lt)}
+.fld-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ═══ CLAIM DETAIL ═══ */
+.claim-line{display:grid;grid-template-columns:1fr auto;gap:10px;padding:9px 0;border-bottom:1px dashed var(--gray2);font-size:13.5px}
+.claim-line:last-child{border-bottom:none}
+.claim-total{display:flex;justify-content:space-between;padding:11px 0 0;font-size:16px;font-weight:700;color:var(--navy)}
+.meta-row{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--gray2);font-size:13.5px}
+.meta-row:last-child{border-bottom:none}
+.meta-row .mk{font-weight:700;color:var(--gray6);min-width:130px}
+.meta-row .mv{color:var(--gray8)}
+.note-box{border-radius:8px;padding:11px 13px;font-size:12.5px;margin:6px 0 14px;line-height:1.5}
+.nb-pci{background:var(--amber-lt);border:1px solid #fde68a;color:var(--amber)}
+.nb-info{background:var(--blue-xlt);border:1px solid var(--blue-lt);color:var(--navy3)}
+.nb-deny{background:var(--red-lt);border:1px solid #fecaca;color:var(--red)}
+
+/* ═══ STRIPE / CARD DEMO ═══ */
+.card-field{background:var(--gray0);border:1.5px solid var(--gray3);border-radius:9px;padding:13px 14px;font-family:var(--mono);font-size:14px;color:var(--gray5);display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.card-field .brand{font-size:12px;color:var(--gray4)}
+
+/* ═══ AI SUGGESTION BOX ═══ */
+.ai-box{background:var(--purple-lt);border:1.5px solid #c4b5fd;border-radius:var(--r2);padding:15px 18px;margin-bottom:14px}
+.ai-box-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ai-box-ic{font-size:18px}
+.ai-box-title{font-size:14px;font-weight:700;color:var(--purple)}
+.ai-box-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--purple);color:#fff;margin-left:auto}
+.ai-box-body{font-size:14px;color:var(--gray7);line-height:1.55}
+.ai-box-foot{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}
+.ai-rec-row{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px dashed #c4b5fd}
+.ai-rec-row:last-child{border-bottom:none}
+.ai-rec-tag{font-size:11px;font-weight:700;color:#fff;background:var(--purple2);padding:2px 7px;border-radius:6px;flex-shrink:0;font-family:var(--mono)}
+
+/* ═══ TOAST ═══ */
+.toast-wrap{position:fixed;bottom:22px;right:22px;z-index:300;display:flex;flex-direction:column;gap:10px}
+.toast{display:flex;align-items:center;gap:10px;background:var(--gray8);color:#fff;padding:13px 17px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:tin .2s ease;max-width:360px}
+.toast.green{background:var(--green)}.toast.red{background:var(--red)}.toast.amber{background:var(--amber)}.toast.blue{background:var(--blue)}.toast.purple{background:var(--purple2)}
+@keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ ROLE OPTS (modal) ═══ */
+.role-opt{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1.5px solid var(--gray2);border-radius:10px;cursor:pointer;margin-bottom:9px;transition:all .12s}
+.role-opt:hover{border-color:var(--blue);background:var(--blue-xlt)}
+.role-opt .ro-av{width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.role-opt .ro-name{font-size:15px;font-weight:600;color:var(--gray8)}
+.role-opt .ro-tier{font-size:12.5px;color:var(--gray6)}
+
+/* ═══ ARCHIVE REASON BADGE ═══ */
+.arch-reason{font-size:12px;color:var(--amber);font-weight:500;margin-top:3px;font-style:italic}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(3,1fr)}
+  .main{padding:18px 14px}
+  .tnav-links{display:none}
+}
+@media(max-width:600px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .kpi-val{font-size:25px}
+  .kpi-val.money{font-size:21px}
+  .pg-title{font-size:21px}
+  .main{padding:14px 12px}
+  .tlogo-sub,.tmodule{display:none}
+  .tenant-sw .t-lbl{display:none}
+  .fld-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOP NAV ═══ -->
+<div class="tnav">
+  <div class="tlogo">
+    <div class="tlogo-box">&#x2764;&#xFE0F;</div>
+    <div>
+      <div class="tlogo-name">CareSync Pro</div>
+      <div class="tlogo-sub">Medical Office Force</div>
+    </div>
+  </div>
+  <div class="tmodule">&#x1F4B3; Billing &amp; Claims</div>
+  <div class="tnav-links">
+    <a class="tnav-link" href="physician-dashboard.html">&#x1FA7A; Dashboard</a>
+    <a class="tnav-link" href="appointment-dashboard.html">&#x1F4CB; Appointments</a>
+    <a class="tnav-link" href="encounter.html">&#x1F4DD; Encounter</a>
+    <a class="tnav-link" href="quality-tracker.html">&#x1F4CA; Quality &amp; HCC</a>
+    <a class="tnav-link cur" href="billing-dashboard.html">&#x1F4B3; Billing</a>
+  </div>
+  <div class="tsp"></div>
+  <div class="tenant-sw" onclick="openTenantModal()">
+    <span style="font-size:16px">&#x1F3E2;</span>
+    <div>
+      <div class="t-lbl">Tenant</div>
+      <div class="t-val" id="tenantLabel">Athens Heart Center &#x25B8; AHC Main</div>
+    </div>
+  </div>
+  <div class="role-chip" onclick="openRoleModal()">
+    <div class="rc-av" id="roleAv">RP</div>
+    <div>
+      <div class="rc-name" id="roleName">Dr. Raj Patel</div>
+      <div class="rc-role" id="roleTier">Physician &#xB7; Tier 4</div>
+    </div>
+    <span style="color:rgba(255,255,255,.6);font-size:12px">&#x25BE;</span>
+  </div>
+</div>
+
+<!-- ═══ VOIP BAR ═══ -->
+<div class="voip">
+  <div class="voip-status"><span class="voip-dot"></span>VoIP Online</div>
+  <div class="voip-stat" onclick="voipAction('Voicemails')"><span>Voicemails</span> <b>3</b></div>
+  <div class="voip-stat" onclick="voipAction('Missed Calls')"><span>Missed</span> <b>1</b></div>
+  <div class="voip-sp"></div>
+  <button class="voip-ic" onclick="voipAction('Dialer')" title="Dialer">&#x1F4DE;</button>
+  <button class="voip-ic" onclick="voipAction('Hold')" title="Hold">&#x23F8;&#xFE0F;</button>
+  <button class="voip-ic" onclick="voipAction('Transfer')" title="Transfer">&#x21AA;&#xFE0F;</button>
+</div>
+
+<!-- ═══ SHELL ═══ -->
+<div class="shell">
+<div class="main" id="mainContent">
+
+  <!-- PAGE HEADER -->
+  <div class="pg-hdr">
+    <div>
+      <div class="pg-title">&#x1F4B3; Billing &amp; Claims <span style="font-size:15px;font-weight:600;color:var(--gray5)">(837P professional)</span></div>
+      <div class="pg-sub">Charge capture &rarr; scrub &rarr; submit (<span class="code-pill" data-tip="ASC X12N 837P — the HIPAA professional claim transaction sent to the clearinghouse/payer">837P</span>) &rarr; remittance (<span class="code-pill" data-tip="ASC X12N 835 — electronic remittance advice / ERA posting payments and adjustments">835/ERA</span>). Patient copays are collected through <b>Stripe Elements</b> &mdash; the card number never touches MOF servers (PCI SAQ A).</div>
+    </div>
+    <div class="pg-actions">
+      <button class="btn btn-purple btn-sm" onclick="runAiScrubber()" id="aiScrubBtn">&#x1F916; AI Claim Scrubber</button>
+      <button class="btn btn-pri" onclick="openAddClaim()" id="addClaimBtn">+ New Claim</button>
+    </div>
+  </div>
+
+  <!-- BANNER -->
+  <div class="banner">
+    <div class="b-ic">&#x1F6E1;&#xFE0F;</div>
+    <div class="b-txt"><b>Card data never on MOF servers.</b> Copay collection uses a hosted <b>Stripe Elements</b> field; the browser confirms the PaymentIntent directly with Stripe and we store only a token + last-4. This keeps the practice at <b>PCI SAQ A</b>. Claims post only after the physician has signed the encounter &mdash; billing never fabricates charges.</div>
+  </div>
+
+  <!-- KPI TILES -->
+  <div class="kpi-grid">
+    <div class="kpi-tile"><div class="kpi-accent" style="background:var(--blue)"></div><div class="kpi-ic">&#x1F4E4;</div><div class="kpi-val" id="kpiReady">0</div><div class="kpi-lbl">Ready to Submit</div><div class="kpi-sub">Scrubbed &amp; clean</div></div>
+    <div class="kpi-tile"><div class="kpi-accent" style="background:var(--amber)"></div><div class="kpi-ic">&#x23F3;</div><div class="kpi-val money" id="kpiAr">$0</div><div class="kpi-lbl">In A/R</div><div class="kpi-sub">Submitted, awaiting pay</div></div>
+    <div class="kpi-tile"><div class="kpi-accent" style="background:var(--green)"></div><div class="kpi-ic">&#x1F4B0;</div><div class="kpi-val money" id="kpiPaid">$0</div><div class="kpi-lbl">Paid (MTD)</div><div class="kpi-sub">835 posted</div></div>
+    <div class="kpi-tile"><div class="kpi-accent" style="background:var(--red)"></div><div class="kpi-ic">&#x26D4;</div><div class="kpi-val" id="kpiDenied">0</div><div class="kpi-lbl">Denied / Rework</div><div class="kpi-sub">CARC follow-up</div></div>
+    <div class="kpi-tile"><div class="kpi-accent" style="background:var(--teal)"></div><div class="kpi-ic">&#x1F4B3;</div><div class="kpi-val money" id="kpiCopay">$0</div><div class="kpi-lbl">Copay Collected</div><div class="kpi-sub">Today &middot; Stripe</div></div>
+  </div>
+
+  <!-- CLAIMS TABLE -->
+  <div class="ptable-wrap">
+    <div class="ptable-hdr">
+      <div class="ptable-title">Claim Worklist<span class="tip" data-tip="Every professional claim moves draft → scrubbed → submitted (837P) → accepted (277CA) → paid (835) or denied. Codes are decoded inline; hover any chip.">i</span></div>
+      <span class="ptable-badge" id="claimBadge">0 claims</span>
+      <div style="flex:1"></div>
+      <div class="list-tools" style="margin:0">
+        <div class="search-box" style="min-width:160px"><span class="s-ic">&#x1F50D;</span><input id="clSearch" type="text" placeholder="Search claims&#x2026;" oninput="renderClaims()"></div>
+        <select class="filter-sel" id="clStatus" onchange="renderClaims()">
+          <option value="all">All</option>
+          <option value="active" selected>Active</option>
+          <option value="archived">Archived</option>
+        </select>
+        <select class="filter-sel" id="clState" onchange="renderClaims()">
+          <option value="all">All states</option>
+          <option value="draft">Draft</option>
+          <option value="scrubbed">Scrubbed</option>
+          <option value="submitted">Submitted</option>
+          <option value="paid">Paid</option>
+          <option value="denied">Denied</option>
+        </select>
+      </div>
+    </div>
+    <div class="ptable-inner">
+      <table>
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>DOS</th>
+            <th>Codes (CPT &middot; ICD-10)<span class="tip" data-tip="CPT/HCPCS procedure codes (blue) with modifiers (amber), pointed at ICD-10-CM diagnoses (teal). POS 11 = office.">i</span></th>
+            <th>Payer</th>
+            <th class="right">Charge</th>
+            <th class="center">State</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="claimBody"></tbody>
+      </table>
+    </div>
+    <div style="padding:10px 18px;font-size:12.5px;color:var(--gray5);display:flex;gap:16px;border-top:1px solid var(--gray1);flex-wrap:wrap" id="claimFoot"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══ MODAL ═══ -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalCard">
+    <div class="modal-hdr"><div class="modal-title" id="modalTitle">Title</div><button class="modal-x" onclick="closeModal()">&#x2715;</button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ════════════════════════════════════════════════
+   CARESYNC FOUNDATION SPINE — shared utilities
+   ════════════════════════════════════════════════ */
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function $(id){return document.getElementById(id);}
+
+/* cyrb53 hash for audit chain */
+function cyrb53(str,seed){
+  seed=seed||0;
+  var h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;
+  for(var i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}
+  h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);
+  h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);
+  return (4294967296*(2097151&h2)+(h1>>>0)).toString(16).padStart(14,'0');
+}
+
+/* 8-tier RBAC */
+var USERS={
+  super:{name:'Subodh Agrawal, MD',av:'SA',label:'Global SuperAdmin',tier:'Tier 0'},
+  padmin:{name:'Priya Shah',av:'PS',label:'Practice Admin',tier:'Tier 3-P'},
+  md:{name:'Dr. Raj Patel',av:'RP',label:'Physician',tier:'Tier 4'},
+  nurse:{name:'Sarah Kim, MA',av:'SK',label:'Nurse / MA',tier:'Tier 5'},
+  front:{name:'Dana Brooks',av:'DB',label:'Front Desk / Billing',tier:'Tier 6'}
+};
+var PERMS={
+  super:['view','create','edit','archive','restore','sign','prescribe','order','bill','admin','audit_view','tenant_switch'],
+  padmin:['view','create','edit','archive','restore','bill','admin','audit_view'],
+  md:['view','create','edit','archive','restore','sign','prescribe','order','bill','audit_view'],
+  nurse:['view','create','edit','archive','restore','order'],
+  front:['view','create','edit','archive','restore','collect_copay']
+};
+var currentRole='md';
+function can(action){return (PERMS[currentRole]||[]).indexOf(action)>=0;}
+/* front desk can collect copays but not bill claims; clinicians/admins can bill */
+function canCopay(){return can('bill')||can('collect_copay');}
+
+/* Audit chain */
+var auditChain=[];
+var GENESIS='00000000000000';
+function logAudit(action,detail){
+  var prev=auditChain.length?auditChain[auditChain.length-1].hash:GENESIS;
+  var seq=auditChain.length+1;
+  var ts=new Date().toISOString().replace('T',' ').slice(0,19);
+  var u=USERS[currentRole];
+  var payload=[prev,seq,ts,u.name,currentRole,action,detail].join('|');
+  auditChain.push({seq:seq,ts:ts,actor:u.name,role:currentRole,action:action,detail:detail,prevHash:prev,hash:cyrb53(payload)});
+}
+
+/* AI interaction log */
+var aiLog=[];
+function logAI(prompt,response,context){
+  aiLog.push({ts:new Date().toISOString(),role:currentRole,actor:USERS[currentRole].name,prompt:prompt,response:response,context:context||''});
+  logAudit('AI_INTERACTION','AI call logged: '+prompt.slice(0,60)+'...');
+}
+
+/* Toast */
+function toast(msg,type,dur){
+  var w=$('toastWrap');
+  var d=document.createElement('div');
+  d.className='toast'+(type?' '+type:'');
+  d.textContent=msg;
+  w.appendChild(d);
+  setTimeout(function(){d.remove();},dur||3400);
+}
+
+/* Modal */
+function openModal(title,body,foot){
+  $('modalTitle').innerHTML=title;
+  $('modalBody').innerHTML=body;
+  $('modalFoot').innerHTML=foot||'<button class="btn" onclick="closeModal()">Close</button>';
+  $('modalBg').classList.add('open');
+}
+function closeModal(){$('modalBg').classList.remove('open');}
+
+/* VoIP */
+function voipAction(action){toast('VoIP: '+action+' (demo)','blue');}
+
+/* Tenant modal */
+function openTenantModal(){
+  openModal('Switch Tenant',
+    '<div class="fld"><label>Group &rsaquo; Organization</label>'
+    +'<select id="tenSel">'
+    +'<option value="Athens Heart Center &rsaquo; AHC Main">Athens Heart Center &rsaquo; AHC Main</option>'
+    +'<option value="Athens Heart Center &rsaquo; Watkinsville">Athens Heart Center &rsaquo; Watkinsville</option>'
+    +'<option value="Full Family Health &rsaquo; Main">Full Family Health &rsaquo; Main</option>'
+    +'</select></div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button>'
+    +'<button class="btn btn-pri" onclick="applyTenant()">Switch</button>');
+}
+function applyTenant(){
+  var v=$('tenSel').value;
+  $('tenantLabel').textContent=v;
+  logAudit('TENANT_SWITCH','Switched to tenant: '+v);
+  closeModal();toast('Tenant switched to '+v,'blue');
+}
+
+/* Role modal */
+function openRoleModal(){
+  var body=Object.keys(USERS).map(function(k){
+    var u=USERS[k];
+    return '<div class="role-opt" onclick="switchRole(\''+k+'\')"><div class="ro-av">'+esc(u.av)+'</div><div><div class="ro-name">'+esc(u.name)+'</div><div class="ro-tier">'+esc(u.label)+' &middot; '+esc(u.tier)+'</div></div></div>';
+  }).join('');
+  openModal('Switch Role (RBAC demo)',body,'<button class="btn" onclick="closeModal()">Close</button>');
+}
+function switchRole(k){
+  if(!USERS[k])return;
+  currentRole=k;var u=USERS[k];
+  $('roleAv').textContent=u.av;$('roleName').textContent=u.name;$('roleTier').textContent=u.label+' · '+u.tier;
+  logAudit('ROLE_SWITCH','Active role changed to '+u.label);
+  closeModal();renderClaims();applyRbacUI();
+  toast('Now acting as '+u.label,'blue');
+}
+function applyRbacUI(){
+  var addBtn=$('addClaimBtn');
+  if(addBtn) addBtn.style.display=can('bill')?'inline-flex':'none';
+  var aiBtn=$('aiScrubBtn');
+  if(aiBtn) aiBtn.style.display=can('bill')?'inline-flex':'none';
+}
+
+
+/* ════════════════════════════════════════════════
+   CLAIM DATA — Athens Heart Center 837P
+   ════════════════════════════════════════════════ */
+/* state: draft | scrubbed | submitted | paid | denied */
+var STATE_META={
+  draft:{cls:'pill-gray',ic:'📝',label:'Draft'},
+  scrubbed:{cls:'pill-blue',ic:'🧼',label:'Scrubbed'},
+  submitted:{cls:'pill-amber',ic:'\u{1F4E4}',label:'Submitted (837P)'},
+  paid:{cls:'pill-green',ic:'✅',label:'Paid (835)'},
+  denied:{cls:'pill-red',ic:'⛔',label:'Denied'}
+};
+
+function money(d){return '$'+Number(d).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+var claims=[
+  {
+    id:'CLM-8001',patient:'Harold Branson',mrn:'AHC-04417',dos:'2026-06-18',provider:'Dr. Raj Patel',
+    payer:'Medicare Part B',pos:'11',state:'draft',status:'active',copayDue:0,copayPaid:0,
+    lines:[
+      {cpt:'99214',desc:'Office visit, established, moderate MDM',units:1,charge:183.00,mods:['25'],dx:'I50.32'},
+      {cpt:'93000',desc:'ECG, 12-lead with interpretation',units:1,charge:53.00,mods:[],dx:'I48.91'}
+    ],
+    dx:[{code:'I50.32',desc:'HFpEF (chronic diastolic heart failure)'},{code:'I48.91',desc:'Atrial fibrillation, unspecified'}]
+  },
+  {
+    id:'CLM-8002',patient:'Dorothy Weston',mrn:'AHC-03891',dos:'2026-06-15',provider:'Dr. Kim Holloway',
+    payer:'BCBS GA PPO',pos:'11',state:'scrubbed',status:'active',copayDue:30.00,copayPaid:0,
+    lines:[
+      {cpt:'99213',desc:'Office visit, established, low MDM',units:1,charge:128.00,mods:[],dx:'I25.10'}
+    ],
+    dx:[{code:'I25.10',desc:'ASHD of native coronary artery without angina'}]
+  },
+  {
+    id:'CLM-8003',patient:'Thomas Park',mrn:'AHC-06237',dos:'2026-06-12',provider:'Dr. Kim Holloway',
+    payer:'Aetna HMO',pos:'11',state:'submitted',status:'active',copayDue:25.00,copayPaid:25.00,
+    lines:[
+      {cpt:'99214',desc:'Office visit, established, moderate MDM',units:1,charge:183.00,mods:['25'],dx:'I25.110'},
+      {cpt:'99406',desc:'Smoking cessation counseling, 3–10 min',units:1,charge:28.00,mods:[],dx:'Z87.891'}
+    ],
+    dx:[{code:'I25.110',desc:'ASHD of native coronary artery with unstable angina'},{code:'Z87.891',desc:'History of nicotine dependence'}]
+  },
+  {
+    id:'CLM-8004',patient:'Evelyn Moss',mrn:'AHC-02744',dos:'2026-06-08',provider:'NP Lisa Chen',
+    payer:'Medicare Part B',pos:'11',state:'paid',status:'active',copayDue:0,copayPaid:0,paidAmt:171.20,
+    lines:[
+      {cpt:'99215',desc:'Office visit, established, high MDM',units:1,charge:248.00,mods:[],dx:'I48.20'}
+    ],
+    dx:[{code:'I48.20',desc:'Chronic atrial fibrillation, unspecified'}]
+  },
+  {
+    id:'CLM-8005',patient:'Marcus Reid',mrn:'AHC-05102',dos:'2026-06-05',provider:'Dr. Raj Patel',
+    payer:'UnitedHealthcare',pos:'11',state:'denied',status:'active',copayDue:0,copayPaid:0,
+    denial:'CARC 16 / RARC M76 — missing/incomplete diagnosis. Echo line lacks a pointer to a covered indication.',
+    lines:[
+      {cpt:'93306',desc:'Echocardiogram, complete with Doppler',units:1,charge:412.00,mods:[],dx:'I42.0'}
+    ],
+    dx:[{code:'I42.0',desc:'Dilated cardiomyopathy'}]
+  },
+  {
+    id:'CLM-8006',patient:'Gloria Huang',mrn:'AHC-01558',dos:'2026-06-03',provider:'Dr. Raj Patel',
+    payer:'Humana MA-PD',pos:'11',state:'scrubbed',status:'active',copayDue:20.00,copayPaid:0,
+    lines:[
+      {cpt:'99214',desc:'Office visit, established, moderate MDM',units:1,charge:183.00,mods:[],dx:'I35.1'}
+    ],
+    dx:[{code:'I35.1',desc:'Nonrheumatic aortic (valve) insufficiency'}]
+  },
+  {
+    id:'CLM-8007',patient:'Raymond Okonkwo',mrn:'AHC-07043',dos:'2026-05-29',provider:'Dr. Kim Holloway',
+    payer:'Cigna PPO',pos:'11',state:'paid',status:'active',copayDue:40.00,copayPaid:40.00,paidAmt:206.00,
+    lines:[
+      {cpt:'99215',desc:'Office visit, established, high MDM',units:1,charge:248.00,mods:['25'],dx:'I27.20'}
+    ],
+    dx:[{code:'I27.20',desc:'Pulmonary hypertension, unspecified'}]
+  },
+  {
+    id:'CLM-8008',patient:'Agnes Thornton',mrn:'AHC-08812',dos:'2026-05-10',provider:'Dr. Raj Patel',
+    payer:'Medicare Part B',pos:'11',state:'draft',status:'archived',
+    archReason:'Patient moved to hospice — encounter voided, claim not billable',
+    archTs:'2026-05-14 09:40',copayDue:0,copayPaid:0,
+    lines:[
+      {cpt:'99214',desc:'Office visit, established, moderate MDM',units:1,charge:183.00,mods:[],dx:'I50.43'}
+    ],
+    dx:[{code:'I50.43',desc:'Acute on chronic combined systolic and diastolic HF'}]
+  }
+];
+var clmSeq=8008;
+var copayToday=0;
+
+
+/* ════════════════════════════════════════════════
+   CLAIMS RENDER
+   ════════════════════════════════════════════════ */
+function claimTotal(c){return c.lines.reduce(function(s,l){return s+l.charge*l.units;},0);}
+
+function codeChipsHtml(c){
+  var cpts=c.lines.map(function(l){
+    var mods=l.mods.map(function(m){return '<span class="mod-chip" data-tip="CPT modifier '+esc(m)+(m==='25'?' — significant, separately identifiable E/M on the same day as a procedure':m==='59'?' — distinct procedural service':'')+'">-'+esc(m)+'</span>';}).join('');
+    return '<span class="cpt-chip" data-tip="CPT '+esc(l.cpt)+' — '+esc(l.desc)+'. Charge '+money(l.charge)+' ×'+l.units+'. Dx pointer '+esc(l.dx)+'.">'+esc(l.cpt)+'</span>'+mods;
+  }).join('');
+  var dxs=c.dx.map(function(d){return '<span class="dx-chip" data-tip="ICD-10-CM '+esc(d.code)+' — '+esc(d.desc)+'">'+esc(d.code)+'</span>';}).join('');
+  return '<div class="code-chips">'+cpts+dxs+'</div>';
+}
+
+function copayCellHtml(c){
+  if(c.copayDue>0&&c.copayPaid<c.copayDue){return '<div class="copay-due" data-tip="Patient copay due — collect via Stripe Elements">copay '+money(c.copayDue)+' due</div>';}
+  if(c.copayPaid>0){return '<div class="copay-paid">copay '+money(c.copayPaid)+' paid</div>';}
+  return '';
+}
+
+function renderClaims(){
+  var q=($('clSearch').value||'').toLowerCase().trim();
+  var st=$('clStatus').value;
+  var state=$('clState').value;
+  var rows=claims.filter(function(c){
+    if(st!=='all'&&c.status!==st) return false;
+    if(state!=='all'&&c.state!==state) return false;
+    if(q){
+      var hay=(c.patient+' '+c.mrn+' '+c.payer+' '+c.id+' '+c.lines.map(function(l){return l.cpt;}).join(' ')+' '+c.dx.map(function(d){return d.code;}).join(' ')).toLowerCase();
+      if(hay.indexOf(q)<0) return false;
+    }
+    return true;
+  });
+
+  var tbody=$('claimBody');
+  if(!rows.length){
+    tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:36px;color:var(--gray5);font-size:14px;">\u{1F4ED} No claims match this filter.</td></tr>';
+  }else{
+    tbody.innerHTML=rows.map(function(c){
+      var arch=c.status==='archived';
+      var sm=STATE_META[c.state];
+      var rowCls=arch?'arch-row':(c.state==='paid'?'paid-row':c.state==='denied'?'denied-row':'');
+      var archNote=arch?('<div class="arch-reason">\u{1F4C2} Archived '+esc(c.archTs)+': '+esc(c.archReason)+'</div>'):'';
+      var actionBtns='';
+      actionBtns+='<button class="btn btn-xs" onclick="openClaim(\''+esc(c.id)+'\')">View</button> ';
+      if(!arch){
+        if(c.state==='draft'&&can('bill')) actionBtns+='<button class="btn btn-blue btn-xs" style="background:var(--blue);border-color:var(--blue);color:#fff" onclick="scrubClaim(\''+esc(c.id)+'\')">🧼 Scrub</button> ';
+        if(c.state==='scrubbed'&&can('bill')) actionBtns+='<button class="btn btn-green btn-xs" onclick="submitClaim(\''+esc(c.id)+'\')">\u{1F4E4} Submit</button> ';
+        if(c.state==='denied'&&can('bill')) actionBtns+='<button class="btn btn-amber btn-xs" onclick="reworkClaim(\''+esc(c.id)+'\')">↻ Rework</button> ';
+        if(c.copayDue>0&&c.copayPaid<c.copayDue&&canCopay()) actionBtns+='<button class="btn btn-teal btn-xs" onclick="collectCopay(\''+esc(c.id)+'\')">\u{1F4B3} Copay</button> ';
+        if(can('archive')) actionBtns+='<button class="btn btn-xs" onclick="openArchiveClaim(\''+esc(c.id)+'\')">\u{1F5C4}️</button>';
+      }else{
+        if(can('restore')) actionBtns+='<button class="btn btn-green btn-xs" onclick="restoreClaim(\''+esc(c.id)+'\')">↺ Restore</button>';
+      }
+      return '<tr class="'+rowCls+'">'
+        +'<td><div class="pt-name">'+esc(c.patient)+'</div><div class="pt-mrn">MRN: '+esc(c.mrn)+' · '+esc(c.id)+'</div><div class="pt-age">'+esc(c.provider)+'</div>'+copayCellHtml(c)+archNote+'</td>'
+        +'<td style="font-family:var(--mono);font-size:13px;white-space:nowrap">'+esc(c.dos)+'<div class="pt-age" data-tip="Place of service 11 = office">POS '+esc(c.pos)+'</div></td>'
+        +'<td>'+codeChipsHtml(c)+'</td>'
+        +'<td style="font-size:13px">'+esc(c.payer)+'</td>'
+        +'<td class="right">'+money(claimTotal(c))+'</td>'
+        +'<td class="center"><span class="pill '+sm.cls+'">'+sm.ic+' '+sm.label+'</span></td>'
+        +'<td style="white-space:nowrap">'+actionBtns+'</td>'
+        +'</tr>';
+    }).join('');
+  }
+
+  /* KPI rollup */
+  var active=claims.filter(function(c){return c.status==='active';});
+  var ready=active.filter(function(c){return c.state==='scrubbed';}).length;
+  var ar=active.filter(function(c){return c.state==='submitted';}).reduce(function(s,c){return s+claimTotal(c);},0);
+  var paid=active.filter(function(c){return c.state==='paid';}).reduce(function(s,c){return s+(c.paidAmt||0);},0);
+  var denied=active.filter(function(c){return c.state==='denied';}).length;
+  $('kpiReady').textContent=ready;
+  $('kpiAr').textContent=money(ar).replace('.00','');
+  $('kpiPaid').textContent=money(paid).replace('.00','');
+  $('kpiDenied').textContent=denied;
+  $('kpiCopay').textContent=money(copayToday).replace('.00','');
+  $('claimBadge').textContent=rows.length+' claim'+(rows.length!==1?'s':'');
+  var actC=claims.filter(function(c){return c.status==='active';}).length;
+  var arcC=claims.filter(function(c){return c.status==='archived';}).length;
+  $('claimFoot').innerHTML='Showing '+rows.length+' of '+claims.length+' &nbsp;&bull;&nbsp; '+actC+' active &nbsp;&bull;&nbsp; \u{1F5C4} '+arcC+' archived &nbsp;&bull;&nbsp; <em>837P professional · POS 11 · charges are demo fee-schedule amounts</em>';
+}
+
+
+/* ════════════════════════════════════════════════
+   CLAIM DETAIL
+   ════════════════════════════════════════════════ */
+function openClaim(id){
+  var c=claims.find(function(x){return x.id===id;});if(!c)return;
+  var sm=STATE_META[c.state];
+  var lines=c.lines.map(function(l){
+    var mods=l.mods.length?(' '+l.mods.map(function(m){return '-'+m;}).join(' ')):'';
+    return '<div class="claim-line"><div><b style="font-family:var(--mono)">'+esc(l.cpt)+esc(mods)+'</b> &middot; '+esc(l.desc)+'<div style="font-size:12px;color:var(--gray5)">Dx pointer '+esc(l.dx)+' · ×'+l.units+'</div></div><div style="font-family:var(--mono);font-weight:700;white-space:nowrap">'+money(l.charge*l.units)+'</div></div>';
+  }).join('');
+  var dxList=c.dx.map(function(d){return '<span class="dx-chip" data-tip="'+esc(d.desc)+'">'+esc(d.code)+'</span> '+esc(d.desc);}).join('<br>');
+  var body=''
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap"><span class="pill '+sm.cls+'">'+sm.ic+' '+sm.label+'</span><span class="code-pill">'+esc(c.id)+'</span><span class="code-pill" data-tip="ASC X12N 837P professional claim">837P</span></div>'
+    +'<div class="meta-row"><div class="mk">Patient</div><div class="mv">'+esc(c.patient)+' · '+esc(c.mrn)+'</div></div>'
+    +'<div class="meta-row"><div class="mk">Date of service</div><div class="mv" style="font-family:var(--mono)">'+esc(c.dos)+' · POS '+esc(c.pos)+' (office)</div></div>'
+    +'<div class="meta-row"><div class="mk">Rendering provider</div><div class="mv">'+esc(c.provider)+'</div></div>'
+    +'<div class="meta-row"><div class="mk">Payer</div><div class="mv">'+esc(c.payer)+'</div></div>'
+    +'<div class="meta-row"><div class="mk">Diagnoses</div><div class="mv">'+dxList+'</div></div>'
+    +'<div style="height:12px"></div>'
+    +'<div style="font-size:13px;font-weight:700;color:var(--gray6);margin-bottom:6px">Service lines</div>'
+    +lines
+    +'<div class="claim-total"><span>Total charge</span><span style="font-family:var(--mono)">'+money(claimTotal(c))+'</span></div>';
+  if(c.state==='paid'&&c.paidAmt){body+='<div class="note-box nb-info" style="margin-top:12px"><b>835 ERA posted:</b> payer paid '+money(c.paidAmt)+' (contractual adjustment '+money(claimTotal(c)-c.paidAmt)+'). Patient responsibility reconciled.</div>';}
+  if(c.state==='denied'&&c.denial){body+='<div class="note-box nb-deny" style="margin-top:12px"><b>&#x26D4; Denial:</b> '+esc(c.denial)+'</div>';}
+  if(c.copayDue>0){body+='<div class="note-box '+(c.copayPaid>=c.copayDue?'nb-info':'nb-pci')+'"><b>Copay '+(c.copayPaid>=c.copayDue?'collected':'due')+':</b> '+money(c.copayDue)+(c.copayPaid>=c.copayDue?' — paid via Stripe (token + last-4 stored, no card number).':' — collect via Stripe Elements; the card number never touches MOF.')+'</div>';}
+  var foot='<button class="btn" onclick="closeModal()">Close</button>';
+  if(c.status==='active'){
+    if(c.copayDue>0&&c.copayPaid<c.copayDue&&canCopay()) foot+='<button class="btn btn-teal" onclick="collectCopay(\''+esc(c.id)+'\')">\u{1F4B3} Collect Copay</button>';
+    if(c.state==='draft'&&can('bill')) foot+='<button class="btn btn-pri" onclick="scrubClaim(\''+esc(c.id)+'\')">🧼 Scrub Claim</button>';
+    if(c.state==='scrubbed'&&can('bill')) foot+='<button class="btn btn-green" onclick="submitClaim(\''+esc(c.id)+'\')">\u{1F4E4} Submit 837P</button>';
+    if(c.state==='denied'&&can('bill')) foot+='<button class="btn btn-amber" onclick="reworkClaim(\''+esc(c.id)+'\')">↻ Rework</button>';
+  }
+  openModal('Claim '+esc(c.id),body,foot);
+  logAudit('VIEW_CLAIM','Viewed claim '+c.id+' ('+c.patient+') — '+c.state);
+}
+
+
+/* ════════════════════════════════════════════════
+   SCRUB → SUBMIT → REWORK
+   ════════════════════════════════════════════════ */
+function scrubClaim(id){
+  var c=claims.find(function(x){return x.id===id;});if(!c)return;
+  if(!can('bill')){toast('Claim scrubbing requires billing access','amber');return;}
+  c.state='scrubbed';
+  logAudit('SCRUB_CLAIM','Scrubbed claim '+c.id+' ('+c.patient+') — passed NCCI / dx-pointer / modifier edits');
+  closeModal();renderClaims();
+  toast(c.id+' scrubbed — clean, ready to submit','blue');
+}
+function submitClaim(id){
+  var c=claims.find(function(x){return x.id===id;});if(!c)return;
+  if(!can('bill')){toast('Submitting claims requires billing access','amber');return;}
+  c.state='submitted';
+  logAudit('SUBMIT_837P','Submitted 837P claim '+c.id+' ('+c.patient+') to '+c.payer+' — '+money(claimTotal(c)));
+  closeModal();renderClaims();
+  toast(c.id+' submitted to '+c.payer+' (837P)','green');
+}
+function reworkClaim(id){
+  var c=claims.find(function(x){return x.id===id;});if(!c)return;
+  if(!can('bill')){toast('Reworking claims requires billing access','amber');return;}
+  c.state='draft';delete c.denial;
+  logAudit('REWORK_CLAIM','Reworked denied claim '+c.id+' ('+c.patient+') — returned to draft for correction');
+  closeModal();renderClaims();
+  toast(c.id+' returned to draft for correction','amber');
+}
+
+
+/* ════════════════════════════════════════════════
+   COPAY COLLECTION — Stripe Elements (demo)
+   ════════════════════════════════════════════════ */
+function collectCopay(id){
+  var c=claims.find(function(x){return x.id===id;});if(!c)return;
+  if(!canCopay()){toast('Your role cannot collect payments','amber');return;}
+  var amt=c.copayDue-(c.copayPaid||0);
+  var body=''
+    +'<div style="font-size:14px;color:var(--gray7);margin-bottom:6px">Copay for <b>'+esc(c.patient)+'</b> ('+esc(c.mrn)+') &mdash; claim '+esc(c.id)+'.</div>'
+    +'<div style="font-size:30px;font-weight:700;font-family:var(--mono);color:var(--navy);margin-bottom:14px">'+money(amt)+'</div>'
+    +'<div style="font-size:13px;font-weight:600;color:var(--gray7);margin-bottom:6px">Card (Stripe Elements)</div>'
+    +'<div class="card-field"><span>4242&nbsp;4242&nbsp;4242&nbsp;4242</span><span class="brand">VISA · 12/29 · CVC •••</span></div>'
+    +'<div class="card-field" style="margin-bottom:12px"><span>ZIP 30606</span><span class="brand">hosted iframe</span></div>'
+    +'<div class="note-box nb-pci"><b>&#x1F512; PCI SAQ A:</b> This is a Stripe-hosted field. In production the browser calls <span class="code-pill">/api/create-payment-intent</span>, gets a <span class="code-pill">clientSecret</span>, and Stripe confirms the charge client-side. MOF never receives the card number &mdash; only a token + last-4. (Demo card 4242… is Stripe&rsquo;s test number.)</div>';
+  openModal('Collect Copay &mdash; '+money(amt),body,
+    '<button class="btn" onclick="closeModal()">Cancel</button>'
+    +'<button class="btn btn-teal" onclick="confirmCopay(\''+esc(c.id)+'\')">&#x1F512; Charge '+money(amt)+'</button>');
+}
+function confirmCopay(id){
+  var c=claims.find(function(x){return x.id===id;});if(!c)return;
+  if(!canCopay()){toast('Your role cannot collect payments','amber');return;}
+  var amt=c.copayDue-(c.copayPaid||0);
+  c.copayPaid=c.copayDue;
+  copayToday+=amt;
+  logAudit('COLLECT_COPAY','Collected copay '+money(amt)+' for '+c.patient+' ('+c.mrn+') on claim '+c.id+' via Stripe — token stored, no PAN');
+  logAI(
+    'Copay PaymentIntent (demo): amountCents='+Math.round(amt*100)+', mrn='+c.mrn,
+    'Demo success — production would return Stripe clientSecret and confirm client-side',
+    'stripe-elements-pci-saq-a'
+  );
+  closeModal();renderClaims();
+  toast('Copay '+money(amt)+' collected (Stripe demo)','green');
+}
+
+
+/* ════════════════════════════════════════════════
+   ADD / ARCHIVE / RESTORE CLAIM
+   ════════════════════════════════════════════════ */
+function openAddClaim(){
+  if(!can('bill')){toast('Creating claims requires billing access','amber');return;}
+  openModal('New Professional Claim (837P)',
+    '<div class="fld-row">'
+    +'<div class="fld"><label>Patient Name</label><input id="ncName" placeholder="First Last"></div>'
+    +'<div class="fld"><label>MRN</label><input id="ncMrn" placeholder="AHC-XXXXX"></div>'
+    +'</div>'
+    +'<div class="fld-row">'
+    +'<div class="fld"><label>Date of Service</label><input id="ncDos" type="date"></div>'
+    +'<div class="fld"><label>Payer</label><select id="ncPayer"><option>Medicare Part B</option><option>BCBS GA PPO</option><option>Aetna HMO</option><option>UnitedHealthcare</option><option>Humana MA-PD</option><option>Cigna PPO</option></select></div>'
+    +'</div>'
+    +'<div class="fld-row">'
+    +'<div class="fld"><label>E&amp;M / CPT code</label><select id="ncCpt"><option value="99213|Office visit, established, low MDM|128">99213 — est, low MDM ($128)</option><option value="99214|Office visit, established, moderate MDM|183">99214 — est, moderate MDM ($183)</option><option value="99215|Office visit, established, high MDM|248">99215 — est, high MDM ($248)</option></select></div>'
+    +'<div class="fld"><label>Primary Dx (ICD-10)</label><input id="ncDx" placeholder="e.g. I50.32"></div>'
+    +'</div>'
+    +'<div class="fld"><label>Patient copay due ($, 0 if none)</label><input id="ncCopay" type="number" min="0" step="1" value="0"></div>'
+    +'<div class="note-box nb-info"><b>&#x1F4A1;</b> Claims should originate from a <b>signed</b> encounter. This quick-add is for billing demo only; the charge starts in <b>draft</b> and must be scrubbed before submission.</div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button>'
+    +'<button class="btn btn-pri" onclick="saveNewClaim()">Create Draft Claim</button>');
+}
+function saveNewClaim(){
+  var nm=($('ncName').value||'').trim();
+  var mrn=($('ncMrn').value||'').trim()||('AHC-0'+String(++clmSeq));
+  var dos=($('ncDos').value||'')||new Date().toISOString().slice(0,10);
+  var payer=$('ncPayer').value;
+  var cptRaw=$('ncCpt').value.split('|');
+  var dx=($('ncDx').value||'').trim()||'Z00.00';
+  var copay=parseFloat($('ncCopay').value)||0;
+  if(!nm){toast('Patient name is required','amber');return;}
+  var id='CLM-'+String(++clmSeq);
+  claims.unshift({
+    id:id,patient:nm,mrn:mrn,dos:dos,provider:USERS[currentRole].name,
+    payer:payer,pos:'11',state:'draft',status:'active',copayDue:copay,copayPaid:0,
+    lines:[{cpt:cptRaw[0],desc:cptRaw[1],units:1,charge:parseFloat(cptRaw[2]),mods:[],dx:dx}],
+    dx:[{code:dx,desc:'(decoded at scrub)'}]
+  });
+  logAudit('CREATE_CLAIM','Created draft claim '+id+' for '+nm+' ('+mrn+') — '+cptRaw[0]+' / '+dx);
+  closeModal();renderClaims();
+  toast('Draft claim '+id+' created','green');
+}
+
+function openArchiveClaim(id){
+  if(!can('archive')){toast('Your role cannot archive claims','amber');return;}
+  var c=claims.find(function(x){return x.id===id;});if(!c)return;
+  openModal('Archive Claim',
+    '<div style="font-size:14px;color:var(--gray6);margin-bottom:14px">Soft-delete <b>'+esc(c.id)+'</b> ('+esc(c.patient)+', '+money(claimTotal(c))+'). The claim is preserved and can be restored. Reason is written to the tamper-evident audit log.</div>'
+    +'<div class="fld"><label>Reason for archiving (required)</label><textarea id="archReason" rows="3" placeholder="e.g. Duplicate charge, Encounter voided, Billed in error"></textarea></div>',
+    '<button class="btn" onclick="closeModal()">Cancel</button>'
+    +'<button class="btn btn-amber" onclick="confirmArchiveClaim(\''+esc(id)+'\')">Archive Claim</button>');
+}
+function confirmArchiveClaim(id){
+  var c=claims.find(function(x){return x.id===id;});if(!c)return;
+  var r=($('archReason').value||'').trim();
+  if(!r){toast('A reason is required to archive','amber');return;}
+  c.status='archived';c.archReason=r;c.archTs=new Date().toISOString().replace('T',' ').slice(0,16);
+  logAudit('ARCHIVE_CLAIM','Archived claim '+c.id+' ('+c.patient+') — reason: '+r);
+  closeModal();renderClaims();
+  toast(c.id+' archived (recoverable)','blue');
+}
+function restoreClaim(id){
+  if(!can('restore')){toast('Your role cannot restore claims','amber');return;}
+  var c=claims.find(function(x){return x.id===id;});if(!c)return;
+  c.status='active';delete c.archReason;delete c.archTs;
+  logAudit('RESTORE_CLAIM','Restored claim '+c.id+' ('+c.patient+') from archive');
+  renderClaims();toast(c.id+' restored to worklist','green');
+}
+
+
+/* ════════════════════════════════════════════════
+   AI CLAIM SCRUBBER (augments, never automates)
+   ════════════════════════════════════════════════ */
+function runAiScrubber(){
+  if(!can('bill')){toast('AI scrubber requires billing access','amber');return;}
+  var active=claims.filter(function(c){return c.status==='active'&&(c.state==='draft'||c.state==='denied');});
+  var recs=[
+    {tag:'CARC 16',txt:'CLM-8005 (Marcus Reid) echo 93306 was denied — add a covered indication dx pointer (e.g. I50.22 HFrEF) before resubmitting.'},
+    {tag:'MOD 25',txt:'CLM-8001 (Harold Branson): 99214 with same-day 93000 — confirm modifier -25 on the E/M is supported by a separately identifiable service note.'},
+    {tag:'SPECIFICITY',txt:'New draft claims pointing at Z00.00 should carry a specific cardiac dx — unspecified codes raise medical-necessity denials.'},
+    {tag:'NCCI',txt:'No NCCI procedure-to-procedure conflicts detected in the current draft set.'},
+    {tag:'TIMELY',txt:'All open claims are within payer timely-filing windows; oldest DOS is 2026-06-03.'}
+  ];
+  var rows=recs.map(function(r){
+    return '<div class="ai-rec-row"><span class="ai-rec-tag">'+esc(r.tag)+'</span><span style="font-size:13.5px">'+esc(r.txt)+'</span></div>';
+  }).join('');
+  var aiSummary='<div class="ai-box">'
+    +'<div class="ai-box-hdr"><span class="ai-box-ic">&#x1F916;</span><span class="ai-box-title">AI Claim Scrubber — '+active.length+' draft/denied</span><span class="ai-box-badge">AI draft — biller review required</span></div>'
+    +'<div class="ai-box-body">The scrubber checked coding edits, modifiers, dx pointers and medical necessity. It does <b>not</b> change any claim &mdash; a biller applies each fix and resubmits.<br><br>'
+    +rows
+    +'<br><em style="color:var(--gray5);font-size:13px;">Confirm to log the scrub as reviewed, or Dismiss. No claim is altered automatically.</em>'
+    +'</div>'
+    +'<div class="ai-box-foot">'
+    +'<button class="btn btn-green btn-sm" onclick="confirmAiScrubber()">&#x2713; Confirm &amp; Log</button>'
+    +'<button class="btn btn-sm" onclick="dismissAiScrubber()">&#x2715; Dismiss</button>'
+    +'</div>'
+    +'</div>';
+  openModal('AI Claim Scrubber',aiSummary,'<button class="btn" onclick="closeModal()">Close</button>');
+  logAI(
+    'Scrub '+active.length+' draft/denied claims: check NCCI edits, modifiers, dx-pointer specificity, medical necessity, timely filing',
+    'Flagged 1 denial fix (CARC 16 dx pointer), 1 modifier-25 check, 1 specificity warning; no NCCI conflicts',
+    'athens-heart-center-837p'
+  );
+}
+function confirmAiScrubber(){
+  logAudit('AI_CONFIRM','Biller confirmed AI claim-scrubber review');
+  closeModal();toast('Scrubber review confirmed and logged','green');
+}
+function dismissAiScrubber(){
+  logAudit('AI_DISMISS','Biller dismissed AI claim-scrubber suggestions');
+  closeModal();toast('Scrubber suggestions dismissed and logged','amber');
+}
+
+/* ════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════ */
+(function init(){
+  logAudit('SESSION_START','Billing & Claims (837P) loaded — Athens Heart Center AHC Main');
+  renderClaims();
+  applyRbacUI();
+})();
+
+</script>
+</body>
+</html>
